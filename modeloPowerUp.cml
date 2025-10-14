@@ -1,0 +1,390 @@
+Domain PowerUp {}
+
+BoundedContext PowerUp implements PowerUp{
+    Aggregate Usuario {
+        Entity Usuario {
+            aggregateRoot
+            - Email usuarioEmail
+            - CodigoAmizade codigoAmizade
+            String nome
+            String senha
+            DateTime dataNascimento
+
+            Repository UsuarioRepository {
+                @Usuario obter(@Email usuarioEmail);
+                void salvar(@Usuario usuario);
+            }
+        }
+
+        ValueObject Email {
+            String caracteres
+        }
+
+        ValueObject CodigoAmizade {
+            int codigo
+        }
+    }
+
+    Aggregate Perfil {
+        Entity Perfil {
+            aggregateRoot
+            - PerfilId id
+            - Email usuarioEmail
+            - List<@PlanoTreino> planosTreinos
+            - PlanoNutricional planoNutricional
+            - List<@Conquista> conquistas
+            - List<@Meta> metas
+            - List<@Usuario> amigos
+            boolean estado
+            DateTime criacao
+            String username
+            String foto
+
+            Repository PerfilRepository {
+                void salvar(@Perfil perfil);
+            }
+        }
+
+        ValueObject PerfilId {
+            int id
+        }
+
+        ValueObject Cadastro {
+            int codigoAmizade
+            String emailCadastro
+        }
+    }
+
+    Aggregate Frequencia {
+        Entity Frequencia {
+            aggregateRoot
+            - FrequenciaId id
+            - PerfilId perfil
+            - TreinoId treino
+            - Classificacao classificacao
+            String feedback
+            DateTime dataDePresenca
+            String foto
+
+            Repository FrequenciaRepository {
+                void salvar(@Frequencia frequencia);
+                @Frequencia obterFrequencia(@FrequenciaId frequencia, DateTime atual);
+            }
+        }
+
+        ValueObject FrequenciaId {
+            int id
+        }
+
+        enum Classificacao {
+            Cansado,
+            Bom,
+            Excelente,
+            ComDor
+        }
+
+        Service FrequenciaService {
+            List<@Frequencia> listarFrequencias(@PerfilId perfil, @FrequenciaId frequencia);
+            int calcularFrequenciaCorrida(@PerfilId perfil, Date inicio, Date fim);
+        }
+    }
+
+    Aggregate Equipe {
+        Entity Equipe {
+            aggregateRoot
+            - EquipeId id
+            String nome
+            String descricao
+            String foto
+            Date inicio
+            Date fim
+            - Email usuarioAdm
+            - List<@Email> usuariosEmails
+
+            Repository EquipeRepository {
+                void salvar(@Equipe equipe);
+                List<@Equipe> listarEquipe(@EquipeId id, @PerfilId perfil);
+            }
+        }
+
+        ValueObject EquipeId {
+            int id
+        }
+    }
+
+    Aggregate PlanoNutricional {
+        Entity PlanoNutricional {
+            aggregateRoot
+            - PlanoNId id
+            - Objetivo objetivo
+            - List<@RefeicaoId> refeicoes
+            int caloriasTotais
+            int caloriasObjetivo
+
+            Repository PlanoNutricionalRepository {
+                void salvar(@PlanoNutricional planoN);
+                @PlanoNutricional obter(@PlanoNId plano);
+            }
+        }
+
+        enum Objetivo {
+            Cutting,
+            Bulking
+        }
+
+        ValueObject PlanoNId {
+            int id
+        }
+    }
+
+    Aggregate Refeicao {
+        Entity Refeicao {
+            aggregateRoot
+            - RefeicaoId id
+            - Tipo tipo
+            - List<@AlimentoId> alimentos
+            int caloriasTotais
+            Date inicio
+            Date fim
+
+            Repository RefeicaoRepository {
+                void salvar(@Refeicao refeicao);
+            }
+        }
+
+        enum Tipo {
+            CafeDaManha,
+            Lanche,
+            Almoco,
+            Jantar
+        }
+
+        ValueObject RefeicaoId {
+            int id
+        }
+    }
+
+    Aggregate Alimento {
+        Entity Alimento {
+            aggregateRoot
+            - AlimentoId alimento
+            - Categoria categoria
+            String nome
+            int calorias
+            float quantidade
+
+            Repository AlimentoRepository {
+                void salvar(@Alimento alimento);
+            }
+        }
+
+        enum Categoria {
+            Gordura,
+            Proteina,
+            Carboidrato
+        }
+
+        ValueObject AlimentoId {
+            int id
+        }
+    }
+
+    Aggregate PlanoTreino {
+        Entity PlanoTreino {
+            aggregateRoot
+            - PlanoTId id
+            - Email usuarioEmail
+            - Estado estado
+            - List<@Treino> treinos
+            - List<@Dias> dias
+            String nome
+
+            Repository PlanoTreinoRepository {
+                void salvar(@PlanoTreino planoT);
+                void excluir(@PlanoTId planoT);
+                List<@PlanoTreino> listar(@PlanoTId planoT);
+            }
+        }
+
+        enum Estado {
+            Ativo,
+            Historico
+        }
+
+        enum Dias {
+            Segunda,
+            Terca,
+            Quarta,
+            Quinta,
+            Sexta,
+            Sabado,
+            Domingo
+        }
+
+        ValueObject PlanoTId {
+            int id
+        }
+    }
+
+    Aggregate Treino {
+        Entity Treino {
+            aggregateRoot
+            - TreinoId id
+            - ExercicioId exercicio
+            - TipoTreino tipo
+            DateTime tempo
+            float distancia
+            int repeticoes
+            float peso
+
+            Repository TreinoRepository {
+                void salvar(@Treino treino);
+                List<@TreinoId> listar(@TreinoId treino);
+            }
+        }
+
+        ValueObject TreinoId {
+            int id
+        }
+
+        enum TipoTreino {
+            Cardio,
+            Peso
+        }
+    }
+
+    Aggregate Exercicio {
+        Entity Exercicio {
+            aggregateRoot
+            - ExercicioId id
+            String nome
+        }
+
+        ValueObject ExercicioId {
+            int id
+        }
+    }
+
+    Aggregate Conquista {
+        Entity Conquista {
+            aggregateRoot
+            - ConquistaId id
+            - ExercicioId exercicio
+            - TreinoId treino
+            String descricao
+            String nome
+        }
+
+        ValueObject ConquistaId {
+            int id
+        }
+    }
+
+    Aggregate Meta {
+        Entity Meta {
+            aggregateRoot
+            - MetaId id
+            - ExercicioId exercicio
+            - TreinoId treino
+            String nome
+            Date fim
+            Date inicio
+
+        }
+
+        ValueObject MetaId {
+            int id
+        }
+    }
+
+    Aggregate Duelo {
+        Entity Duelo {
+            aggregateRoot
+            - DueloId id
+            - AvatarId avatar1
+            - AvatarId avatar2
+            String resultado
+
+            Repository DueloRepository {
+                void salvar(@Duelo duelo);
+            }
+        }
+
+        ValueObject DueloId {
+            int id
+        }
+
+        Service DueloService {
+            String resultado(@AvatarId avatar1, @AvatarId avatar2);
+        }
+    }
+
+    Aggregate Avatar {
+        Entity Avatar {
+            aggregateRoot
+            - AvatarId id
+            - PerfilId perfil
+            - List<@Acessorio> acessorios
+            int nivel
+            int experiencia
+            int dinheiro
+        }
+
+        ValueObject AvatarId {
+            int id
+        }
+
+        Service AvatarService {
+            int forca(@PerfilId perfil);
+            int resistencia(@PerfilId perfil);
+            int agilidade(@PerfilId perfil);
+        }
+    }
+
+    Aggregate Rivalidade {
+        Entity Rivalidade {
+            aggregateRoot
+            - RivalidadeId id
+            - PerfilId perfil1
+            - PerfilId perfil2
+            - ExercicioId exercicio
+            DateTime inicio
+            DateTime fim
+            boolean estado
+        }
+
+        ValueObject RivalidadeId {
+            int id
+        }
+
+        Service RivalidadeService {
+            String resultado(@PerfilId perfil1, @PerfilId perfil2);
+        }
+    }
+
+    Aggregate Loja {
+        Entity Loja {
+            aggregateRoot
+            - LojaId id
+            - List<@Acessorio> acessorios
+        }
+
+        ValueObject LojaId {
+            int id
+        }
+    }
+
+    Aggregate Acessorio {
+        Entity Acessorio {
+            aggregateRoot
+            - AcessorioId id
+            String icone
+            int preco
+            String nome
+        }
+
+        ValueObject AcessorioId {
+            int id
+        }
+    }
+}
