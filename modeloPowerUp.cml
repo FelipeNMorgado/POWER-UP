@@ -48,11 +48,6 @@ BoundedContext PowerUp implements PowerUp{
         ValueObject PerfilId {
             int id
         }
-
-        ValueObject Cadastro {
-            int codigoAmizade
-            String emailCadastro
-        }
     }
 
     Aggregate Frequencia {
