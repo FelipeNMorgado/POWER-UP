@@ -1,5 +1,7 @@
 package Up.Power;
 
+import Up.Power.exercicio.ExercicioId;
+
 public class Exercicio {
     private final ExercicioId id;
     private String nome;

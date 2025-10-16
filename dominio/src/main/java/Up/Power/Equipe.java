@@ -1,5 +1,7 @@
 package Up.Power;
 
+import Up.Power.equipe.EquipeId;
+
 import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
