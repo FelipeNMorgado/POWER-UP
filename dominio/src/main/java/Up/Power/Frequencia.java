@@ -2,6 +2,7 @@ package Up.Power;
 
 import Up.Power.frequencia.FrequenciaId;
 import Up.Power.perfil.PerfilId;
+import Up.Power.planoTreino.PlanoTId;
 import Up.Power.treino.TreinoId;
 
 import java.time.LocalDateTime;
@@ -11,6 +12,7 @@ public class Frequencia {
     private PerfilId perfil;
     private TreinoId treino;
     private LocalDateTime dataDePresenca;
+    private PlanoTId planoTreino;
     private String foto;
 
     public Frequencia(FrequenciaId id, PerfilId perfil, TreinoId treino, LocalDateTime dataDePresenca) {
