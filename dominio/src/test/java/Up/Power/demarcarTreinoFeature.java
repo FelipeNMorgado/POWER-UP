@@ -1,7 +1,7 @@
 package Up.Power;
 
 import Up.Power.frequencia.*;
-import Up.Power.mocks.MockFrequencia;
+import Up.Power.mocks.FrequenciaMock;
 import Up.Power.perfil.PerfilId;
 import Up.Power.planoTreino.Dias;
 import Up.Power.planoTreino.PlanoTId;
@@ -26,7 +26,7 @@ public class demarcarTreinoFeature {
         frequenciaId = new FrequenciaId(1);
         treinoId = new TreinoId(1);
 
-        repositoryMock = new MockFrequencia(List.of());
+        repositoryMock = new FrequenciaMock(List.of());
         frequenciaService = new FrequenciaService(repositoryMock);
 
         planoTreino = new PlanoTreino(

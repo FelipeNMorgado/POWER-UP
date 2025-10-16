@@ -7,11 +7,11 @@ import Up.Power.frequencia.FrequenciaRepository;
 import java.time.LocalDateTime;
 import java.util.*;
 
-public class MockFrequencia implements FrequenciaRepository {
+public class FrequenciaMock implements FrequenciaRepository {
 
     private final Map<FrequenciaId, List<Frequencia>> banco;
 
-    public MockFrequencia(List<Frequencia> bancoEmMemoria) {
+    public FrequenciaMock(List<Frequencia> bancoEmMemoria) {
         this.banco = new HashMap<>();
 
         // Carrega lista inicial se houver

@@ -1,9 +1,14 @@
 Feature: Rivalidade
 
-  Scenario: Conseguir adicionar uma rivalidade
-    Given que o usuario possua uma amizade
-    When um usuário tentar iniciar uma rivalidade e ser aceito
-    Then  o sistema informa que a rivalidade comecou
+  Scenario: Aceitar um convite de rivalidade com sucesso
+    Given que "UsuarioUm" enviou um convite de rivalidade para "UsuarioDois"
+    When "UsuarioDois" aceita o convite
+    Then a rivalidade entre eles se torna ativa
+
+  Scenario: Recusar um convite de rivalidade
+    Given que "UsuarioUm" enviou um convite de rivalidade para "UsuarioDois"
+    When "UsuarioDois" recusa o convite
+    Then o status da rivalidade se torna "recusada"
 
   Scenario: Finalizar uma rivalidade
     Given que o usuário possua uma rivalidade ativa

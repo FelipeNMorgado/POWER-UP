@@ -9,6 +9,10 @@ public class ExercicioId {
         return id;
     }
 
+    public ExercicioId(int id) {
+        this.id = id;
+    }
+
     @Override
     public boolean equals(Object o) {
         if (o == null || getClass() != o.getClass()) return false;
