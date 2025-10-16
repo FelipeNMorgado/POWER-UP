@@ -236,6 +236,7 @@ BoundedContext PowerUp implements PowerUp{
             float distancia
             int repeticoes
             float peso
+            int serie
 
             Repository TreinoRepository {
                 void salvar(@Treino treino);
