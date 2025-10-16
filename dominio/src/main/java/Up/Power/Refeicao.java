@@ -8,13 +8,13 @@ import java.util.List;
 
 public class Refeicao {
     private RefeicaoId id;
-    private Tipo tipo;
+    private TipoRefeicao tipo;
     private List<AlimentoId> alimentos;
     private int caloriasTotais;
     private Date inicio;
     private Date fim;
 
-    public Refeicao(RefeicaoId id, Tipo tipo) {
+    public Refeicao(RefeicaoId id, TipoRefeicao tipo) {
         this.id = id;
         this.tipo = tipo;
         this.alimentos = new ArrayList<>();
@@ -23,7 +23,7 @@ public class Refeicao {
     public void adicionarAlimento(AlimentoId alimento) { this.alimentos.add(alimento); }
 
     public RefeicaoId getId() { return id; }
-    public Tipo getTipo() { return tipo; }
+    public TipoRefeicao getTipo() { return tipo; }
     public List<AlimentoId> getAlimentos() { return alimentos; }
     public int getCaloriasTotais() { return caloriasTotais; }
     public Date getInicio() { return inicio; }
