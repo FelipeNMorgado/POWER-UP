@@ -61,8 +61,6 @@ BoundedContext PowerUp implements PowerUp{
             - FrequenciaId id
             - PerfilId perfil
             - TreinoId treino
-            - Classificacao classificacao
-            String feedback
             DateTime dataDePresenca
             String foto
 
@@ -76,16 +74,38 @@ BoundedContext PowerUp implements PowerUp{
             int id
         }
 
-        enum Classificacao {
-            Cansado,
-            Bom,
-            Excelente,
-            ComDor
-        }
-
         Service FrequenciaService {
             List<@Frequencia> listarFrequencias(@PerfilId perfil, @FrequenciaId frequencia);
             int calcularFrequenciaCorrida(@PerfilId perfil, Date inicio, Date fim);
+        }
+    }
+
+    Aggregate Feedback {
+        Entity Feedback {
+            aggregateRoot
+            - FeedbackId id
+            - FrequenciaId frequencia
+            - Classificacao classificacao
+            String feedback
+
+            Repository FeedbackRepository {
+                void salvar(@Feedback feedback);
+                void deletar(@FeedbackId id);
+                List<@Feedback> listarFeedbacks(@FeedbackId feedback, @Email usuarioEmail);
+                @Feedback obter(@FeedbackId id);
+                void alterar(@FeedbackId id);
+            }
+        }
+
+        ValueObject FeedbackId {
+            int id
+        }
+
+        enum Classificacao {
+            Cansado,
+            ComDor,
+            Bom,
+            Excelente
         }
     }
 
