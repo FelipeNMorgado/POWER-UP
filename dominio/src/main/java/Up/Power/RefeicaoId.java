@@ -3,7 +3,7 @@ package Up.Power;
 import java.util.Objects;
 
 public class RefeicaoId {
-    private int id;
+    private final int id;
 
     public RefeicaoId(int id) { this.id = id; }
     public int getId() { return id; }
