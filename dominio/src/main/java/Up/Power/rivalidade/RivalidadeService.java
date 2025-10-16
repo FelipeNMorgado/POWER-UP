@@ -1,4 +1,4 @@
-package Up.Power;
+package Up.Power.rivalidade;
 
 import Up.Power.perfil.PerfilId;
 

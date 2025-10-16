@@ -1,6 +1,8 @@
 package Up.Power;
 
 import Up.Power.alimento.AlimentoId;
+import Up.Power.refeicao.RefeicaoId;
+import Up.Power.refeicao.TipoRefeicao;
 
 import java.util.ArrayList;
 import java.util.Date;

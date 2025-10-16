@@ -2,6 +2,7 @@ package Up.Power;
 
 import Up.Power.conquista.ConquistaId;
 import Up.Power.exercicio.ExercicioId;
+import Up.Power.treino.TreinoId;
 
 public class Conquista {
     private ConquistaId id;

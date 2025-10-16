@@ -1,4 +1,4 @@
-package Up.Power;
+package Up.Power.refeicao;
 
 public enum TipoRefeicao {
     CafeDaManha,

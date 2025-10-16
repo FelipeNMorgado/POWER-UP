@@ -1,12 +1,12 @@
-package Up.Power;
+package Up.Power.planoTreino;
 
 import java.util.Objects;
 
-public class TreinoId {
+public class PlanoTId {
     private int id;
 
-    public TreinoId(int id) {
-        this.id = id;
+    public PlanoTId(int id){
+        this.id=id;
     }
 
     public int getId() {
@@ -16,12 +16,13 @@ public class TreinoId {
     @Override
     public boolean equals(Object o) {
         if (o == null || getClass() != o.getClass()) return false;
-        TreinoId treinoId = (TreinoId) o;
-        return id == treinoId.id;
+        PlanoTId planoTId = (PlanoTId) o;
+        return id == planoTId.id;
     }
 
     @Override
     public int hashCode() {
         return Objects.hashCode(id);
     }
+
 }

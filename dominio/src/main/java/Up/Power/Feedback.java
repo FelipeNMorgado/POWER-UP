@@ -1,5 +1,6 @@
 package Up.Power;
 
+import Up.Power.feedback.Classificacao;
 import Up.Power.feedback.FeedbackId;
 import Up.Power.frequencia.FrequenciaId;
 

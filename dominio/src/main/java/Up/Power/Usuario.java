@@ -5,7 +5,7 @@ import java.time.LocalDate;
 public class Usuario {
 
     private Email usuarioEmail;
-    private CodigoAmizade codigoAmizade;
+    private AmizadeId amizadeId;
     private String nome;
     private String senha;
     private java.time.LocalDate dataNascimento;
@@ -21,8 +21,8 @@ public class Usuario {
         return usuarioEmail;
     }
 
-    public CodigoAmizade getCodigoAmizade() {
-        return codigoAmizade;
+    public AmizadeId getCodigoAmizade() {
+        return amizadeId;
     }
 
     public String getNome() {
@@ -37,8 +37,8 @@ public class Usuario {
         return dataNascimento;
     }
 
-    public void setCodigoAmizade(CodigoAmizade codigoAmizade) {
-        this.codigoAmizade = codigoAmizade;
+    public void setCodigoAmizade(AmizadeId amizadeId) {
+        this.amizadeId = amizadeId;
     }
 
     public void setNome(String nome) {

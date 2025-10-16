@@ -1,11 +1,14 @@
 package Up.Power;
 
+import Up.Power.planoNutricional.Objetivo;
 import Up.Power.planoNutricional.PlanoNId;
+import Up.Power.refeicao.RefeicaoId;
 
 import java.util.ArrayList;
 import java.util.List;
 
 public class PlanoNutricional {
+    private EstadoPlano estado;
     private PlanoNId id;
     private Objetivo objetivo;
     private List<RefeicaoId> refeicoes;
@@ -15,6 +18,7 @@ public class PlanoNutricional {
     public PlanoNutricional(PlanoNId id, Objetivo objetivo) {
         this.id = id;
         this.objetivo = objetivo;
+        this.estado = EstadoPlano.Ativo;
         this.refeicoes = new ArrayList<>();
     }
 

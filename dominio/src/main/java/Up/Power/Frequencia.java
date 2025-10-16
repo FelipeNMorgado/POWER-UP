@@ -2,6 +2,7 @@ package Up.Power;
 
 import Up.Power.frequencia.FrequenciaId;
 import Up.Power.perfil.PerfilId;
+import Up.Power.treino.TreinoId;
 
 import java.time.LocalDateTime;
 

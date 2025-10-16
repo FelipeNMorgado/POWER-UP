@@ -1,6 +1,7 @@
 package Up.Power;
 
 import Up.Power.alimento.AlimentoId;
+import Up.Power.alimento.Categoria;
 
 public class Alimento {
     private AlimentoId alimento;

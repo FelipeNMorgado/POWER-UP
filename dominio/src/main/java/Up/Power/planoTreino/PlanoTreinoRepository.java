@@ -1,4 +1,6 @@
-package Up.Power;
+package Up.Power.planoTreino;
+
+import Up.Power.PlanoTreino;
 
 import java.util.List;
 

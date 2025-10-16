@@ -2,6 +2,7 @@ package Up.Power;
 
 import Up.Power.exercicio.ExercicioId;
 import Up.Power.perfil.PerfilId;
+import Up.Power.rivalidade.RivalidadeId;
 
 import java.time.LocalDateTime;
 

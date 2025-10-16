@@ -1,6 +1,9 @@
 package Up.Power;
 
 import java.time.LocalDateTime;
+import Up.Power.exercicio.ExercicioId;
+import Up.Power.treino.TipoTreino;
+import Up.Power.treino.TreinoId;
 
 public class Treino {
     private final TreinoId id;

@@ -1,5 +1,8 @@
 package Up.Power;
 
+import Up.Power.planoTreino.Dias;
+import Up.Power.planoTreino.PlanoTId;
+
 import java.util.ArrayList;
 import java.util.List;
 

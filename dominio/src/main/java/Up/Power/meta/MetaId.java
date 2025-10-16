@@ -1,4 +1,4 @@
-package Up.Power;
+package Up.Power.meta;
 
 import java.util.Objects;
 

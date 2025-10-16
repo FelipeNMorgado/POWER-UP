@@ -1,4 +1,4 @@
-package Up.Power;
+package Up.Power.feedback;
 
 public enum Classificacao {
     Cansado,

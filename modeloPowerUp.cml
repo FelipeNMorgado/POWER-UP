@@ -5,7 +5,7 @@ BoundedContext PowerUp implements PowerUp{
         Entity Usuario {
             aggregateRoot
             - Email usuarioEmail
-            - CodigoAmizade codigoAmizade
+            - AmizadeId amizadeId
             String nome
             String senha
             DateTime dataNascimento
@@ -20,7 +20,7 @@ BoundedContext PowerUp implements PowerUp{
             String caracteres
         }
 
-        ValueObject CodigoAmizade {
+        ValueObject AmizadeId {
             int codigo
         }
     }
@@ -130,6 +130,7 @@ BoundedContext PowerUp implements PowerUp{
     Aggregate PlanoNutricional {
         Entity PlanoNutricional {
             aggregateRoot
+            - Estado estado
             - PlanoNId id
             - Objetivo objetivo
             - List<@RefeicaoId> refeicoes

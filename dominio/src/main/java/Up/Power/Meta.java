@@ -1,6 +1,8 @@
 package Up.Power;
 
 import Up.Power.exercicio.ExercicioId;
+import Up.Power.meta.MetaId;
+import Up.Power.treino.TreinoId;
 
 import java.util.Date;
 

@@ -1,9 +1,9 @@
 package Up.Power;
 
-public final class CodigoAmizade {
+public final class AmizadeId {
     private final int codigo;
 
-    public CodigoAmizade(int codigo) {
+    public AmizadeId(int codigo) {
         this.codigo = codigo;
     }
 
@@ -15,7 +15,7 @@ public final class CodigoAmizade {
     public boolean equals(Object obj) {
         if (this == obj) return true;
         if (obj == null || getClass() != obj.getClass()) return false;
-        CodigoAmizade that = (CodigoAmizade) obj;
+        AmizadeId that = (AmizadeId) obj;
         return codigo == that.codigo;
     }
 

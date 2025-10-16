@@ -1,4 +1,6 @@
-package Up.Power;
+package Up.Power.treino;
+
+import Up.Power.Treino;
 
 import java.util.List;
 

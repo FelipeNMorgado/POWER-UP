@@ -1,4 +1,4 @@
-package Up.Power;
+package Up.Power.alimento;
 
 public enum Categoria {
     Gordura,

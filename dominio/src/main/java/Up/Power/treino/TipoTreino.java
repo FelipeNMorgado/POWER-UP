@@ -1,4 +1,4 @@
-package Up.Power;
+package Up.Power.treino;
 
 public enum TipoTreino {
     Cardio,
