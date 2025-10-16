@@ -2,10 +2,18 @@ package Up.Power.avatar;
 
 import Up.Power.perfil.PerfilId;
 
-public interface AvatarService {
-    int forca(PerfilId perfil);
-    int resistencia(PerfilId perfil);
-    int agilidade(PerfilId perfil);
+public class AvatarService {
+    int forca(PerfilId perfil) {
+        return 0;
+    }
+
+    int resistencia(PerfilId perfil) {
+        return 0;
+    }
+
+    int agilidade(PerfilId perfil) {
+        return 0;
+    }
 }
 
 

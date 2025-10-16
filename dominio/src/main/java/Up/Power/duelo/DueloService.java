@@ -2,8 +2,10 @@ package Up.Power.duelo;
 
 import Up.Power.avatar.AvatarId;
 
-public interface DueloService {
-    String resultado(AvatarId avatar1, AvatarId avatar2);
+public class DueloService {
+    String resultado(AvatarId avatar1, AvatarId avatar2) {
+        return null;
+    }
 }
 
 
