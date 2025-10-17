@@ -1,8 +1,10 @@
 package Up.Power.mocks;
 
 import Up.Power.Rivalidade;
+import Up.Power.perfil.PerfilId;
 import Up.Power.rivalidade.RivalidadeId;
 import Up.Power.rivalidade.RivalidadeRepository;
+import Up.Power.rivalidade.StatusRivalidade;
 
 import java.util.*;
 import java.util.concurrent.atomic.AtomicInteger;
@@ -20,6 +22,21 @@ public class RivalidadeMock implements RivalidadeRepository {
     public RivalidadeMock() {
         this.bancoEmMemoria = new HashMap<>();
         this.sequence = new AtomicInteger(0); // Começa em 0, o primeiro ID será 1.
+    }
+
+    @Override
+    public boolean existsActiveRivalryForPerfil(PerfilId perfilId) {
+        // Itera sobre todas as rivalidades salvas
+        for (Rivalidade r : bancoEmMemoria.values()) {
+            // Verifica se a rivalidade está ATIVA
+            if (r.getStatus() == StatusRivalidade.ATIVA) {
+                // Verifica se o perfilId é um dos participantes
+                if (r.getPerfil1().equals(perfilId) || r.getPerfil2().equals(perfilId)) {
+                    return true; // Encontrou! Retorna true.
+                }
+            }
+        }
+        return false; // Não encontrou nenhuma rivalidade ativa para este perfil.
     }
 
     @Override

@@ -17,11 +17,17 @@ public class RivalidadeService {
     }
 
     public Rivalidade enviarConviteRivalidade(PerfilId idPerfil1, PerfilId idPerfil2, ExercicioId exercicioId) {
-        // ... (toda a lógica de validação de amizade que já fizemos)
+        if (rivalidadeRepository.existsActiveRivalryForPerfil(idPerfil1)) {
+            throw new IllegalStateException("O solicitante já está em uma rivalidade ativa.");
+        }
+        if (rivalidadeRepository.existsActiveRivalryForPerfil(idPerfil2)) {
+            throw new IllegalStateException("O usuário desafiado já está em uma rivalidade ativa.");
+        }
+
+
 
         // Cria uma rivalidade com o status PENDENTE
         Rivalidade novoConvite = new Rivalidade(idPerfil1, idPerfil2, exercicioId);
-
         return rivalidadeRepository.save(novoConvite);
     }
 
@@ -56,4 +62,24 @@ public class RivalidadeService {
         rivalidade.recusar();
         return rivalidadeRepository.save(rivalidade);
     }
+
+    public Rivalidade finalizarRivalidade(RivalidadeId rivalidadeId, PerfilId idUsuarioQueFinalizou) {
+        Rivalidade rivalidade = rivalidadeRepository.findById(rivalidadeId)
+                .orElseThrow(() -> new IllegalArgumentException("Rivalidade não encontrada."));
+
+        // VERIFICAÇÃO DE SEGURANÇA: Garante que quem está finalizando é um dos participantes.
+        boolean isParticipante = rivalidade.getPerfil1().equals(idUsuarioQueFinalizou) ||
+                rivalidade.getPerfil2().equals(idUsuarioQueFinalizou);
+
+        if (!isParticipante) {
+            throw new SecurityException("Usuário não autorizado a finalizar esta rivalidade.");
+        }
+
+        // Delega a mudança de estado para a própria entidade
+        rivalidade.finalizar();
+
+        // Salva a alteração
+        return rivalidadeRepository.save(rivalidade);
+    }
+
 }

@@ -28,23 +28,12 @@ public class Rivalidade {
         // 'inicio' e 'fim' continuam nulos por enquanto
     }
 
-    // Getters
-    public RivalidadeId getId() { return id; }
-    public PerfilId getPerfil1() { return perfil1; }
-    public PerfilId getPerfil2() { return perfil2; }
-    public StatusRivalidade getStatus() { return status; }
-    public LocalDateTime getInicio() { return inicio; }
-    // ... outros getters
-
-    // Setters para controle de estado (usados pelo Service)
-    public void setId(RivalidadeId id) { this.id = id; }
-
-    public void aceitar() {
-        if (this.status == StatusRivalidade.PENDENTE) {
-            this.status = StatusRivalidade.ATIVA;
-            this.inicio = LocalDateTime.now(); // A rivalidade começa AGORA
+    public void finalizar() {
+        if (this.status == StatusRivalidade.ATIVA) {
+            this.status = StatusRivalidade.FINALIZADA;
+            this.fim = LocalDateTime.now(); // Marca a data/hora de finalização
         } else {
-            throw new IllegalStateException("Só é possível aceitar um convite com status PENDENTE.");
+            throw new IllegalStateException("Só é possível finalizar uma rivalidade que está ATIVA.");
         }
     }
 
@@ -55,4 +44,38 @@ public class Rivalidade {
             throw new IllegalStateException("Só é possível recusar um convite com status PENDENTE.");
         }
     }
+
+    public void aceitar() {
+        if (this.status == StatusRivalidade.PENDENTE) {
+            this.status = StatusRivalidade.ATIVA;
+            this.inicio = LocalDateTime.now(); // A rivalidade começa AGORA
+        } else {
+            throw new IllegalStateException("Só é possível aceitar um convite com status PENDENTE.");
+        }
+    }
+
+    // Getters
+    public RivalidadeId getId() { return id; }
+    public PerfilId getPerfil1() { return perfil1; }
+    public PerfilId getPerfil2() { return perfil2; }
+    public StatusRivalidade getStatus() { return status; }
+    public LocalDateTime getInicio() { return inicio; }
+
+    public ExercicioId getExercicio() {
+        return exercicio;
+    }
+
+    public LocalDateTime getDataConvite() {
+        return dataConvite;
+    }
+
+    public LocalDateTime getFim() {
+        return fim;
+    }
+    // ... outros getters
+
+    // Setters para controle de estado (usados pelo Service)
+    public void setId(RivalidadeId id) { this.id = id; }
+
+
 }

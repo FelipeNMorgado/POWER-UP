@@ -12,8 +12,8 @@ Feature: Rivalidade
 
   Scenario: Finalizar uma rivalidade
     Given que o usuário possua uma rivalidade ativa
-    When um usuário optar por finalizar uma rivalidade
-    Then o sistema informa que a rivalidade finalizou
+    When um usuário optar por finalizar uma rivalidade antes do tempo
+    Then o status da rivalidade se torna "finalizada"
 
   Scenario: Nao  conseguir iniciar  uma rivalidade
     Given que o usuário possua uma amizade que já está em uma rivalidade
