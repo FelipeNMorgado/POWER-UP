@@ -81,6 +81,7 @@ BoundedContext PowerUp implements PowerUp{
             - FeedbackId id
             - FrequenciaId frequencia
             - Classificacao classificacao
+            - Email usuarioEmail
             String feedback
 
             Repository FeedbackRepository {
