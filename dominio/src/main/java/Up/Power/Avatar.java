@@ -26,6 +26,18 @@ public class Avatar {
     public int getNivel() { return nivel; }
     public int getExperiencia() { return experiencia; }
     public int getDinheiro() { return dinheiro; }
+
+    public void setNivel(int nivel) {
+        this.nivel = nivel;
+    }
+
+    public void setExperiencia(int experiencia) {
+        this.experiencia = experiencia;
+    }
+
+    public void setPerfil(PerfilId perfil) {
+        this.perfil = perfil;
+    }
 }
 
 

@@ -1,19 +1,28 @@
 package Up.Power.avatar;
 
-import Up.Power.perfil.PerfilId;
+import Up.Power.Avatar;
+import Up.Power.avatar.AvatarRepository;
+import java.util.NoSuchElementException;
 
 public class AvatarService {
-    int forca(PerfilId perfil) {
-        return 0;
+    private final AvatarRepository avatarRepository;
+
+    public AvatarService(AvatarRepository avatarRepository) { this.avatarRepository = avatarRepository; }
+
+    private Avatar getAvatar(AvatarId avatarId) {
+        return avatarRepository.findById(avatarId)
+                .orElseThrow(() -> new NoSuchElementException("Avatar não encontrado: " + avatarId));
     }
 
-    int resistencia(PerfilId perfil) {
-        return 0;
+    public int getForca(AvatarId avatarId) {
+        return getAvatar(avatarId).getNivel() * 2; // Exemplo de cálculo
     }
 
-    int agilidade(PerfilId perfil) {
-        return 0;
+    public int getResistencia(AvatarId avatarId) {
+        return getAvatar(avatarId).getNivel() * 3; // Exemplo de cálculo
+    }
+
+    public int getAgilidade(AvatarId avatarId) {
+        return getAvatar(avatarId).getNivel(); // Exemplo de cálculo
     }
 }
-
-
