@@ -3,7 +3,6 @@ package Up.Power.frequencia;
 import Up.Power.Frequencia;
 import Up.Power.perfil.PerfilId;
 import Up.Power.treino.TreinoId;
-
 import java.time.LocalDateTime;
 import java.util.Optional;
 
@@ -16,9 +15,21 @@ public class FrequenciaService {
         this.repository = repository;
     }
 
-    // 🏋️ Registra presença (demarca treino)
     public void registrarPresenca(FrequenciaId frequenciaId, PerfilId perfilId, TreinoId treinoId) {
+        registrarPresencaComFoto(frequenciaId, perfilId, treinoId, null);
+    }
+
+    public void registrarPresencaComFoto(FrequenciaId frequenciaId, PerfilId perfilId, TreinoId treinoId, String fotoBase64) {
         Frequencia frequencia = new Frequencia(frequenciaId, perfilId, treinoId, LocalDateTime.now());
+
+        // Se houver foto, adiciona
+        if (fotoBase64 != null && !fotoBase64.isBlank()) {
+            frequencia.setFoto(fotoBase64);
+            System.out.println("Foto adicionada à frequência.");
+        } else {
+            System.out.println("Nenhuma foto enviada, presença registrada normalmente.");
+        }
+
         repository.salvar(frequencia);
         contagemSemanal++;
     }
@@ -26,6 +37,7 @@ public class FrequenciaService {
     public void registrarAusencia(FrequenciaId frequenciaId) {
         Frequencia freq = repository.obterFrequencia(frequenciaId, LocalDateTime.now());
         if (freq != null) {
+            // Poderia registrar a ausência explicitamente aqui, se quiser no futuro.
         }
         contagemSemanal = 0;
     }

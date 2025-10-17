@@ -98,4 +98,20 @@ public class demarcarTreinoFeature {
         assertEquals(0, frequenciaService.getContagemSemanal());
         System.out.println("Contagem zerada.");
     }
+
+    @Quando("o usuário tentar demarcar sua frequência com foto")
+    public void o_usuario_tentar_demarcar_sua_frequencia_com_foto() {
+        String fotoFake = "base64ImagemSimulada123==";
+        frequenciaService.registrarPresencaComFoto(frequenciaId, perfilId, treinoId, fotoFake);
+        System.out.println("Frequência registrada com foto!");
+    }
+
+    @Entao("o sistema registra a presença")
+    public void o_sistema_registra_a_presenca_com_a_foto_anexada() {
+        var freq = ((FrequenciaMock) repositoryMock).obterFrequencia(frequenciaId, java.time.LocalDateTime.now());
+        assertNotNull(freq);
+        assertNotNull(freq.getFoto());
+        System.out.println("Foto anexada: " + freq.getFoto());
+    }
+
 }

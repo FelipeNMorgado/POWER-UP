@@ -16,3 +16,8 @@ Feature: Organizar e demarcar frequência de treino
         When o usuário não marcar presença em um dia específico
         Then o sistema informa que o usuário não foi à academia
         And zera a contagem de treinos em sequência
+
+    Scenario: Conseguir demarcar frequência com foto
+        Given que o sistema possua um usuário criado
+        When o usuário tentar demarcar sua frequência com foto
+        Then o sistema registra a presença
