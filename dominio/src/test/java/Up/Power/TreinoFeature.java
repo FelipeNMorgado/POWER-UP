@@ -130,8 +130,8 @@ public class TreinoFeature {
         // sem ação extra, apenas consulta
     }
 
-    @Entao("o sistema lista as rotinas e exibe os detalhes de cada exercício (carga, repetição e descanso)")
-    public void lista_rotinas_com_detalhes() {
+    @Entao("o sistema lista as rotinas e exibe os detalhes de cada exercício \\(carga, repetição e descanso)")
+    public void o_sistema_lista_as_rotinas_e_exibe_os_detalhes_de_cada_exercício_carga_repetição_e_descanso() {
         assertFalse(planoRepo.listar(null).isEmpty());
         Treino t = plano.getTreinos().get(0);
         assertEquals(30f, t.getPeso());
