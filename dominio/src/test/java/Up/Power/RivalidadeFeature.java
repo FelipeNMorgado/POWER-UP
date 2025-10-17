@@ -20,26 +20,21 @@ import static org.junit.jupiter.api.Assertions.*;
 
 public class RivalidadeFeature {
 
-    // Repositórios "falsos" (em memória)
     private PerfilRepository perfilRepositoryMock;
     private RivalidadeRepository rivalidadeRepositoryMock;
 
-    // O serviço que será testado
     private RivalidadeService rivalidadeService;
 
-    // Variáveis para guardar o estado do cenário
     private Map<String, Perfil> perfis = new HashMap<>();
     private Rivalidade conviteDeRivalidade;
     private Rivalidade rivalidadeAtualizada;
     private Rivalidade rivalidadeAtiva;
     private Exception excecaoOcorrida;
-
-    private Perfil perfilSolicitante; // Para o novo cenário
+    private Perfil perfilSolicitante;
     private Perfil perfilOcupado;
 
     @Dado("que {string} enviou um convite de rivalidade para {string}")
     public void que_enviou_um_convite_de_rivalidade_para(String nomeUsuario1, String nomeUsuario2) {
-        // 1. Inicializa os repositórios em memória e o serviço
         this.perfilRepositoryMock = new PerfilMock();
         this.rivalidadeRepositoryMock = new RivalidadeMock();
         this.rivalidadeService = new RivalidadeService(rivalidadeRepositoryMock ,perfilRepositoryMock);
