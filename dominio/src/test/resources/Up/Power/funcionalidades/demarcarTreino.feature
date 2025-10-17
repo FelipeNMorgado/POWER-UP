@@ -21,3 +21,4 @@ Feature: Organizar e demarcar frequência de treino
         Given que o sistema possua um usuário criado
         When o usuário tentar demarcar sua frequência com foto
         Then o sistema registra a presença
+        And adiciona um dia a mais na contagem de treinos da semana
