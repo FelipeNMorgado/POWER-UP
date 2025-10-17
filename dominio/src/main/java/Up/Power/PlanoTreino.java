@@ -13,6 +13,7 @@ public class PlanoTreino {
     private List<Treino> treinos;
     private List<Dias> dias;
     private String nome;
+    private float recordeCarga = 0f;
 
     public PlanoTreino(PlanoTId id, Email usuarioEmail, String nome) {
         this.id = id;
@@ -50,7 +51,31 @@ public class PlanoTreino {
         }
     }
 
+    public boolean estaProgredindo() {
+        if (treinos.size() < 2) return false;
+
+        Treino ultimo = treinos.get(treinos.size() - 1);
+        Treino anterior = treinos.get(treinos.size() - 2);
+
+        // verifica se é o mesmo exercício e o peso aumentou
+        return ultimo.getExercicio().equals(anterior.getExercicio()) &&
+                ultimo.getPeso() > anterior.getPeso();
+    }
+
+    public boolean atualizarRecorde(Treino treino) {
+        if (treino.getPeso() > recordeCarga) {
+            recordeCarga = treino.getPeso();
+            System.out.println("🏆 Novo recorde! " + recordeCarga + " kg no exercício " + treino.getExercicio());
+            return true;
+        }
+        return false;
+    }
+
+
     // Getters
+    public float getRecordeCarga() {
+        return recordeCarga;
+    }
     public PlanoTId getId() { return id; }
     public Email getUsuarioEmail() { return usuarioEmail; }
     public EstadoPlano getEstadoPlano() { return estado; }

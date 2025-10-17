@@ -11,7 +11,7 @@ public class Exercicio {
         this.nome = nome;
     }
 
-    public ExercicioId getId() {
+    public ExercicioId getId(int i) {
         return id;
     }
 
