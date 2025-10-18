@@ -29,6 +29,15 @@ public class PlanoNutricional {
     public List<RefeicaoId> getRefeicoes() { return refeicoes; }
     public int getCaloriasTotais() { return caloriasTotais; }
     public int getCaloriasObjetivo() { return caloriasObjetivo; }
+
+    public void definirCaloriasObjetivo(int calorias) {
+        this.caloriasObjetivo = calorias;
+    }
+
+    public void adicionarRefeicaoList(List<RefeicaoId> refeicoes) {
+        this.refeicoes.addAll(refeicoes);
+    }
+
 }
 
 

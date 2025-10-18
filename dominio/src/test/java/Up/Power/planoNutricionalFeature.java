@@ -9,22 +9,24 @@ public class planoNutricionalFeature {
 
     private PlanoNutricional planoNutricional;
     private PlanoNutricionalRepository repository;
+    private PlanoNutricionalService service;
     private PlanoNId id;
     private Objetivo objetivo;
     private String mensagem;
 
+    // ========================= Cenário 1 =========================
     @Given("que um usuario criou seu plano nutricional e esta tudo preenchido")
     public void criar_plano_completo() {
         id = new PlanoNId(1);
         objetivo = Objetivo.Bulking;
-        planoNutricional = new PlanoNutricional(id, objetivo);
         repository = new PlanoNutricionalMock();
+        service = new PlanoNutricionalService(repository);
     }
 
     @When("o usuario tentar salva-lo")
     public void salvar_plano() {
         try {
-            repository.salvar(planoNutricional);
+            service.criarPlano(id, objetivo);
             mensagem = "Plano salvo com sucesso";
         } catch (Exception e) {
             mensagem = e.getMessage();
@@ -39,18 +41,23 @@ public class planoNutricionalFeature {
         Assert.assertEquals("Plano salvo com sucesso", mensagem);
     }
 
+    // ========================= Cenário 2 =========================
     @Given("que um usuario tenha um plano nutricional salvo e deseja edita-lo")
     public void plano_salvo_para_edicao() {
         repository = new PlanoNutricionalMock();
+        service = new PlanoNutricionalService(repository);
         planoNutricional = new PlanoNutricional(new PlanoNId(2), Objetivo.Cutting);
         repository.salvar(planoNutricional);
     }
 
     @When("o usario fizer alteracoes no plano e confirmar as mudancas")
     public void editar_plano() {
-        planoNutricional = new PlanoNutricional(planoNutricional.getId(), Objetivo.Bulking);
-        repository.salvar(planoNutricional);
-        mensagem = "Plano alterado com sucesso";
+        try {
+            service.modificarPlano(planoNutricional.getId(), Objetivo.Bulking, 3000);
+            mensagem = "Plano alterado com sucesso";
+        } catch (Exception e) {
+            mensagem = e.getMessage();
+        }
     }
 
     @Then("o sistema ira salvar as alteracoes feitas e mostrar a versao atualizada para o usario")
@@ -60,9 +67,11 @@ public class planoNutricionalFeature {
         Assert.assertEquals("Plano alterado com sucesso", mensagem);
     }
 
+    // ========================= Cenário 3 =========================
     @Given("o usuario tem um plano nutricional salvo")
     public void usuario_tem_plano() {
         repository = new PlanoNutricionalMock();
+        service = new PlanoNutricionalService(repository);
         planoNutricional = new PlanoNutricional(new PlanoNId(3), Objetivo.Cutting);
         repository.salvar(planoNutricional);
     }
@@ -70,8 +79,7 @@ public class planoNutricionalFeature {
     @When("o usauario tentar colocar campos obricatorios em branco")
     public void tentar_colocar_campos_em_branco() {
         try {
-            planoNutricional = new PlanoNutricional(new PlanoNId(3), null);
-            repository.salvar(planoNutricional);
+            service.criarPlano(new PlanoNId(3), null);
         } catch (Exception e) {
             mensagem = e.getMessage();
         }
@@ -82,9 +90,11 @@ public class planoNutricionalFeature {
         Assert.assertEquals("Campos obrigatórios em branco", mensagem);
     }
 
+    // ========================= Cenário 4 =========================
     @Given("que o usuário possua um plano nutricional ativo")
     public void plano_ativo() {
         repository = new PlanoNutricionalMock();
+        service = new PlanoNutricionalService(repository);
         planoNutricional = new PlanoNutricional(new PlanoNId(4), Objetivo.Bulking);
         repository.salvar(planoNutricional);
     }
@@ -92,7 +102,8 @@ public class planoNutricionalFeature {
     @When("o usuario tentar modificar um campo especifico com valores nao esperados")
     public void modificar_com_valores_invalidos() {
         try {
-            throw new IllegalArgumentException("Valor inválido para atributo");
+            // simulando alteração inválida (por exemplo, calorias negativas)
+            service.modificarPlano(planoNutricional.getId(), Objetivo.Bulking, -500);
         } catch (Exception e) {
             mensagem = e.getMessage();
         }
