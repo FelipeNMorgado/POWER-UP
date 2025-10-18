@@ -139,20 +139,15 @@ public class DueloFeature {
 
     @Entao("o sistema informa que é impossível duelar no momento")
     public void o_sistema_informa_que_e_impossivel_duelar_no_momento() {
-        // 1. Verifica se a exceção esperada realmente aconteceu.
         assertNotNull(excecaoOcorrida, "Uma exceção deveria ter sido lançada devido ao cooldown, mas não foi.");
 
-        // 2. Verifica se a exceção é do tipo correto.
         assertInstanceOf(IllegalStateException.class, excecaoOcorrida, "A exceção deveria ser do tipo 'IllegalStateException'.");
 
-        // 3. Verifica se a mensagem de erro é a correta, confirmando que a regra de cooldown foi acionada.
-        // A nossa mensagem no serviço calcula os dias restantes.
         assertTrue(
                 excecaoOcorrida.getMessage().contains("dias para desafiar este amigo novamente"),
                 "A mensagem de erro não corresponde à regra de cooldown."
         );
 
-        // 4. (Opcional, mas recomendado) Garante que nenhum novo duelo foi criado
         long totalDeDuelos = ((DueloMock) dueloRepositoryMock).findAll().size();
         assertEquals(1, totalDeDuelos, "Nenhum novo duelo deveria ter sido salvo no banco.");
 
