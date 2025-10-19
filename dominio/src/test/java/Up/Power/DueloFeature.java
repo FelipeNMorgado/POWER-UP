@@ -30,7 +30,7 @@ public class DueloFeature {
     private Duelo dueloResultado;
     private Exception excecaoOcorrida;
 
-    @Dado("que um usuario não tenha feito um deulo contra o amigo desafidado na semana")
+    @Dado("que um usuario não tenha feito um duelo contra o amigo desafidado na semana")
     public void que_um_usuario_nao_tenha_feito_um_duelo_na_semana() {
         perfilRepositoryMock = new PerfilMock();
         avatarRepositoryMock = new AvatarMock();
