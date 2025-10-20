@@ -126,6 +126,18 @@ BoundedContext PowerUp implements PowerUp{
         ValueObject EquipeId {
             int id
         }
+
+        Service EquipeService {
+            @Equipe criarEquipe(@EquipeId id, String nome, @Email usuarioAdm);
+            void adicionarMembro(@EquipeId equipeId, @Email novoMembro);
+            void removerMembro(@EquipeId equipeId, @Email membro);
+            void atualizarInformacoes(@EquipeId equipeId, String nome, String descricao, String foto);
+            void definirPeriodo(@EquipeId equipeId, Date inicio, Date fim);
+            @Equipe obterEquipe(@EquipeId equipeId);
+            List<@Equipe> listarEquipes(@EquipeId equipeId);
+            boolean isLider(@EquipeId equipeId, @Email usuario);
+            boolean isMembro(@EquipeId equipeId, @Email usuario);
+        }
     }
 
     Aggregate PlanoNutricional {
@@ -240,6 +252,21 @@ BoundedContext PowerUp implements PowerUp{
 
         ValueObject PlanoTId {
             int id
+        }
+
+        Service PlanoTreinoService {
+            @PlanoTreino criarPlanoTreino(@PlanoTId id, @Email usuarioEmail, String nome);
+            void salvarPlanoTreino(@PlanoTreino plano);
+            void adicionarTreino(@PlanoTId planoTId, @Treino treino);
+            void removerTreino(@PlanoTId planoTId, @Treino treino);
+            void adicionarDia(@PlanoTId planoTId, @Dias dia);
+            void atualizarTreino(@PlanoTId planoTId, @Treino treinoAntigo, @Treino treinoNovo);
+            void alterarEstadoPlano(@PlanoTId planoTId, @Estado estado);
+            @PlanoTreino obterPlanoTreino(@PlanoTId planoTId);
+            List<@PlanoTreino> listarPlanosTreino(@PlanoTId planoTId);
+            void excluirPlanoTreino(@PlanoTId planoTId);
+            boolean verificarProgressao(@PlanoTId planoTId);
+            boolean atualizarRecorde(@PlanoTId planoTId, @Treino treino);
         }
     }
 

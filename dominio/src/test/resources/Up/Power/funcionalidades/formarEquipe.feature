@@ -32,3 +32,33 @@ Feature: Formação de equipes
     Given que a equipe tenha mais de um membro
     When o sistema exibir o painel da equipe
     Then os membros poderão visualizar e comparar seus desempenhos
+
+  Scenario: Definir período de funcionamento da equipe
+    Given que o usuário seja líder ou administrador
+    When ele definir o período de funcionamento da equipe
+    Then o sistema registra as datas de início e fim
+    And a equipe fica ativa no período especificado
+
+  Scenario: Listar equipes do usuário
+    Given que o usuário tenha múltiplas equipes
+    When ele solicitar a listagem de suas equipes
+    Then o sistema retorna todas as equipes do usuário
+    And exibe informações básicas de cada equipe
+
+  Scenario: Verificar liderança em equipe
+    Given que o usuário seja líder de uma equipe
+    When ele verificar seu status de liderança
+    Then o sistema confirma que ele é líder
+    And permite acesso a funcionalidades administrativas
+
+  Scenario: Verificar liderança de membro comum
+    Given que o usuário seja apenas membro de uma equipe
+    When ele verificar seu status de liderança
+    Then o sistema confirma que ele não é líder
+    And restringe acesso a funcionalidades administrativas
+
+  Scenario: Gerenciar período de equipe com datas inválidas
+    Given que o usuário seja líder ou administrador
+    When ele tentar definir período com data fim anterior à data início
+    Then o sistema impede a operação
+    And exibe mensagem de erro sobre datas inválidas
