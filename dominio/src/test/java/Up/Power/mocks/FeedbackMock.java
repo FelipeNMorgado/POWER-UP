@@ -74,4 +74,15 @@ public class FeedbackMock implements FeedbackRepository {
         banco.clear();
         System.out.println("Banco de Feedback Mock limpo.");
     }
+
+    @Override
+    public Feedback obterPorData(Date data) {
+        for (Feedback f : banco.values()) {
+            if (f.getData().equals(data)) {
+                return f;
+            }
+        }
+        return null;
+    }
+
 }

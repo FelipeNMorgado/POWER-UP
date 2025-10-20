@@ -17,3 +17,8 @@ Feature: Feedback do Treino
     Given que um usuário possua uma descrição em um treino
     When um usuário optar por excluir essa descrição
     Then o sistema informa que o treino deixou de ter a descrição anterior
+
+  Scenario: Não conseguir adicionar mais de um feedback
+    Given que um usuário já tenha um feedback em um treino
+    When um usuário optar por adicionar outro feedback a esse mesmo treino
+    Then o sistema informa que não é possível adicionar mais de um feedback por treino

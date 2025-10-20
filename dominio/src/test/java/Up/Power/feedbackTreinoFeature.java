@@ -7,6 +7,10 @@ import Up.Power.frequencia.FrequenciaId;
 import Up.Power.mocks.FeedbackMock;
 import io.cucumber.java.en.*;
 
+import java.util.Calendar;
+import java.util.Date;
+import java.util.List;
+
 import static org.junit.jupiter.api.Assertions.*;
 
 public class feedbackTreinoFeature {
@@ -32,13 +36,18 @@ public class feedbackTreinoFeature {
     @When("um usuário tentar adicionar uma descrição {string} para o treino")
     public void um_usuario_tentar_adicionar_uma_descricao_para_o_treino(String descricao) {
         feedbackId = new FeedbackId(1);
-        // Adiciona inicialmente sem classificação (ou com padrão)
+
+        Calendar cal = Calendar.getInstance();
+        cal.set(2025, Calendar.OCTOBER, 1);
+        Date dataEspec3 = cal.getTime();
+
         feedback = service.adicionarFeedback(
                 feedbackId,
                 frequenciaId,
                 usuarioEmail,
                 descricao,
-                Classificacao.Bom // valor padrão inicial
+                Classificacao.Bom,
+                dataEspec3
         );
     }
 
@@ -76,9 +85,13 @@ public class feedbackTreinoFeature {
         frequenciaId = new FrequenciaId(2);
         feedbackId = new FeedbackId(2);
 
+        Calendar cal = Calendar.getInstance();
+        cal.set(2025, Calendar.OCTOBER, 2);
+        Date dataEspec2 = cal.getTime();
+
         Classificacao classificacao = Classificacao.valueOf(classificacaoStr);
 
-        feedback = service.adicionarFeedback(feedbackId, frequenciaId, usuarioEmail, descricao, classificacao);
+        feedback = service.adicionarFeedback(feedbackId, frequenciaId, usuarioEmail, descricao, classificacao, dataEspec2);
     }
 
     @When("um usuário optar por editar essa descrição para {string}")
@@ -111,12 +124,17 @@ public class feedbackTreinoFeature {
         frequenciaId = new FrequenciaId(3);
         feedbackId = new FeedbackId(3);
 
+        Calendar cal = Calendar.getInstance();
+        cal.set(2025, Calendar.OCTOBER, 10);
+        Date dataEspecifica = cal.getTime();
+
         feedback = service.adicionarFeedback(
                 feedbackId,
                 frequenciaId,
                 usuarioEmail,
                 "Descrição qualquer",
-                Classificacao.Bom
+                Classificacao.Bom,
+                dataEspecifica
         );
     }
 
@@ -130,4 +148,59 @@ public class feedbackTreinoFeature {
         Feedback obtido = service.obterFeedback(feedbackId);
         assertNull(obtido, "O feedback ainda existe após exclusão");
     }
+
+    // ================================================================
+    // CENÁRIO 4 — Não conseguir adicionar mais de um feedback
+    // ================================================================
+
+    @Given("que um usuário já tenha um feedback em um treino")
+    public void que_um_usuario_ja_tenha_um_feedback_em_um_treino() {
+        mock = new FeedbackMock(null);
+        service = new FeedbackService(mock);
+        frequenciaId = new FrequenciaId(4);
+        feedbackId = new FeedbackId(4);
+
+        Calendar cal = Calendar.getInstance();
+        cal.set(2025, Calendar.OCTOBER, 20);
+        Date atual = cal.getTime();
+
+        service.adicionarFeedback(
+                feedbackId,
+                frequenciaId,
+                usuarioEmail,
+                "descrição qualquer",
+                Classificacao.Excelente,
+                atual
+        );
+    }
+
+    @When("um usuário optar por adicionar outro feedback a esse mesmo treino")
+    public void um_usuario_optar_por_adicionar_outro_feedback_a_esse_mesmo_treino() {
+        Calendar cal = Calendar.getInstance();
+        cal.set(2025, Calendar.OCTOBER, 20);
+        Date atual = cal.getTime();
+
+        feedbackId = new FeedbackId(5);
+
+        Exception excecao = assertThrows(IllegalStateException.class, () -> {
+            service.adicionarFeedback(
+                    feedbackId,
+                    frequenciaId,
+                    usuarioEmail,
+                    "descrição qualquer 2",
+                    Classificacao.Excelente,
+                    atual
+            );
+        });
+
+        assertEquals("Já existe um feedback cadastrado para essa data.", excecao.getMessage());
+    }
+
+    @Then("o sistema informa que não é possível adicionar mais de um feedback por treino")
+    public void o_sistema_informa_que_nao_e_possivel_adicionar_mais_de_um_feedback_por_treino() {
+        List<Feedback> feedbacks = mock.listarTodas();
+        assertEquals(1, feedbacks.size(), "Mais de um feedback foi adicionado!");
+    }
+
+
 }
