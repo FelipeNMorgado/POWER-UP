@@ -1,31 +1,31 @@
 package Up.Power.conquista;
 
 import Up.Power.Conquista;
-
-import java.util.ArrayList;
 import java.util.List;
 
 public class ConquistaService {
 
-    private List<Conquista> conquistasAtivas = new ArrayList<>();
-    private List<Conquista> conquistasConcluidas = new ArrayList<>();
+    private final ConquistaRepository repository;
     private String ultimaMensagem;
     private String badgeAtual;
 
+    public ConquistaService(ConquistaRepository repository) {
+        this.repository = repository;
+    }
+
     public void adicionarConquistaAtiva(Conquista conquista) {
-        conquistasAtivas.add(conquista);
+        repository.salvar(conquista);
     }
 
     public boolean temConquistasAtivas() {
-        return !conquistasAtivas.isEmpty();
+        return !repository.listarAtivas().isEmpty();
     }
 
     public boolean avaliarConquista(Conquista conquista, float desempenhoUsuario) {
-        // Exemplo: conquista exige 100kg — compara com desempenho
-        float requisito = 100f; // poderia vir da descrição ou atributo próprio
+        float requisito = 100f; // exemplo fixo — pode ser dinâmico depois
 
         if (desempenhoUsuario >= requisito) {
-            conquistasConcluidas.add(conquista);
+            repository.marcarComoConcluida(conquista);
             ultimaMensagem = "Recompensa enviada!";
             return true;
         } else {
@@ -35,7 +35,9 @@ public class ConquistaService {
     }
 
     public boolean escolherBadge(Conquista conquista, String badge) {
-        if (!conquistasConcluidas.contains(conquista)) {
+        List<Conquista> concluidas = repository.listarConcluidas();
+
+        if (!concluidas.contains(conquista)) {
             ultimaMensagem = "Você ainda não concluiu essa conquista.";
             return false;
         }
@@ -46,7 +48,7 @@ public class ConquistaService {
     }
 
     public List<Conquista> getConquistasConcluidas() {
-        return conquistasConcluidas;
+        return repository.listarConcluidas();
     }
 
     public String getUltimaMensagem() {
