@@ -4,6 +4,7 @@ import Up.Power.Email;
 import Up.Power.Feedback;
 import Up.Power.feedback.FeedbackId;
 import Up.Power.feedback.FeedbackRepository;
+import Up.Power.frequencia.FrequenciaId;
 
 import java.util.*;
 import java.util.stream.Collectors;
@@ -84,5 +85,16 @@ public class FeedbackMock implements FeedbackRepository {
         }
         return null;
     }
+
+    @Override
+    public Feedback obterPorFrequencia(FrequenciaId frequenciaId) {
+        for (Feedback f : banco.values()) {
+            if (f.getFrequencia().equals(frequenciaId)) {
+                return f;
+            }
+        }
+        return null;
+    }
+
 
 }

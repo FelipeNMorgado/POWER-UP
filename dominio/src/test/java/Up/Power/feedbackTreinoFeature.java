@@ -152,7 +152,6 @@ public class feedbackTreinoFeature {
     // ================================================================
     // CENÁRIO 4 — Não conseguir adicionar mais de um feedback
     // ================================================================
-
     @Given("que um usuário já tenha um feedback em um treino")
     public void que_um_usuario_ja_tenha_um_feedback_em_um_treino() {
         mock = new FeedbackMock(null);
@@ -176,10 +175,6 @@ public class feedbackTreinoFeature {
 
     @When("um usuário optar por adicionar outro feedback a esse mesmo treino")
     public void um_usuario_optar_por_adicionar_outro_feedback_a_esse_mesmo_treino() {
-        Calendar cal = Calendar.getInstance();
-        cal.set(2025, Calendar.OCTOBER, 20);
-        Date atual = cal.getTime();
-
         feedbackId = new FeedbackId(5);
 
         Exception excecao = assertThrows(IllegalStateException.class, () -> {
@@ -189,11 +184,11 @@ public class feedbackTreinoFeature {
                     usuarioEmail,
                     "descrição qualquer 2",
                     Classificacao.Excelente,
-                    atual
+                    new Date()
             );
         });
 
-        assertEquals("Já existe um feedback cadastrado para essa data.", excecao.getMessage());
+        assertEquals("Já existe um feedback cadastrado para esse treino.", excecao.getMessage());
     }
 
     @Then("o sistema informa que não é possível adicionar mais de um feedback por treino")
@@ -201,6 +196,4 @@ public class feedbackTreinoFeature {
         List<Feedback> feedbacks = mock.listarTodas();
         assertEquals(1, feedbacks.size(), "Mais de um feedback foi adicionado!");
     }
-
-
 }

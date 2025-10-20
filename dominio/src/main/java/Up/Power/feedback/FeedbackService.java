@@ -20,9 +20,16 @@ public class FeedbackService {
         this.repository = repository;
     }
 
-    public Feedback adicionarFeedback(FeedbackId id, FrequenciaId frequencia, Email email, String descricao, Classificacao classificacao, Date dataAtual) {
-        if (feedbackJaExiste(dataAtual)) {
-            throw new IllegalStateException("Já existe um feedback cadastrado para essa data.");
+    public Feedback adicionarFeedback(
+            FeedbackId id,
+            FrequenciaId frequencia,
+            Email email,
+            String descricao,
+            Classificacao classificacao,
+            Date dataAtual
+    ) {
+        if (feedbackJaExiste(frequencia)) {
+            throw new IllegalStateException("Já existe um feedback cadastrado para esse treino.");
         }
 
         Feedback feedback = new Feedback(id, frequencia, classificacao, descricao, email, dataAtual);
@@ -51,10 +58,7 @@ public class FeedbackService {
             return repository.obter(id);
         }
 
-        public boolean feedbackJaExiste(Date dataAtual){
-            if (repository.obterPorData(dataAtual) != null) {
-                return true;
-            }
-            return false;
-        }
+    public boolean feedbackJaExiste(FrequenciaId frequencia) {
+        return repository.obterPorFrequencia(frequencia) != null;
+    }
 }
