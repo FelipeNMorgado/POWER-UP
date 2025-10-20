@@ -9,29 +9,27 @@ import java.time.LocalDateTime;
 
 public class Rivalidade {
     private RivalidadeId id;
-    private PerfilId perfil1; // Quem enviou o convite
-    private PerfilId perfil2; // Quem recebeu o convite
+    private PerfilId perfil1;
+    private PerfilId perfil2;
     private ExercicioId exercicio;
     private LocalDateTime dataConvite;
-    private LocalDateTime inicio; // Agora só será preenchido quando a rivalidade for aceita
+    private LocalDateTime inicio;
     private LocalDateTime fim;
-    private StatusRivalidade status; // <-- SUBSTITUIU o boolean 'estado'
+    private StatusRivalidade status;
 
-    // Construtor para criar um NOVO CONVITE
     public Rivalidade(PerfilId perfil1, PerfilId perfil2, ExercicioId exercicio) {
         this.id = null;
         this.perfil1 = perfil1;
         this.perfil2 = perfil2;
         this.exercicio = exercicio;
-        this.status = StatusRivalidade.PENDENTE; // <-- Nasce como PENDENTE
+        this.status = StatusRivalidade.PENDENTE;
         this.dataConvite = LocalDateTime.now();
-        // 'inicio' e 'fim' continuam nulos por enquanto
     }
 
     public void finalizar() {
         if (this.status == StatusRivalidade.ATIVA) {
             this.status = StatusRivalidade.FINALIZADA;
-            this.fim = LocalDateTime.now(); // Marca a data/hora de finalização
+            this.fim = LocalDateTime.now();
         } else {
             throw new IllegalStateException("Só é possível finalizar uma rivalidade que está ATIVA.");
         }
@@ -54,7 +52,6 @@ public class Rivalidade {
         }
     }
 
-    // Getters
     public RivalidadeId getId() { return id; }
     public PerfilId getPerfil1() { return perfil1; }
     public PerfilId getPerfil2() { return perfil2; }
@@ -72,10 +69,7 @@ public class Rivalidade {
     public LocalDateTime getFim() {
         return fim;
     }
-    // ... outros getters
 
-    // Setters para controle de estado (usados pelo Service)
     public void setId(RivalidadeId id) { this.id = id; }
-
 
 }

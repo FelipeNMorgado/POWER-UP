@@ -24,37 +24,27 @@ public class RivalidadeService {
             throw new IllegalStateException("O usuário desafiado já está em uma rivalidade ativa.");
         }
 
-
-
-        // Cria uma rivalidade com o status PENDENTE
         Rivalidade novoConvite = new Rivalidade(idPerfil1, idPerfil2, exercicioId);
         return rivalidadeRepository.save(novoConvite);
     }
 
-    // Metodo 2: Aceitar um convite
     public Rivalidade aceitarConvite(RivalidadeId rivalidadeId, PerfilId idUsuarioQueAceitou) {
-        // Busca a rivalidade no banco
         Rivalidade rivalidade = rivalidadeRepository.findById(rivalidadeId)
                 .orElseThrow(() -> new IllegalArgumentException("Rivalidade não encontrada."));
 
-        // VERIFICAÇÃO DE SEGURANÇA: Garante que a pessoa aceitando é a pessoa convidada (perfil2)
         if (!rivalidade.getPerfil2().equals(idUsuarioQueAceitou)) {
             throw new SecurityException("Usuário não autorizado a aceitar este convite.");
         }
 
-        // Muda o estado do objeto
         rivalidade.aceitar();
 
-        // Salva a alteração no banco
         return rivalidadeRepository.save(rivalidade);
     }
 
-    // Metodo 3: Recusar um convite
     public Rivalidade recusarConvite(RivalidadeId rivalidadeId, PerfilId idUsuarioQueRecusou) {
         Rivalidade rivalidade = rivalidadeRepository.findById(rivalidadeId)
                 .orElseThrow(() -> new IllegalArgumentException("Rivalidade não encontrada."));
 
-        // VERIFICAÇÃO DE SEGURANÇA
         if (!rivalidade.getPerfil2().equals(idUsuarioQueRecusou)) {
             throw new SecurityException("Usuário não autorizado a recusar este convite.");
         }
@@ -67,7 +57,6 @@ public class RivalidadeService {
         Rivalidade rivalidade = rivalidadeRepository.findById(rivalidadeId)
                 .orElseThrow(() -> new IllegalArgumentException("Rivalidade não encontrada."));
 
-        // VERIFICAÇÃO DE SEGURANÇA: Garante que quem está finalizando é um dos participantes.
         boolean isParticipante = rivalidade.getPerfil1().equals(idUsuarioQueFinalizou) ||
                 rivalidade.getPerfil2().equals(idUsuarioQueFinalizou);
 
@@ -75,10 +64,8 @@ public class RivalidadeService {
             throw new SecurityException("Usuário não autorizado a finalizar esta rivalidade.");
         }
 
-        // Delega a mudança de estado para a própria entidade
         rivalidade.finalizar();
 
-        // Salva a alteração
         return rivalidadeRepository.save(rivalidade);
     }
 

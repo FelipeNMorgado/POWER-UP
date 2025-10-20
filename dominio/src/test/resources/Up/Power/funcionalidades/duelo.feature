@@ -1,7 +1,7 @@
 Feature: Duelos
 
-  Scenario: Conseguir duelar com outro usuário
-    Given que um usuario não tenha feito um deulo contra o amigo desafidado na semana
+  Scenario: Conseguir duelar com outro usuário amigo
+    Given que um usuario não tenha feito um duelo contra o amigo desafidado na semana
     When um usuario tentar iniciar um duelo com outro usuário
     Then o sistema iniciara o duelo e fara o calculo do vencedor
 

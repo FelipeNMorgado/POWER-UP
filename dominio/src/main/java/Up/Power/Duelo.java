@@ -4,6 +4,7 @@ import Up.Power.avatar.AvatarId;
 import Up.Power.duelo.DueloId;
 
 import java.time.LocalDateTime;
+import java.util.Objects;
 
 public class Duelo {
     private DueloId id;
@@ -43,6 +44,18 @@ public class Duelo {
 
     public void setDataDuelo(LocalDateTime dataDuelo) {
         this.dataDuelo = dataDuelo;
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (o == null || getClass() != o.getClass()) return false;
+        Duelo duelo = (Duelo) o;
+        return Objects.equals(id, duelo.id) && Objects.equals(avatar1, duelo.avatar1) && Objects.equals(avatar2, duelo.avatar2) && Objects.equals(resultado, duelo.resultado) && Objects.equals(dataDuelo, duelo.dataDuelo);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(id, avatar1, avatar2, resultado, dataDuelo);
     }
 }
 

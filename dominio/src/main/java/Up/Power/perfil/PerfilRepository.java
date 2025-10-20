@@ -7,7 +7,7 @@ import java.util.Optional;
 public interface PerfilRepository {
     Optional<Perfil> findById(PerfilId id);
     Perfil save(Perfil perfil);
-
+    boolean existsAmizade(PerfilId perfilId1, PerfilId perfilId2);
 }
 
 
