@@ -23,8 +23,8 @@ public class AmizadeFeature {
         usuario1 = new Usuario(new Email("joao@email.com"), "João", "123", LocalDate.of(2000, 5, 10));
         usuario2 = new Usuario(new Email("maria@email.com"), "Maria", "abc", LocalDate.of(1999, 2, 15));
 
-        repository.salvar(usuario1);
-        repository.salvar(usuario2);
+        amizadeService.salvarUsuario(usuario1);
+        amizadeService.salvarUsuario(usuario2);
 
         Assert.assertTrue(((AmizadeMock) repository).tamanho() >= 2);
     }
