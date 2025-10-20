@@ -9,12 +9,12 @@ import Up.Power.rivalidade.RivalidadeId;
 import Up.Power.rivalidade.RivalidadeRepository;
 import Up.Power.rivalidade.RivalidadeService;
 import Up.Power.rivalidade.StatusRivalidade;
+import io.cucumber.java.en.*;
 import io.cucumber.java.pt.*;
 
 import java.time.LocalDate;
 import java.util.HashMap;
 import java.util.Map;
-import java.util.UUID;
 
 import static org.junit.jupiter.api.Assertions.*;
 
@@ -32,7 +32,7 @@ public class RivalidadeFeature {
     private Exception excecaoOcorrida;
 
 
-    @Dado("que {string} enviou um convite de rivalidade para {string}")
+    @Given("que {string} enviou um convite de rivalidade para {string}")
     public void que_enviou_um_convite_de_rivalidade_para(String nomeUsuario1, String nomeUsuario2) {
         this.perfilRepositoryMock = new PerfilMock();
         this.rivalidadeRepositoryMock = new RivalidadeMock();
@@ -58,7 +58,7 @@ public class RivalidadeFeature {
         System.out.println("Dado: Convite de rivalidade enviado por '" + nomeUsuario1 + "' para '" + nomeUsuario2 + "'. Status: " + conviteDeRivalidade.getStatus());
     }
 
-    @Quando("{string} aceita o convite")
+    @When("{string} aceita o convite")
     public void aceita_o_convite(String nomeUsuarioQueAceitou) {
         try {
             Perfil perfilQueAceitou = perfis.get(nomeUsuarioQueAceitou);
@@ -75,7 +75,7 @@ public class RivalidadeFeature {
         }
     }
 
-    @Entao("a rivalidade entre eles se torna ativa")
+    @Then("a rivalidade entre eles se torna ativa")
     public void a_rivalidade_entre_eles_se_torna_ativa() {
         assertNull(excecaoOcorrida, "Uma exceção não deveria ter sido lançada: " + (excecaoOcorrida != null ? excecaoOcorrida.getMessage() : ""));
 
@@ -90,7 +90,7 @@ public class RivalidadeFeature {
 
     // ---------------Finalizar uma rivalidade--------------- //
 
-    @Dado("que o usuário possua uma rivalidade ativa")
+    @Given("que o usuário possua uma rivalidade ativa")
     public void que_o_usuario_possua_uma_rivalidade_ativa() {
         this.perfilRepositoryMock = new PerfilMock();
         this.rivalidadeRepositoryMock = new RivalidadeMock();
@@ -116,7 +116,7 @@ public class RivalidadeFeature {
         System.out.println("Dado: Uma rivalidade ativa foi criada entre 'UsuarioUm' e 'UsuarioDois'.");
     }
 
-    @Quando("um usuário optar por finalizar uma rivalidade antes do tempo")
+    @When("um usuário optar por finalizar uma rivalidade antes do tempo")
     public void um_usuario_optar_por_finalizar_uma_rivalidade_antes_do_tempo() {
         try {
             Perfil perfilQueFinalizou = perfis.get("UsuarioUm");
@@ -136,7 +136,7 @@ public class RivalidadeFeature {
 
     // ------------------------Amigo ja esta em uma rivalidade--------------------------------- //
 
-    @Dado("que o usuário possua uma amizade que já está em uma rivalidade")
+    @Given("que o usuário possua uma amizade que já está em uma rivalidade")
     public void que_o_usuario_possua_uma_amizade_que_ja_esta_em_uma_rivalidade() {
         this.perfilRepositoryMock = new PerfilMock();
         this.rivalidadeRepositoryMock = new RivalidadeMock();
@@ -165,7 +165,7 @@ public class RivalidadeFeature {
     }
 
 
-    @Quando("um usuário optar por iniciar uma rivalidade")
+    @When("um usuário optar por iniciar uma rivalidade")
     public void um_usuario_optar_por_iniciar_uma_rivalidade() {
         try {
             ExercicioId novoExercicioId = new ExercicioId(90);
@@ -179,7 +179,7 @@ public class RivalidadeFeature {
         System.out.println("Quando: Tentativa de iniciar rivalidade com usuário ocupado.");
     }
 
-    @Entao("o sistema informa que o usuario nao esta disponivel pois já está em uma rivalidade")
+    @Then("o sistema informa que o usuario nao esta disponivel pois já está em uma rivalidade")
     public void o_sistema_informa_que_o_usuario_nao_esta_disponivel() {
         assertNotNull(excecaoOcorrida, "Uma exceção deveria ter sido lançada, mas não foi.");
         assertInstanceOf(IllegalStateException.class, excecaoOcorrida, "A exceção deveria ser do tipo IllegalStateException.");
@@ -196,7 +196,7 @@ public class RivalidadeFeature {
 
     // ----------------------Dado que o convite e enviado mas recusado--------------------------- //
 
-    @Quando("{string} recusa o convite")
+    @When("{string} recusa o convite")
     public void recusa_o_convite(String nomeUsuarioQueRecusou) {
         try {
             Perfil perfilQueRecusou = perfis.get(nomeUsuarioQueRecusou);
@@ -214,7 +214,7 @@ public class RivalidadeFeature {
     }
 
     // -----------------------Finalizar duelo antes da hora ou recusar--------------------------- //
-    @Entao("o status da rivalidade se torna {string}")
+    @Then("o status da rivalidade se torna {string}")
     public void o_status_da_rivalidade_se_torna(String statusEsperado) {
         assertNull(excecaoOcorrida, "Uma exceção não deveria ter sido lançada: " + (excecaoOcorrida != null ? excecaoOcorrida.getMessage() : ""));
 

@@ -3,6 +3,7 @@ package Up.Power;
 import Up.Power.avatar.AvatarId;
 import Up.Power.avatar.AvatarRepository;
 import Up.Power.avatar.AvatarService;
+import Up.Power.duelo.DueloId;
 import Up.Power.duelo.DueloRepository;
 import Up.Power.duelo.DueloService;
 import Up.Power.mocks.AvatarMock;
@@ -10,12 +11,13 @@ import Up.Power.mocks.DueloMock;
 import Up.Power.mocks.PerfilMock;
 import Up.Power.perfil.PerfilId;
 import Up.Power.perfil.PerfilRepository;
-import io.cucumber.java.pt.*;
+import io.cucumber.java.en.*;
 
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.Optional;
 
 import static org.junit.jupiter.api.Assertions.*;
 
@@ -30,7 +32,7 @@ public class DueloFeature {
     private Duelo dueloResultado;
     private Exception excecaoOcorrida;
 
-    @Dado("que um usuario não tenha feito um duelo contra o amigo desafidado na semana")
+    @Given("que um usuario não tenha feito um duelo contra o amigo desafidado na semana")
     public void que_um_usuario_nao_tenha_feito_um_duelo_na_semana() {
         perfilRepositoryMock = new PerfilMock();
         avatarRepositoryMock = new AvatarMock();
@@ -61,7 +63,7 @@ public class DueloFeature {
         System.out.println("Dado: Usuários 'Desafiante' e 'Desafiado' são amigos e estão prontos para duelar.");
     }
 
-    @Quando("um usuario tentar iniciar um duelo com outro usuário")
+    @When("um usuario tentar iniciar um duelo com outro usuário")
     public void um_usuario_tentar_iniciar_um_duelo_com_outro_usuario() {
         try {
             Perfil desafiante = perfis.get("Desafiante");
@@ -76,20 +78,27 @@ public class DueloFeature {
         }
     }
 
-    @Entao("o sistema iniciara o duelo e fara o calculo do vencedor")
+    @Then("o sistema iniciara o duelo e fara o calculo do vencedor")
     public void o_sistema_iniciara_o_duelo_e_fara_o_calculo_do_vencedor() {
-        assertNull(excecaoOcorrida, "Uma exceção não deveria ter ocorrido: " + (excecaoOcorrida != null ? excecaoOcorrida.getMessage() : ""));
+        assertNull(excecaoOcorrida, "Uma exceção não deveria ter ocorrido.");
 
-        assertNotNull(dueloResultado, "O duelo deveria ter sido criado.");
-        assertNotNull(dueloResultado.getId(), "O duelo salvo deveria ter um ID.");
+        assertNotNull(this.dueloResultado, "O serviço deveria ter retornado um resultado de duelo.");
+        DueloId idDoDueloSalvo = this.dueloResultado.getId();
+        assertNotNull(idDoDueloSalvo, "O duelo retornado deveria ter um ID gerado pelo save.");
 
-        assertNotNull(dueloResultado.getResultado(), "O resultado do duelo não foi calculado.");
-        assertEquals("VITORIA_DESAFIANTE", dueloResultado.getResultado(), "O desafiante deveria ter vencido o duelo.");
+        Optional<Duelo> dueloEncontradoOptional = dueloRepositoryMock.findById(idDoDueloSalvo);
+        assertTrue(dueloEncontradoOptional.isPresent(), "O duelo não foi encontrado no repositório após ser salvo.");
 
-        System.out.println("Então: Duelo iniciado com sucesso! O vencedor foi: " + dueloResultado.getResultado());
+        Duelo dueloEncontradoNoRepo = dueloEncontradoOptional.get();
+        assertEquals(this.dueloResultado, dueloEncontradoNoRepo);
+        assertEquals("VITORIA_DESAFIANTE", dueloEncontradoNoRepo.getResultado());
+
+        System.out.println("Então: Duelo iniciado com sucesso e confirmado no repositório!");
     }
 
-    @Dado("um usuário faca um desafio e o prazo entre um duelo e outro nao tiver acabado")
+    // --------------------Cenario 2: Tentar duelar antes de acabar o cooldown--------------------------- //
+
+    @Given("um usuário faca um desafio e o prazo entre um duelo e outro nao tiver acabado")
     public void um_usuario_faca_um_desafio_e_o_prazo_nao_tiver_acabado() {
         perfilRepositoryMock = new PerfilMock();
         avatarRepositoryMock = new AvatarMock();
@@ -123,7 +132,7 @@ public class DueloFeature {
         System.out.println("Dado: 'Desafiante' e 'Desafiado' duelaram há 3 dias. O cooldown está ativo.");
     }
 
-    @Quando("um usario tentar desafiar outro")
+    @When("um usario tentar desafiar outro")
     public void um_usario_tentar_desafiar_outro() {
         try {
             Perfil desafiante = perfis.get("Desafiante");
@@ -137,7 +146,7 @@ public class DueloFeature {
         System.out.println("Quando: 'Desafiante' tentou desafiar 'Desafiado' novamente.");
     }
 
-    @Entao("o sistema informa que é impossível duelar no momento")
+    @Then("o sistema informa que é impossível duelar no momento")
     public void o_sistema_informa_que_e_impossivel_duelar_no_momento() {
         assertNotNull(excecaoOcorrida, "Uma exceção deveria ter sido lançada devido ao cooldown, mas não foi.");
 
