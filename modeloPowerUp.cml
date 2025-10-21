@@ -285,8 +285,6 @@ BoundedContext PowerUp implements PowerUp{
             @PlanoTreino obterPlanoTreino(@PlanoTId planoTId);
             List<@PlanoTreino> listarPlanosTreino(@PlanoTId planoTId);
             void excluirPlanoTreino(@PlanoTId planoTId);
-            boolean verificarProgressao(@PlanoTId planoTId);
-            boolean atualizarRecorde(@PlanoTId planoTId, @Treino treino);
         }
     }
 

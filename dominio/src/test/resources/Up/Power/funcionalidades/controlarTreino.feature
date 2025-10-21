@@ -19,3 +19,28 @@ Feature: Controle personalizado do treino
     Given que o usuário possua rotinas cadastradas
     When acessar a aba de treinos
     Then o sistema lista as rotinas e exibe os detalhes de cada exercício (carga, repetição e descanso)
+
+  Scenario: Adicionar dia ao plano de treino
+    Given uma rotina já criada
+    When adicionar um dia da semana ao plano
+    Then o dia é adicionado ao plano de treino
+
+  Scenario: Alterar estado do plano
+    Given uma rotina já criada
+    When alterar o estado do plano para histórico
+    Then o estado do plano é atualizado
+
+  Scenario: Remover treino do plano
+    Given uma rotina já criada
+    When remover um exercício do plano
+    Then o exercício é removido do plano de treino
+
+  Scenario: Adicionar treino a plano existente
+    Given uma rotina já criada
+    When adicionar um novo exercício ao plano
+    Then o treino é adicionado ao plano
+
+  Scenario: Excluir plano de treino
+    Given uma rotina já criada
+    When excluir o plano de treino
+    Then o plano é removido do sistema
