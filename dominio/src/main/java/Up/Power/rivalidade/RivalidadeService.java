@@ -9,11 +9,9 @@ import Up.Power.perfil.PerfilRepository;
 public class RivalidadeService {
 
     private final RivalidadeRepository rivalidadeRepository;
-    private final PerfilRepository perfilRepository;
 
     public RivalidadeService(RivalidadeRepository rivalidadeRepository, PerfilRepository perfilRepository) {
         this.rivalidadeRepository = rivalidadeRepository;
-        this.perfilRepository = perfilRepository;
     }
 
     public Rivalidade enviarConviteRivalidade(PerfilId idPerfil1, PerfilId idPerfil2, ExercicioId exercicioId) {
