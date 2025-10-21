@@ -7,10 +7,7 @@ import Up.Power.mocks.AvatarMock;
 import Up.Power.mocks.ExperienceServiceMock;
 import Up.Power.perfil.PerfilId;
 
-import io.cucumber.java.en.Given;
-import io.cucumber.java.en.Then;
-import io.cucumber.java.en.When;
-import io.cucumber.java.pt.*;
+import io.cucumber.java.en.*;
 import static org.junit.jupiter.api.Assertions.*;
 
 public class AvatarFeature {

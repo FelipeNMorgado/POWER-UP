@@ -7,7 +7,7 @@ import Up.Power.planoTreino.PlanoTId;
 import Up.Power.planoTreino.PlanoTreinoRepository;
 import Up.Power.planoTreino.PlanoTreinoService;
 import Up.Power.treino.TipoTreino;
-import io.cucumber.java.pt.*;
+import io.cucumber.java.en.*;
 
 import java.time.LocalDate;
 
@@ -25,7 +25,7 @@ public class TreinoFeature {
     // Cenário: Criar rotina de treino
     // ------------------------------------------------------
 
-    @Quando("criar uma rotina e adicionar exercícios do banco pré-existentes")
+    @When("criar uma rotina e adicionar exercícios do banco pré-existentes")
     public void criar_rotina_e_adicionar_exercicios() {
         planoRepo = new PlanoTreinoMock();
         ((PlanoTreinoMock) planoRepo).limpar();
@@ -39,7 +39,7 @@ public class TreinoFeature {
         mensagem = "Plano salvo";
     }
 
-    @Entao("a rotina é salva com séries, repetições, carga e descanso definidos por ele")
+    @Then("a rotina é salva com séries, repetições, carga e descanso definidos por ele")
     public void rotina_salva_com_parametros() {
         assertTrue(((PlanoTreinoMock) planoRepo).obter(new PlanoTId(1)).isPresent());
         Treino salvo = plano.getTreinos().get(0);
@@ -55,7 +55,7 @@ public class TreinoFeature {
     // Cenário: Validar plano mínimo
     // ------------------------------------------------------
 
-    @Dado("criação de uma rotina")
+    @Given("criação de uma rotina")
     public void criacao_de_uma_rotina() {
         planoRepo = new PlanoTreinoMock();
         // Garante estado limpo antes do cenário
@@ -65,7 +65,7 @@ public class TreinoFeature {
         plano = planoTreinoService.criarPlanoTreino(new PlanoTId(2), new Email("u@x.com"), "Rotina B");
     }
 
-    @Quando("o plano não tiver ao menos um exercício definido")
+    @When("o plano não tiver ao menos um exercício definido")
     public void plano_sem_exercicio() {
         try {
         // Tenta salvar um plano sem nenhum treino; o service deve lançar exceção
@@ -77,7 +77,7 @@ public class TreinoFeature {
         }
     }
 
-    @Entao("o sistema bloqueia o salvamento e informa o requisito mínimo")
+    @Then("o sistema bloqueia o salvamento e informa o requisito mínimo")
     public void bloqueia_salvamento_requisito_minimo() {
     // Verifica que a mensagem informa a exigência de ao menos um exercício
         assertTrue(mensagem != null && mensagem.contains("ao menos um exercício"));
@@ -89,7 +89,7 @@ public class TreinoFeature {
     // Cenário: Editar rotina
     // ------------------------------------------------------
 
-    @Dado("uma rotina já criada")
+    @Given("uma rotina já criada")
     public void rotina_ja_criada() {
         planoRepo = new PlanoTreinoMock();
         ((PlanoTreinoMock) planoRepo).limpar();
@@ -103,7 +103,7 @@ public class TreinoFeature {
         planoTreinoService.salvarPlanoTreino(plano);
     }
 
-    @Quando("alterar séries, repetições, carga, descanso ou exercício")
+    @When("alterar séries, repetições, carga, descanso ou exercício")
     public void alterar_parametros_ou_exercicio() {
         Treino t = plano.getTreinos().get(0);
         Treino treinoAntigo = new Treino(t.getId(), t.getExercicio(), t.getTipo(), t.getRepeticoes(), t.getPeso(), t.getSeries(), 60);
@@ -113,7 +113,7 @@ public class TreinoFeature {
         planoTreinoService.atualizarTreino(new PlanoTId(3), treinoAntigo, treinoNovo);
     }
 
-    @Entao("o sistema atualiza a rotina com os novos parâmetros")
+    @Then("o sistema atualiza a rotina com os novos parâmetros")
     public void sistema_atualiza_rotina() {
         Treino t = plano.getTreinos().get(0);
         assertEquals(12, t.getRepeticoes());
@@ -127,7 +127,7 @@ public class TreinoFeature {
     // Cenário: Visualizar rotinas de treino
     // ------------------------------------------------------
 
-    @Dado("que o usuário possua rotinas cadastradas")
+    @Given("que o usuário possua rotinas cadastradas")
     public void usuario_possui_rotinas() {
         planoRepo = new PlanoTreinoMock();
         ((PlanoTreinoMock) planoRepo).limpar();
@@ -138,12 +138,12 @@ public class TreinoFeature {
         planoTreinoService.salvarPlanoTreino(plano);
     }
 
-    @Quando("acessar a aba de treinos")
+    @When("acessar a aba de treinos")
     public void acessar_aba_treinos() {
         // sem ação extra, apenas consulta
     }
 
-    @Entao("o sistema lista as rotinas e exibe os detalhes de cada exercício \\(carga, repetição e descanso)")
+    @Then("o sistema lista as rotinas e exibe os detalhes de cada exercício \\(carga, repetição e descanso)")
     public void o_sistema_lista_as_rotinas_e_exibe_os_detalhes_de_cada_exercício_carga_repetição_e_descanso() {
         assertFalse(planoTreinoService.listarPlanosTreino(null).isEmpty());
         Treino t = plano.getTreinos().get(0);
@@ -157,12 +157,12 @@ public class TreinoFeature {
     // Cenário: Adicionar dia ao plano de treino
     // ------------------------------------------------------
 
-    @Quando("adicionar um dia da semana ao plano")
+    @When("adicionar um dia da semana ao plano")
     public void adicionar_um_dia_da_semana_ao_plano() {
         planoTreinoService.adicionarDia(new PlanoTId(3), Dias.Terca);
     }
 
-    @Entao("o dia é adicionado ao plano de treino")
+    @Then("o dia é adicionado ao plano de treino")
     public void o_dia_e_adicionado_ao_plano_de_treino() {
         PlanoTreino planoAtualizado = planoTreinoService.obterPlanoTreino(new PlanoTId(3));
         assertTrue(planoAtualizado.getDias().contains(Dias.Terca));
@@ -173,12 +173,12 @@ public class TreinoFeature {
     // Cenário: Alterar estado do plano
     // ------------------------------------------------------
 
-    @Quando("alterar o estado do plano para histórico")
+    @When("alterar o estado do plano para histórico")
     public void alterar_o_estado_do_plano_para_historico() {
         planoTreinoService.alterarEstadoPlano(new PlanoTId(3), EstadoPlano.Historico);
     }
 
-    @Entao("o estado do plano é atualizado")
+    @Then("o estado do plano é atualizado")
     public void o_estado_do_plano_e_atualizado() {
         PlanoTreino planoAtualizado = planoTreinoService.obterPlanoTreino(new PlanoTId(3));
         assertEquals(EstadoPlano.Historico, planoAtualizado.getEstadoPlano());
@@ -190,13 +190,13 @@ public class TreinoFeature {
     // Cenário: Remover treino do plano
     // ------------------------------------------------------
 
-    @Quando("remover um exercício do plano")
+    @When("remover um exercício do plano")
     public void remover_um_exercicio_do_plano() {
         Treino treinoParaRemover = plano.getTreinos().get(0);
         planoTreinoService.removerTreino(new PlanoTId(3), treinoParaRemover);
     }
 
-    @Entao("o exercício é removido do plano de treino")
+    @Then("o exercício é removido do plano de treino")
     public void o_exercicio_e_removido_do_plano_de_treino() {
         PlanoTreino planoAtualizado = planoTreinoService.obterPlanoTreino(new PlanoTId(3));
         assertEquals(1, planoAtualizado.getTreinos().size()); // Deve ter 1 treino restante
@@ -207,13 +207,13 @@ public class TreinoFeature {
     // Cenário: Adicionar treino a plano existente
     // ------------------------------------------------------
 
-    @Quando("adicionar um novo exercício ao plano")
+    @When("adicionar um novo exercício ao plano")
     public void adicionar_um_novo_exercicio_ao_plano() {
         Treino novoTreino = new Treino(new Up.Power.treino.TreinoId(13), new ExercicioId(103), TipoTreino.Peso, 12, 60f, 4, 90);
         planoTreinoService.adicionarTreino(new PlanoTId(3), novoTreino);
     }
 
-    @Entao("o treino é adicionado ao plano")
+    @Then("o treino é adicionado ao plano")
     public void o_treino_e_adicionado_ao_plano() {
         PlanoTreino planoAtualizado = planoTreinoService.obterPlanoTreino(new PlanoTId(3));
         assertEquals(3, planoAtualizado.getTreinos().size()); // Deve ter 3 treinos (2 originais + 1 novo)
@@ -224,12 +224,12 @@ public class TreinoFeature {
     // Cenário: Excluir plano de treino
     // ------------------------------------------------------
 
-    @Quando("excluir o plano de treino")
+    @When("excluir o plano de treino")
     public void excluir_o_plano_de_treino() {
         planoTreinoService.excluirPlanoTreino(new PlanoTId(3));
     }
 
-    @Entao("o plano é removido do sistema")
+    @Then("o plano é removido do sistema")
     public void o_plano_e_removido_do_sistema() {
         assertTrue(planoTreinoService.listarPlanosTreino(new PlanoTId(3)).isEmpty());
     }

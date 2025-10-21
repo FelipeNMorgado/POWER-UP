@@ -4,7 +4,7 @@ import Up.Power.equipe.EquipeId;
 import Up.Power.equipe.EquipeRepository;
 import Up.Power.equipe.EquipeService;
 import Up.Power.mocks.EquipeMock;
-import io.cucumber.java.pt.*;
+import io.cucumber.java.en.*;
 
 import java.time.LocalDate;
 import java.util.HashMap;
@@ -26,14 +26,14 @@ public class EquipeFeature {
     private int duracaoDesafioDias;
     private Usuario usuarioLogado;
 
-    @Dado("que o usuário esteja logado")
+    @Given("que o usuário esteja logado")
     public void que_o_usuario_esteja_logado() {
         usuarioLogado = new Usuario(new Email("lider@teste.com"), "Lider", "s", LocalDate.now());
         equipeRepository = new EquipeMock();
         equipeService = new EquipeService(equipeRepository);
     }
 
-    @Quando("ele criar uma equipe")
+    @When("ele criar uma equipe")
     public void ele_criar_uma_equipe() {
         EquipeId id = new EquipeId();
         equipe = equipeService.criarEquipe(id, "Equipe Top", usuarioLogado.getUsuarioEmail());
@@ -41,13 +41,13 @@ public class EquipeFeature {
         codigoConvite = UUID.randomUUID().toString().substring(0, 8).toUpperCase();
     }
 
-    @Entao("o sistema o define como líder")
+    @Then("o sistema o define como líder")
     public void o_sistema_o_define_como_lider() {
         assertTrue(equipe.isLider(usuarioLogado.getUsuarioEmail()));
         assertTrue(equipe.isMembro(usuarioLogado.getUsuarioEmail()));
     }
 
-    @E("gera um código de convite para novos membros")
+    @And("gera um código de convite para novos membros")
     public void gera_um_codigo_de_convite_para_novos_membros() {
         assertNotNull(codigoConvite);
         assertFalse(codigoConvite.isBlank());
@@ -55,14 +55,14 @@ public class EquipeFeature {
 
     // ---------------- Excluir equipe ---------------- //
 
-    @Dado("que o usuário seja o líder")
+    @Given("que o usuário seja o líder")
     public void que_o_usuario_seja_o_lider() {
         que_o_usuario_esteja_logado();
         ele_criar_uma_equipe();
         assertTrue(equipe.isLider(usuarioLogado.getUsuarioEmail()));
     }
 
-    @Quando("ele solicitar a exclusão da equipe")
+    @When("ele solicitar a exclusão da equipe")
     public void ele_solicitar_a_exclusao_da_equipe() {
         // Como não há persistência real, simulamos exclusão removendo todos os membros
         for (Email m : new java.util.ArrayList<>(equipe.getUsuariosEmails())) {
@@ -72,7 +72,7 @@ public class EquipeFeature {
         }
     }
 
-    @Entao("o sistema remove a equipe após confirmação")
+    @Then("o sistema remove a equipe após confirmação")
     public void o_sistema_remove_a_equipe_apos_confirmacao() {
         // Valida que apenas o admin permanece como regra simples de exclusão simulada
         assertEquals(1, equipe.getQuantidadeMembros());
@@ -85,17 +85,17 @@ public class EquipeFeature {
 
     // --------------- Editar informações --------------- //
 
-    @Dado("que o usuário seja líder ou administrador")
+    @Given("que o usuário seja líder ou administrador")
     public void que_o_usuario_seja_lider_ou_administrador() {
         que_o_usuario_seja_o_lider();
     }
 
-    @Quando("ele editar as informações da equipe")
+    @When("ele editar as informações da equipe")
     public void ele_editar_as_informacoes_da_equipe() {
         equipeService.atualizarInformacoes(equipe.getId(), "Equipe Melhorada", "Descrição nova", "foto.png");
     }
 
-    @Entao("o sistema atualiza os dados da equipe")
+    @Then("o sistema atualiza os dados da equipe")
     public void o_sistema_atualiza_os_dados_da_equipe() {
         assertEquals("Equipe Melhorada", equipe.getNome());
         assertEquals("Descrição nova", equipe.getDescricao());
@@ -104,12 +104,12 @@ public class EquipeFeature {
 
     // --------------- Gerenciar membros e desafios --------------- //
 
-    @Quando("ele acessar o painel da equipe")
+    @When("ele acessar o painel da equipe")
     public void ele_acessar_o_painel_da_equipe() {
         // setup já feito
     }
 
-    @Entao("poderá adicionar, remover ou atribuir funções aos membros")
+    @Then("poderá adicionar, remover ou atribuir funções aos membros")
     public void podera_adicionar_remover_ou_atribuir_funcoes_aos_membros() {
         Email novo = new Email("membro@teste.com");
         equipeService.adicionarMembro(equipe.getId(), novo);
@@ -123,7 +123,7 @@ public class EquipeFeature {
         assertFalse(equipeService.isMembro(equipe.getId(), novo));
     }
 
-    @E("configurar desafios e sua duração")
+    @And("configurar desafios e sua duração")
     public void configurar_desafios_e_sua_duracao() {
         // Configuração de desafio apenas para o cenário (não faz parte do agregado no CML)
         desafioAtual = "Desafio Semanal";
@@ -134,7 +134,7 @@ public class EquipeFeature {
 
     // --------------- Limite máximo de membros --------------- //
 
-    @Dado("que a equipe tenha 20 membros")
+    @Given("que a equipe tenha 20 membros")
     public void que_a_equipe_tenha_20_membros() {
         que_o_usuario_seja_o_lider();
         for (int i = 0; i < 19; i++) {
@@ -144,7 +144,7 @@ public class EquipeFeature {
         assertTrue(equipe.atingiuLimiteMaximo());
     }
 
-    @Quando("o líder tentar adicionar outro membro")
+    @When("o líder tentar adicionar outro membro")
     public void o_lider_tentar_adicionar_outro_membro() {
         try {
             equipeService.adicionarMembro(equipe.getId(), new Email("extra@t.com"));
@@ -154,12 +154,12 @@ public class EquipeFeature {
         }
     }
 
-    @Entao("o sistema impede a ação")
+    @Then("o sistema impede a ação")
     public void o_sistema_impede_a_acao() {
         assertEquals(20, equipe.getQuantidadeMembros());
     }
 
-    @E("exibe a mensagem \"A equipe atingiu o limite máximo de 20 membros\"")
+    @And("exibe a mensagem \"A equipe atingiu o limite máximo de 20 membros\"")
     public void exibe_a_mensagem_limite() {
         // A mensagem é definida na exceção; validada indiretamente acima
         assertTrue(equipe.atingiuLimiteMaximo());
@@ -167,19 +167,19 @@ public class EquipeFeature {
 
     // --------------- Comparar desempenho entre membros --------------- //
 
-    @Dado("que a equipe tenha mais de um membro")
+    @Given("que a equipe tenha mais de um membro")
     public void que_a_equipe_tenha_mais_de_um_membro() {
         que_o_usuario_seja_o_lider();
         equipeService.adicionarMembro(equipe.getId(), new Email("m2@t.com"));
         assertTrue(equipe.getQuantidadeMembros() > 1);
     }
 
-    @Quando("o sistema exibir o painel da equipe")
+    @When("o sistema exibir o painel da equipe")
     public void o_sistema_exibir_o_painel_da_equipe() {
         // nada a fazer
     }
 
-    @Entao("os membros poderão visualizar e comparar seus desempenhos")
+    @Then("os membros poderão visualizar e comparar seus desempenhos")
     public void os_membros_poderao_visualizar_e_comparar_seus_desempenhos() {
         // Sem domínio de desempenho, apenas garantimos múltiplos membros como pré-condição
         assertTrue(equipe.getQuantidadeMembros() >= 2);
@@ -187,21 +187,21 @@ public class EquipeFeature {
 
     // --------------- Definir período de funcionamento --------------- //
 
-    @Quando("ele definir o período de funcionamento da equipe")
+    @When("ele definir o período de funcionamento da equipe")
     public void ele_definir_o_periodo_de_funcionamento_da_equipe() {
         LocalDate inicio = LocalDate.now();
         LocalDate fim = inicio.plusMonths(3); // 3 meses de duração
         equipeService.definirPeriodo(equipe.getId(), inicio, fim);
     }
 
-    @Entao("o sistema registra as datas de início e fim")
+    @Then("o sistema registra as datas de início e fim")
     public void o_sistema_registra_as_datas_de_inicio_e_fim() {
         assertNotNull(equipe.getInicio());
         assertNotNull(equipe.getFim());
         assertTrue(equipe.getFim().isAfter(equipe.getInicio()));
     }
 
-    @E("a equipe fica ativa no período especificado")
+    @And("a equipe fica ativa no período especificado")
     public void a_equipe_fica_ativa_no_periodo_especificado() {
         LocalDate hoje = LocalDate.now();
         assertTrue(hoje.isAfter(equipe.getInicio()) || hoje.isEqual(equipe.getInicio()));
@@ -210,7 +210,7 @@ public class EquipeFeature {
 
     // --------------- Listar equipes do usuário --------------- //
 
-    @Dado("que o usuário tenha múltiplas equipes")
+    @Given("que o usuário tenha múltiplas equipes")
     public void que_o_usuario_tenha_multiplas_equipes() {
         que_o_usuario_seja_o_lider(); // Primeira equipe já criada
         
@@ -223,20 +223,20 @@ public class EquipeFeature {
         Equipe terceiraEquipe = equipeService.criarEquipe(terceiraEquipeId, "Equipe Terciária", usuarioLogado.getUsuarioEmail());
     }
 
-    @Quando("ele solicitar a listagem de suas equipes")
+    @When("ele solicitar a listagem de suas equipes")
     public void ele_solicitar_a_listagem_de_suas_equipes() {
         // Simula busca por equipes do usuário (usando ID da primeira equipe como referência)
         List<Equipe> equipesDoUsuario = equipeService.listarEquipes(equipe.getId());
         assertNotNull(equipesDoUsuario);
     }
 
-    @Entao("o sistema retorna todas as equipes do usuário")
+    @Then("o sistema retorna todas as equipes do usuário")
     public void o_sistema_retorna_todas_as_equipes_do_usuario() {
         List<Equipe> equipes = equipeService.listarEquipes(equipe.getId());
         assertFalse(equipes.isEmpty());
     }
 
-    @E("exibe informações básicas de cada equipe")
+    @And("exibe informações básicas de cada equipe")
     public void exibe_informacoes_basicas_de_cada_equipe() {
         List<Equipe> equipes = equipeService.listarEquipes(equipe.getId());
         for (Equipe eq : equipes) {
@@ -247,22 +247,22 @@ public class EquipeFeature {
 
     // --------------- Verificar liderança --------------- //
 
-    @Dado("que o usuário seja líder de uma equipe")
+    @Given("que o usuário seja líder de uma equipe")
     public void que_o_usuario_seja_lider_de_uma_equipe() {
         que_o_usuario_seja_o_lider(); // Reutiliza o setup existente
     }
 
-    @Quando("ele verificar seu status de liderança")
+    @When("ele verificar seu status de liderança")
     public void ele_verificar_seu_status_de_lideranca() {
         // Ação já realizada implicitamente nos testes
     }
 
-    @Entao("o sistema confirma que ele é líder")
+    @Then("o sistema confirma que ele é líder")
     public void o_sistema_confirma_que_ele_e_lider() {
         assertTrue(equipeService.isLider(equipe.getId(), usuarioLogado.getUsuarioEmail()));
     }
 
-    @E("permite acesso a funcionalidades administrativas")
+    @And("permite acesso a funcionalidades administrativas")
     public void permite_acesso_a_funcionalidades_administrativas() {
         // Verifica se pode realizar operações administrativas
         assertTrue(equipeService.isLider(equipe.getId(), usuarioLogado.getUsuarioEmail()));
@@ -270,7 +270,7 @@ public class EquipeFeature {
 
     // --------------- Verificar liderança de membro comum --------------- //
 
-    @Dado("que o usuário seja apenas membro de uma equipe")
+    @Given("que o usuário seja apenas membro de uma equipe")
     public void que_o_usuario_seja_apenas_membro_de_uma_equipe() {
         // Garante que o service está inicializado
         if (equipeService == null) {
@@ -289,12 +289,12 @@ public class EquipeFeature {
         equipe = novaEquipe;
     }
 
-    @Entao("o sistema confirma que ele não é líder")
+    @Then("o sistema confirma que ele não é líder")
     public void o_sistema_confirma_que_ele_nao_e_lider() {
         assertFalse(equipeService.isLider(equipe.getId(), usuarioLogado.getUsuarioEmail()));
     }
 
-    @E("restringe acesso a funcionalidades administrativas")
+    @And("restringe acesso a funcionalidades administrativas")
     public void restringe_acesso_a_funcionalidades_administrativas() {
         // Verifica que não pode realizar operações administrativas
         assertFalse(equipeService.isLider(equipe.getId(), usuarioLogado.getUsuarioEmail()));
@@ -302,7 +302,7 @@ public class EquipeFeature {
 
     // --------------- Gerenciar período com datas inválidas --------------- //
 
-    @Quando("ele tentar definir período com data fim anterior à data início")
+    @When("ele tentar definir período com data fim anterior à data início")
     public void ele_tentar_definir_periodo_com_data_fim_anterior_a_data_inicio() {
         LocalDate inicio = LocalDate.now();
         LocalDate fim = inicio.minusDays(1); // Data fim anterior à início
@@ -316,13 +316,13 @@ public class EquipeFeature {
         }
     }
 
-    @Entao("o sistema impede a operação")
+    @Then("o sistema impede a operação")
     public void o_sistema_impede_a_operacao() {
         // A exceção já foi capturada no método anterior
         assertTrue(true); // Confirma que a operação foi impedida
     }
 
-    @E("exibe mensagem de erro sobre datas inválidas")
+    @And("exibe mensagem de erro sobre datas inválidas")
     public void exibe_mensagem_de_erro_sobre_datas_invalidas() {
         // A validação de datas inválidas deve ser implementada no service
         // Por enquanto, apenas confirma que a operação foi bloqueada

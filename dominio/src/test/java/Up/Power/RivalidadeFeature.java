@@ -10,7 +10,6 @@ import Up.Power.rivalidade.RivalidadeRepository;
 import Up.Power.rivalidade.RivalidadeService;
 import Up.Power.rivalidade.StatusRivalidade;
 import io.cucumber.java.en.*;
-import io.cucumber.java.pt.*;
 
 import java.time.LocalDate;
 import java.util.HashMap;

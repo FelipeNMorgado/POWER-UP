@@ -8,7 +8,7 @@ import Up.Power.meta.MetaId;
 import Up.Power.exercicio.ExercicioId;
 import Up.Power.treino.TreinoId;
 
-import io.cucumber.java.pt.*;
+import io.cucumber.java.en.*;
 
 import java.time.LocalDate;
 import java.util.Calendar;
@@ -26,7 +26,7 @@ public class MetaFeature {
 
     // ---------- Cenário 1 ----------
 
-    @Dado("que o usuário ainda não tenha metas")
+    @Given("que o usuário ainda não tenha metas")
     public void usuario_sem_metas() {
         metaRepository = new MetaMock();
         rewardService  = new RewardServiceMock();
@@ -37,7 +37,7 @@ public class MetaFeature {
                 "O repositório deveria iniciar sem metas.");
     }
 
-    @Quando("ele criar uma meta e preencher todos os campos corretamente")
+    @When("ele criar uma meta e preencher todos os campos corretamente")
     public void criar_meta_campos_corretos() {
         // Monta datas início/ fim válidas (fim > início)
         Calendar cal = Calendar.getInstance();
@@ -58,7 +58,7 @@ public class MetaFeature {
         metaRepository.save(metaCriada);
     }
 
-    @Então("o sistema irá criar a meta com sucesso")
+    @Then("o sistema irá criar a meta com sucesso")
     public void sistema_cria_meta_com_sucesso() {
         assertNotNull(metaCriada);
         assertNotNull(metaCriada.getId());
@@ -75,7 +75,7 @@ public class MetaFeature {
 
     // ---------- Cenário 2 ----------
 
-    @Dado("que eu não consiga concluir as metas no prazo")
+    @Given("que eu não consiga concluir as metas no prazo")
     public void meta_nao_concluida_no_prazo() {
         metaRepository = new MetaMock();
         rewardService  = new RewardServiceMock();
@@ -101,13 +101,13 @@ public class MetaFeature {
         this.metaCriada = metaExpirada; // reaproveita campo
     }
 
-    @Quando("eu tentar coletar as recompensas")
+    @When("eu tentar coletar as recompensas")
     public void tentar_coletar_recompensas() {
         LocalDate hoje = LocalDate.now();
         this.podeColetar = rewardService.canCollectRewards(metaCriada, hoje);
     }
 
-    @Então("elas não estarão disponíveis para serem coletadas")
+    @Then("elas não estarão disponíveis para serem coletadas")
     public void recompensas_indisponiveis() {
         assertNotNull(podeColetar, "Deveria ter avaliado a coleta.");
         assertFalse(podeColetar, "Recompensas não deveriam estar disponíveis após o prazo.");
