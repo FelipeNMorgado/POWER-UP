@@ -15,6 +15,7 @@ import io.cucumber.java.pt.*;
 import java.time.LocalDate;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.Optional;
 
 import static org.junit.jupiter.api.Assertions.*;
 
@@ -80,12 +81,21 @@ public class RivalidadeFeature {
         assertNull(excecaoOcorrida, "Uma exceção não deveria ter sido lançada: " + (excecaoOcorrida != null ? excecaoOcorrida.getMessage() : ""));
 
         assertNotNull(rivalidadeAtualizada, "A rivalidade não foi atualizada após ser aceita.");
+        RivalidadeId idDaRivalidade = rivalidadeAtualizada.getId();
+        assertNotNull(idDaRivalidade, "A rivalidade retornada pelo serviço deveria ter um ID.");
 
-        assertEquals(StatusRivalidade.ATIVA, rivalidadeAtualizada.getStatus(), "O status da rivalidade deveria ser ATIVA.");
+        Optional<Rivalidade> rivalidadeOptional = rivalidadeRepositoryMock.findById(idDaRivalidade);
 
-        assertNotNull(rivalidadeAtualizada.getInicio(), "A data de início da rivalidade deveria ter sido definida.");
+        assertTrue(rivalidadeOptional.isPresent(), "A rivalidade não foi encontrada no repositório após ser aceita/salva.");
 
-        System.out.println("Então: A rivalidade agora está " + rivalidadeAtualizada.getStatus() + " e começou em " + rivalidadeAtualizada.getInicio());
+        Rivalidade rivalidadeDoRepo = rivalidadeOptional.get();
+
+        assertEquals(StatusRivalidade.ATIVA, rivalidadeDoRepo.getStatus(), "O status da rivalidade no repositório deveria ser ATIVA.");
+        assertNotNull(rivalidadeDoRepo.getInicio(), "A data de início da rivalidade no repositório deveria ter sido definida.");
+
+        assertEquals(rivalidadeAtualizada, rivalidadeDoRepo, "O objeto retornado pelo serviço não é igual ao objeto encontrado no repositório.");
+
+        System.out.println("Então: A rivalidade agora está " + rivalidadeDoRepo.getStatus() + " e foi confirmada no repositório.");
     }
 
     // ---------------Finalizar uma rivalidade--------------- //
@@ -214,21 +224,34 @@ public class RivalidadeFeature {
     }
 
     // -----------------------Finalizar duelo antes da hora ou recusar--------------------------- //
+
     @Then("o status da rivalidade se torna {string}")
     public void o_status_da_rivalidade_se_torna(String statusEsperado) {
         assertNull(excecaoOcorrida, "Uma exceção não deveria ter sido lançada: " + (excecaoOcorrida != null ? excecaoOcorrida.getMessage() : ""));
 
         StatusRivalidade statusEnumEsperado = StatusRivalidade.valueOf(statusEsperado.toUpperCase());
 
-        assertEquals(statusEnumEsperado, rivalidadeAtualizada.getStatus(), "O status da rivalidade deveria ser " + statusEsperado);
+        assertNotNull(rivalidadeAtualizada, "A rivalidade não foi atualizada.");
+        RivalidadeId idDaRivalidade = rivalidadeAtualizada.getId();
+        assertNotNull(idDaRivalidade, "A rivalidade retornada pelo serviço deveria ter um ID.");
+
+        Optional<Rivalidade> rivalidadeOptional = rivalidadeRepositoryMock.findById(idDaRivalidade);
+
+        assertTrue(rivalidadeOptional.isPresent(), "A rivalidade não foi encontrada no repositório após a ação.");
+
+        Rivalidade rivalidadeDoRepo = rivalidadeOptional.get();
+
+        assertEquals(statusEnumEsperado, rivalidadeDoRepo.getStatus(), "O status da rivalidade no repositório deveria ser " + statusEsperado);
 
         if (statusEnumEsperado == StatusRivalidade.RECUSADA) {
-            assertNull(rivalidadeAtualizada.getInicio(), "A data de início não deveria ter sido definida para uma rivalidade recusada.");
+            assertNull(rivalidadeDoRepo.getInicio(), "A data de início (no repo) não deveria ter sido definida.");
         } else if (statusEnumEsperado == StatusRivalidade.FINALIZADA) {
-            assertNotNull(rivalidadeAtualizada.getFim(), "A data de fim deveria ter sido definida para uma rivalidade finalizada.");
+            assertNotNull(rivalidadeDoRepo.getFim(), "A data de fim (no repo) deveria ter sido definida.");
         }
 
-        System.out.println("Então: O status da rivalidade é '" + rivalidadeAtualizada.getStatus() + "', como esperado.");
+        System.out.println("Então: O status da rivalidade é '" + rivalidadeDoRepo.getStatus() + "', confirmado no repositório.");
+
     }
+
 
 }
