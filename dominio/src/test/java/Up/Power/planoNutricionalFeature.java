@@ -14,7 +14,6 @@ public class planoNutricionalFeature {
     private Objetivo objetivo;
     private String mensagem;
 
-    // ========================= Cenário 1 =========================
     @Given("que um usuario criou seu plano nutricional e esta tudo preenchido")
     public void criar_plano_completo() {
         id = new PlanoNId(1);
@@ -35,19 +34,18 @@ public class planoNutricionalFeature {
 
     @Then("o sistema ira salva-lo com sucesso, podendo ser vizualiza-lo quando desejar")
     public void verificar_plano_salvo() {
-        PlanoNutricional salvo = repository.obter(id);
+        PlanoNutricional salvo = service.obterPlano(id);
         Assert.assertNotNull(salvo);
         Assert.assertEquals(objetivo, salvo.getObjetivo());
         Assert.assertEquals("Plano salvo com sucesso", mensagem);
     }
 
-    // ========================= Cenário 2 =========================
     @Given("que um usuario tenha um plano nutricional salvo e deseja edita-lo")
     public void plano_salvo_para_edicao() {
         repository = new PlanoNutricionalMock();
         service = new PlanoNutricionalService(repository);
         planoNutricional = new PlanoNutricional(new PlanoNId(2), Objetivo.Cutting);
-        repository.salvar(planoNutricional);
+        service.criarPlano(planoNutricional.getId(), planoNutricional.getObjetivo());
     }
 
     @When("o usario fizer alteracoes no plano e confirmar as mudancas")
@@ -62,24 +60,23 @@ public class planoNutricionalFeature {
 
     @Then("o sistema ira salvar as alteracoes feitas e mostrar a versao atualizada para o usario")
     public void verificar_plano_editado() {
-        PlanoNutricional salvo = repository.obter(planoNutricional.getId());
+        PlanoNutricional salvo = service.obterPlano(planoNutricional.getId());
         Assert.assertEquals(Objetivo.Bulking, salvo.getObjetivo());
         Assert.assertEquals("Plano alterado com sucesso", mensagem);
     }
 
-    // ========================= Cenário 3 =========================
     @Given("o usuario tem um plano nutricional salvo")
     public void usuario_tem_plano() {
         repository = new PlanoNutricionalMock();
         service = new PlanoNutricionalService(repository);
         planoNutricional = new PlanoNutricional(new PlanoNId(3), Objetivo.Cutting);
-        repository.salvar(planoNutricional);
+        service.criarPlano(planoNutricional.getId(), planoNutricional.getObjetivo());
     }
 
     @When("o usauario tentar colocar campos obricatorios em branco")
     public void tentar_colocar_campos_em_branco() {
         try {
-            service.criarPlano(new PlanoNId(3), null);
+            service.modificarPlano(planoNutricional.getId(),null, 500);
         } catch (Exception e) {
             mensagem = e.getMessage();
         }
@@ -90,19 +87,17 @@ public class planoNutricionalFeature {
         Assert.assertEquals("Campos obrigatórios em branco", mensagem);
     }
 
-    // ========================= Cenário 4 =========================
     @Given("que o usuário possua um plano nutricional ativo")
     public void plano_ativo() {
         repository = new PlanoNutricionalMock();
         service = new PlanoNutricionalService(repository);
         planoNutricional = new PlanoNutricional(new PlanoNId(4), Objetivo.Bulking);
-        repository.salvar(planoNutricional);
+        service.criarPlano(planoNutricional.getId(), planoNutricional.getObjetivo());
     }
 
     @When("o usuario tentar modificar um campo especifico com valores nao esperados")
     public void modificar_com_valores_invalidos() {
         try {
-            // simulando alteração inválida (por exemplo, calorias negativas)
             service.modificarPlano(planoNutricional.getId(), Objetivo.Bulking, -500);
         } catch (Exception e) {
             mensagem = e.getMessage();
