@@ -32,8 +32,8 @@ public class DueloFeature {
     private Duelo dueloResultado;
     private Exception excecaoOcorrida;
 
-    @Given("que um usuario não tenha feito um duelo contra o amigo desafidado na semana")
-    public void que_um_usuario_nao_tenha_feito_um_duelo_na_semana() {
+    @Given("que um usuario {string} não tenha feito um duelo contra o amigo {string} na semana")
+    public void que_um_usuario_nao_tenha_feito_um_duelo_na_semana(String nomeDesafiante, String nomeDesafiado) {
         perfilRepositoryMock = new PerfilMock();
         avatarRepositoryMock = new AvatarMock();
         dueloRepositoryMock = new DueloMock();
@@ -41,8 +41,8 @@ public class DueloFeature {
         AvatarService avatarService = new AvatarService(avatarRepositoryMock);
         dueloService = new DueloService(dueloRepositoryMock, avatarService ,perfilRepositoryMock, avatarRepositoryMock);
 
-        Perfil desafiante = new Perfil(new PerfilId(1), new Email("desafiante@teste.com"), "Desafiante");
-        Perfil desafiado = new Perfil(new PerfilId(2), new Email("desafiado@teste.com"), "Desafiado");
+        Perfil desafiante = new Perfil(new PerfilId(1), new Email("desafiante@teste.com"), nomeDesafiante);
+        Perfil desafiado = new Perfil(new PerfilId(2), new Email("desafiado@teste.com"), nomeDesafiado);
 
         perfis.put("Desafiante", desafiante);
         perfis.put("Desafiado", desafiado);
@@ -63,8 +63,8 @@ public class DueloFeature {
         System.out.println("Dado: Usuários 'Desafiante' e 'Desafiado' são amigos e estão prontos para duelar.");
     }
 
-    @When("um usuario tentar iniciar um duelo com outro usuário")
-    public void um_usuario_tentar_iniciar_um_duelo_com_outro_usuario() {
+    @When("o usuario {string} tentar iniciar um duelo contra o usuario {string}")
+    public void um_usuario_tentar_iniciar_um_duelo_com_outro_usuario(String nomeDesafiante, String nomeDesafiado) {
         try {
             Perfil desafiante = perfis.get("Desafiante");
             Perfil desafiado = perfis.get("Desafiado");
@@ -98,8 +98,8 @@ public class DueloFeature {
 
     // --------------------Cenario 2: Tentar duelar antes de acabar o cooldown--------------------------- //
 
-    @Given("um usuário faca um desafio e o prazo entre um duelo e outro nao tiver acabado")
-    public void um_usuario_faca_um_desafio_e_o_prazo_nao_tiver_acabado() {
+    @Given("um usuário {string} teve um duelo com o amigo {string} a menos de uma semana")
+    public void um_usuario_faca_um_desafio_e_o_prazo_nao_tiver_acabado(String nomeDesafiante, String nomeDesafiado) {
         perfilRepositoryMock = new PerfilMock();
         avatarRepositoryMock = new AvatarMock();
         dueloRepositoryMock = new DueloMock();
@@ -107,8 +107,8 @@ public class DueloFeature {
         AvatarService avatarService = new AvatarService(avatarRepositoryMock);
         dueloService = new DueloService(dueloRepositoryMock, avatarService ,perfilRepositoryMock, avatarRepositoryMock);
 
-        Perfil desafiante = new Perfil(new PerfilId(8), new Email("desafiante@teste.com"), "Desafiante");
-        Perfil desafiado = new Perfil(new PerfilId(9), new Email("desafiado@teste.com"), "Desafiado");
+        Perfil desafiante = new Perfil(new PerfilId(8), new Email("desafiante@teste.com"), nomeDesafiante);
+        Perfil desafiado = new Perfil(new PerfilId(9), new Email("desafiado@teste.com"), nomeDesafiado);
 
         perfis.put("Desafiante", desafiante);
         perfis.put("Desafiado", desafiado);
@@ -132,8 +132,8 @@ public class DueloFeature {
         System.out.println("Dado: 'Desafiante' e 'Desafiado' duelaram há 3 dias. O cooldown está ativo.");
     }
 
-    @When("um usario tentar desafiar outro")
-    public void um_usario_tentar_desafiar_outro() {
+    @When("o usario {string} tentar desafiar o amigo {string} novamente")
+    public void um_usario_tentar_desafiar_outro(String nomeDesafiante, String nomeDesafiado) {
         try {
             Perfil desafiante = perfis.get("Desafiante");
             Perfil desafiado = perfis.get("Desafiado");

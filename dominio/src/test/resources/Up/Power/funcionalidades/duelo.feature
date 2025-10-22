@@ -1,11 +1,11 @@
 Feature: Duelos
 
   Scenario: Conseguir duelar com outro usuário amigo
-    Given que um usuario não tenha feito um duelo contra o amigo desafidado na semana
-    When um usuario tentar iniciar um duelo com outro usuário
+    Given que um usuario "Desafiante" não tenha feito um duelo contra o amigo "Desafidado" na semana
+    When o usuario "Desafiante" tentar iniciar um duelo contra o usuario "Desafidado"
     Then o sistema iniciara o duelo e fara o calculo do vencedor
 
   Scenario: Impedir duelo dentro do prazo de cooldown
-    Given um usuário faca um desafio e o prazo entre um duelo e outro nao tiver acabado
-    When um usario tentar desafiar outro
+    Given um usuário "Desafiante" teve um duelo com o amigo "Desafiado" a menos de uma semana
+    When o usario "Desafiante" tentar desafiar o amigo "Desafiado" novamente
     Then o sistema informa que é impossível duelar no momento
