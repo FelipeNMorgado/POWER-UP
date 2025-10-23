@@ -1,4 +1,5 @@
-Domain PowerUp {}
+Domain PowerUp {
+}
 
 BoundedContext PowerUp implements PowerUp{
     Aggregate Usuario {
@@ -9,22 +10,18 @@ BoundedContext PowerUp implements PowerUp{
             String nome
             String senha
             DateTime dataNascimento
-
             Repository UsuarioRepository {
                 @Usuario obter(@Email usuarioEmail);
                 void salvar(@Usuario usuario);
             }
         }
-
         ValueObject Email {
             String caracteres
         }
-
         ValueObject AmizadeId {
             int codigo
         }
     }
-
     Aggregate Perfil {
         Entity Perfil {
             aggregateRoot
@@ -39,19 +36,16 @@ BoundedContext PowerUp implements PowerUp{
             DateTime criacao
             String username
             String foto
-
             Repository PerfilRepository {
                 void salvar(@Perfil perfil);
                 boolean existsAmizade(@PerfilId perfilId1, @PerfilId perfilId2);
-                Optional<Perfil> findById(@PerfilId id);
+                Optional<@Perfil> findById(@PerfilId id);
             }
         }
-
         ValueObject PerfilId {
             int id
         }
     }
-
     Aggregate Frequencia {
         Entity Frequencia {
             aggregateRoot
@@ -61,24 +55,20 @@ BoundedContext PowerUp implements PowerUp{
             - PlanoTId planoTreino;
             DateTime dataDePresenca
             String foto
-
             Repository FrequenciaRepository {
                 void salvar(@Frequencia frequencia);
                 @Frequencia obterFrequencia(@FrequenciaId frequencia, DateTime atual);
             }
         }
-
         ValueObject FrequenciaId {
             int id
         }
-
         Service FrequenciaService {
             List<@Frequencia> listarFrequencias(@PerfilId perfil, @FrequenciaId frequencia);
             void registrarPresencaComFoto(@FrequenciaId frequenciaId, @PerfilId perfilId, @TreinoId treinoId, String fotoBase64);
-            void registrarPresenca(@FrequenciaId frequenciaId, @PerfilId perfilId, @reinoId treinoId);
+            void registrarPresenca(@FrequenciaId frequenciaId, @PerfilId perfilId, @TreinoId treinoId);
         }
     }
-
     Aggregate Feedback {
         Entity Feedback {
             aggregateRoot
@@ -87,7 +77,6 @@ BoundedContext PowerUp implements PowerUp{
             - Classificacao classificacao
             - Email usuarioEmail
             String feedback
-
             Repository FeedbackRepository {
                 void salvar(@Feedback feedback);
                 void deletar(@FeedbackId id);
@@ -96,24 +85,19 @@ BoundedContext PowerUp implements PowerUp{
                 void alterar(@FeedbackId id);
             }
         }
-
         ValueObject FeedbackId {
             int id
         }
-
         enum Classificacao {
             Cansado,
             ComDor,
             Bom,
             Excelente
         }
-
         Service FeedbackService {
-            @Feedback adicionarFeedback(@FeedbackId id, @FrequenciaId frequencia, @Email email, String descricao, @Classificacao classificacao);
-
+            @Feedback adicionarFeedback(@FeedbackId id, @FrequenciaId frequencia, @Email emai, String descricao, @Classificacao classificacao);
         }
     }
-
     Aggregate Equipe {
         Entity Equipe {
             aggregateRoot
@@ -126,17 +110,14 @@ BoundedContext PowerUp implements PowerUp{
             int limiteMaximoMembros
             - Email usuarioAdm
             - List<@Email> usuariosEmails
-
             Repository EquipeRepository {
                 void salvar(@Equipe equipe);
                 List<@Equipe> listarEquipe(@EquipeId id, @PerfilId perfil);
             }
         }
-
         ValueObject EquipeId {
             int id
         }
-
         Service EquipeService {
             @Equipe criarEquipe(@EquipeId id, String nome, @Email usuarioAdm);
             void adicionarMembro(@EquipeId equipeId, @Email novoMembro);
@@ -149,7 +130,6 @@ BoundedContext PowerUp implements PowerUp{
             boolean isMembro(@EquipeId equipeId, @Email usuario);
         }
     }
-
     Aggregate PlanoNutricional {
         Entity PlanoNutricional {
             aggregateRoot
@@ -159,28 +139,23 @@ BoundedContext PowerUp implements PowerUp{
             - List<@RefeicaoId> refeicoes
             int caloriasTotais
             int caloriasObjetivo
-
             Repository PlanoNutricionalRepository {
                 void salvar(@PlanoNutricional planoN);
                 @PlanoNutricional obter(@PlanoNId plano);
             }
         }
-
         enum Objetivo {
             Cutting,
             Bulking
         }
-
         ValueObject PlanoNId {
             int id
         }
-
         Service PlanoNutricionalService {
-            void modificarPlano (PlanoNId plano, Objetivo objetivo, int novasCaloriasObjetivo);
-            int calcularCaloriasObjetivo (int caloriasTotais, Objetivo objetivo);
+            void modificarPlano (@PlanoNId plano, @Objetivo objetivo, int novasCaloriasObjetivo);
+            int calcularCaloriasObjetivo (int caloriasTotais, @Objetivo objetivo);
         }
     }
-
     Aggregate Refeicao {
         Entity Refeicao {
             aggregateRoot
@@ -190,7 +165,6 @@ BoundedContext PowerUp implements PowerUp{
             int caloriasTotais
             Date inicio
             Date fim
-
             Repository RefeicaoRepository {
                 void salvar(@Refeicao refeicao);
                 void editar(@RefeicaoId refeicao);
@@ -199,19 +173,16 @@ BoundedContext PowerUp implements PowerUp{
                 List<@Refeicao> listar(@Refeicao refeicao);
             }
         }
-
-        enum Tipo {
+        enum TipoRefeicao {
             CafeDaManha,
             Lanche,
             Almoco,
             Jantar
         }
-
         ValueObject RefeicaoId {
             int id
         }
     }
-
     Aggregate Alimento {
         Entity Alimento {
             aggregateRoot
@@ -220,23 +191,19 @@ BoundedContext PowerUp implements PowerUp{
             String nome
             int calorias
             float quantidade
-
             Repository AlimentoRepository {
                 void salvar(@Alimento alimento);
             }
         }
-
         enum Categoria {
             Gordura,
             Proteina,
             Carboidrato
         }
-
         ValueObject AlimentoId {
             int id
         }
     }
-
     Aggregate PlanoTreino {
         Entity PlanoTreino {
             aggregateRoot
@@ -247,19 +214,16 @@ BoundedContext PowerUp implements PowerUp{
             - List<@Dias> dias
             String nome
             float recordeCarga;
-
             Repository PlanoTreinoRepository {
                 void salvar(@PlanoTreino planoT);
                 void excluir(@PlanoTId planoT);
                 List<@PlanoTreino> listar(@PlanoTId planoT);
             }
         }
-
-        enum Estado {
+        enum EstadoPlano {
             Ativo,
             Historico
         }
-
         enum Dias {
             Segunda,
             Terca,
@@ -269,11 +233,9 @@ BoundedContext PowerUp implements PowerUp{
             Sabado,
             Domingo
         }
-
         ValueObject PlanoTId {
             int id
         }
-
         Service PlanoTreinoService {
             @PlanoTreino criarPlanoTreino(@PlanoTId id, @Email usuarioEmail, String nome);
             void salvarPlanoTreino(@PlanoTreino plano);
@@ -281,13 +243,12 @@ BoundedContext PowerUp implements PowerUp{
             void removerTreino(@PlanoTId planoTId, @Treino treino);
             void adicionarDia(@PlanoTId planoTId, @Dias dia);
             void atualizarTreino(@PlanoTId planoTId, @Treino treinoAntigo, @Treino treinoNovo);
-            void alterarEstadoPlano(@PlanoTId planoTId, @Estado estado);
+            void alterarEstadoPlano(@PlanoTId planoTId, @EstadoPlano estado);
             @PlanoTreino obterPlanoTreino(@PlanoTId planoTId);
             List<@PlanoTreino> listarPlanosTreino(@PlanoTId planoTId);
             void excluirPlanoTreino(@PlanoTId planoTId);
         }
     }
-
     Aggregate Treino {
         Entity Treino {
             aggregateRoot
@@ -299,7 +260,6 @@ BoundedContext PowerUp implements PowerUp{
             int repeticoes
             float peso
             int serie
-
             Repository TreinoRepository {
                 void salvar(@Treino treino);
                 List<@TreinoId> listar(@TreinoId treino);
@@ -307,29 +267,24 @@ BoundedContext PowerUp implements PowerUp{
                 void excluir(@TreinoId treino);
             }
         }
-
         ValueObject TreinoId {
             int id
         }
-
         enum TipoTreino {
             Cardio,
             Peso
         }
     }
-
     Aggregate Exercicio {
         Entity Exercicio {
             aggregateRoot
             - ExercicioId id
             String nome
         }
-
         ValueObject ExercicioId {
             int id
         }
     }
-
     Aggregate Conquista {
         Entity Conquista {
             aggregateRoot
@@ -339,12 +294,10 @@ BoundedContext PowerUp implements PowerUp{
             String descricao
             String nome
         }
-
         ValueObject ConquistaId {
             int id
         }
     }
-
     Aggregate Meta {
         Entity Meta {
             aggregateRoot
@@ -354,14 +307,11 @@ BoundedContext PowerUp implements PowerUp{
             String nome
             Date fim
             Date inicio
-
         }
-
         ValueObject MetaId {
             int id
         }
     }
-
     Aggregate Duelo {
         Entity Duelo {
             aggregateRoot
@@ -370,16 +320,13 @@ BoundedContext PowerUp implements PowerUp{
             - AvatarId avatar2
             String resultado
             LocalDateTime dataDuelo
-
             Repository DueloRepository {
                 void salvar(@Duelo duelo);
             }
         }
-
         ValueObject DueloId {
             int id
         }
-
         Service DueloService {
             @Duelo realizarDuelo(@PerfilId desafianteId, @PerfilId desafiadoId);
             void validarCooldownDuelo(@AvatarId avatarId1, @AvatarId avatarId2);
@@ -387,7 +334,6 @@ BoundedContext PowerUp implements PowerUp{
             String calcularResultadoDuelo(@Avatar avatar1, @Avatar avatar2);
         }
     }
-
     Aggregate Avatar {
         Entity Avatar {
             aggregateRoot
@@ -398,18 +344,15 @@ BoundedContext PowerUp implements PowerUp{
             int experiencia
             int dinheiro
         }
-
         ValueObject AvatarId {
             int id
         }
-
         Service AvatarService {
             int forca(@PerfilId perfil);
             int resistencia(@PerfilId perfil);
             int agilidade(@PerfilId perfil);
         }
     }
-
     Aggregate Rivalidade {
         Entity Rivalidade {
             aggregateRoot
@@ -421,11 +364,9 @@ BoundedContext PowerUp implements PowerUp{
             DateTime inicio
             DateTime fim
         }
-
         ValueObject RivalidadeId {
             int id
         }
-
         enum StatusRivalidade {
             PENDENTE,
             ATIVA,
@@ -433,7 +374,6 @@ BoundedContext PowerUp implements PowerUp{
             FINALIZADA,
             CANCELADA
         }
-
         Service RivalidadeService {
             @Rivalidade enviarConviteRivalidade(@PerfilId idPerfil1, @PerfilId idPerfil2, @ExercicioId exercicioId);
             @Rivalidade aceitarConvite(@RivalidadeId rivalidadeId, @PerfilId idUsuarioQueAceitou);
@@ -441,19 +381,16 @@ BoundedContext PowerUp implements PowerUp{
             @Rivalidade finalizarRivalidade(@RivalidadeId rivalidadeId, @PerfilId idUsuarioQueFinalizou);
         }
     }
-
     Aggregate Loja {
         Entity Loja {
             aggregateRoot
             - LojaId id
             - List<@Acessorio> acessorios
         }
-
         ValueObject LojaId {
             int id
         }
     }
-
     Aggregate Acessorio {
         Entity Acessorio {
             aggregateRoot
@@ -462,9 +399,9 @@ BoundedContext PowerUp implements PowerUp{
             int preco
             String nome
         }
-
         ValueObject AcessorioId {
             int id
         }
     }
 }
+
