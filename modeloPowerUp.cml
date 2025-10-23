@@ -21,6 +21,14 @@ BoundedContext PowerUp implements PowerUp{
         ValueObject AmizadeId {
             int codigo
         }
+        Service AmizadeService{
+            String enviarConvite(@Usuario remetente, @Usuario destinatario);
+            String aceitarConvite(@Usuario usuario1, @Usuario usuario2);
+            String recusarConvite();
+            String removerAmizade(@Usuario usuario1, @Usuario usuario2);
+            boolean saoAmigos(@Usuario u1, @Usuario u2);
+            void salvarUsuario(@Usuario u);
+        }
     }
     Aggregate Perfil {
         Entity Perfil {
@@ -67,6 +75,8 @@ BoundedContext PowerUp implements PowerUp{
             List<@Frequencia> listarFrequencias(@PerfilId perfil, @FrequenciaId frequencia);
             void registrarPresencaComFoto(@FrequenciaId frequenciaId, @PerfilId perfilId, @TreinoId treinoId, String fotoBase64);
             void registrarPresenca(@FrequenciaId frequenciaId, @PerfilId perfilId, @TreinoId treinoId);
+            void registrarAusencia(@FrequenciaId frequenciaId);
+            boolean usuarioFoiAoTreino(@FrequenciaId frequenciaId);
         }
     }
     Aggregate Feedback {
@@ -83,6 +93,7 @@ BoundedContext PowerUp implements PowerUp{
                 List<@Feedback> listarFeedbacks(@FeedbackId feedback, @Email usuarioEmail);
                 @Feedback obter(@FeedbackId id);
                 void alterar(@FeedbackId id);
+                @Feedback obterPorFrequencia(@FrequenciaId frequenciaId);
             }
         }
         ValueObject FeedbackId {
@@ -96,6 +107,10 @@ BoundedContext PowerUp implements PowerUp{
         }
         Service FeedbackService {
             @Feedback adicionarFeedback(@FeedbackId id, @FrequenciaId frequencia, @Email emai, String descricao, @Classificacao classificacao);
+            @Feedback editarFeedback(@FeedbackId id, String novaDescricao, @Classificacao novaClassificacao);
+            void excluirFeedback(@FeedbackId id);
+            @Feedback obterFeedback(@FeedbackId id);
+            boolean feedbackJaExiste(@FrequenciaId frequencia);
         }
     }
     Aggregate Equipe {
@@ -152,8 +167,10 @@ BoundedContext PowerUp implements PowerUp{
             int id
         }
         Service PlanoNutricionalService {
+            void criarPlano(@PlanoNId id, @Objetivo objetivo);
             void modificarPlano (@PlanoNId plano, @Objetivo objetivo, int novasCaloriasObjetivo);
             int calcularCaloriasObjetivo (int caloriasTotais, @Objetivo objetivo);
+            @PlanoNutricional obterPlano(@PlanoNId id);
         }
     }
     Aggregate Refeicao {
@@ -287,17 +304,33 @@ BoundedContext PowerUp implements PowerUp{
     }
     Aggregate Conquista {
         Entity Conquista {
-            aggregateRoot
-            - ConquistaId id
-            - ExercicioId exercicio
-            - TreinoId treino
-            String descricao
-            String nome
+        aggregateRoot
+        - ConquistaId id
+        - ExercicioId exercicio
+        - TreinoId treino
+        String descricao
+        String nome
+        Repository ConquistaRepository {
+                void salvar(@Conquista conquista);
+                void marcarComoConcluida(@Conquista conquista);
+                Optional<@Conquista> buscarPorId(@ConquistaId id);
+                List<@Conquista> listarAtivas();
+                List<@Conquista> listarConcluidas();
+                void remover(@ConquistaId id);
         }
-        ValueObject ConquistaId {
+        }
+
+         ValueObject ConquistaId{
             int id
         }
+
+        Service ConquistaService{
+            void adicionarConquistaAtiva(@Conquista conquista);
+            boolean temConquistasAtivas();
+            boolean escolherBadge(@Conquista conquista, String badge);
+        }
     }
+
     Aggregate Meta {
         Entity Meta {
             aggregateRoot
@@ -307,11 +340,21 @@ BoundedContext PowerUp implements PowerUp{
             String nome
             Date fim
             Date inicio
+            Repository MetaRepository{
+                @Meta save(@Meta meta);
+                Optional<@Meta> findById(@MetaId id);
+                List<@Meta> findByUserId(int userId);
+                void deleteAll();
+            }
         }
         ValueObject MetaId {
             int id
         }
+        Service RewardService{
+             boolean canCollectRewards(@Meta meta, LocalDate hoje);
+        }
     }
+
     Aggregate Duelo {
         Entity Duelo {
             aggregateRoot
@@ -322,6 +365,8 @@ BoundedContext PowerUp implements PowerUp{
             LocalDateTime dataDuelo
             Repository DueloRepository {
                 void salvar(@Duelo duelo);
+                Optional<@Duelo> findById(@DueloId id);
+                Optional<@Duelo> findLastDuelBetween(@AvatarId avatarId1, @AvatarId avatarId2);
             }
         }
         ValueObject DueloId {
@@ -343,14 +388,25 @@ BoundedContext PowerUp implements PowerUp{
             int nivel
             int experiencia
             int dinheiro
+            Repository AvatarRepository{
+                void save(@Avatar avatar);
+                Optional<@Avatar> findById(@AvatarId id);
+                Optional<@Avatar> findByPerfilId(@PerfilId perfilId);
+            }
         }
         ValueObject AvatarId {
             int id
         }
+
         Service AvatarService {
             int forca(@PerfilId perfil);
             int resistencia(@PerfilId perfil);
             int agilidade(@PerfilId perfil);
+        }
+
+        Service ExperienceService{
+            void adicionarXp(@Avatar avatar, int xpGanha);
+            void adicionarForca(@Avatar avatar, int bonusDeForca);
         }
     }
     Aggregate Rivalidade {
@@ -363,6 +419,11 @@ BoundedContext PowerUp implements PowerUp{
             - StatusRivalidade status
             DateTime inicio
             DateTime fim
+            Repository RivalidadeRepository{
+                @Rivalidade save(@Rivalidade rivalidade);
+                Optional<@Rivalidade> findById(@RivalidadeId id);
+                boolean existsActiveRivalryForPerfil(@PerfilId perfilId);
+            }
         }
         ValueObject RivalidadeId {
             int id
@@ -404,4 +465,3 @@ BoundedContext PowerUp implements PowerUp{
         }
     }
 }
-
