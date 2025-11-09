@@ -27,11 +27,11 @@
   </properties>
 
   <modules>
-    <module>backend</module>
-    <module>frontend</module>
+    <module>apresentacao-backend</module>
+    <module>apresentacao-frontend</module>
     <module>aplicacao</module>
     <module>dominio</module>
-    <module>persistencia</module>
+    <module>infraestrutura</module>
   </modules>
 
   <dependencyManagement>

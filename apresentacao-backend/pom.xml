@@ -6,7 +6,7 @@
         <artifactId>Power_UP</artifactId>
         <version>1.0-SNAPSHOT</version>
     </parent>
-    <artifactId>backend</artifactId>
+    <artifactId>apresentacao-backend</artifactId>
     <name>Archetype - backend</name>
     <url>http://maven.apache.org</url>
 

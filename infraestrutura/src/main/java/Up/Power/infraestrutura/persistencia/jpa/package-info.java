@@ -1,0 +1,1 @@
+package Up.Power.infraestrutura.persistencia.jpa;

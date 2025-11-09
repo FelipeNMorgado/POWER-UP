@@ -6,15 +6,7 @@
         <artifactId>Power_UP</artifactId>
         <version>1.0-SNAPSHOT</version>
     </parent>
-    <artifactId>persistencia</artifactId>
-    <name>Archetype - persistencia</name>
+    <artifactId>apresentacao-frontend</artifactId>
+    <name>Archetype - frontend</name>
     <url>http://maven.apache.org</url>
-
-    <dependencies>
-        <dependency>
-            <groupId>org.example</groupId>
-            <artifactId>dominio</artifactId>
-            <version>1.0-SNAPSHOT</version>
-        </dependency>
-    </dependencies>
 </project>
