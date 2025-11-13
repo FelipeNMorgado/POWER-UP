@@ -1,6 +1,5 @@
 package Up.Power;
 
-import Up.Power.*;
 import Up.Power.exercicio.ExercicioId;
 import Up.Power.planoTreino.PlanoTId;
 import Up.Power.treino.TipoTreino;
@@ -16,6 +15,8 @@ public class ControleIntensidadeTeste {
 
     private PlanoTreino plano;
     private Exercicio exercicio;
+    private Treino treinoAntigo;
+    private Treino treinoNovo;
     private boolean novoRecorde;
 
     @Before
@@ -34,8 +35,8 @@ public class ControleIntensidadeTeste {
 
     @Given("que um usuario ja tenh realizado um exercicio")
     public void que_um_usuario_ja_tenh_realizado_um_exercicio() {
-        // Dado que ele já tem um recorde anterior de 80kg
-        Treino treinoAntigo = new Treino(
+        // Dado que ele já tem um treino com recorde inicial de 80kg
+        treinoAntigo = new Treino(
                 new TreinoId(1),
                 exercicio.getId(1),
                 TipoTreino.Peso,
@@ -44,13 +45,17 @@ public class ControleIntensidadeTeste {
                 3,
                 60
         );
-        plano.atualizarRecorde(treinoAntigo);
+
+        // Atualiza o recorde do treino
+        treinoAntigo.atualizarRecorde();
+
+        plano.adicionarTreino(treinoAntigo);
     }
 
     @When("ele pega o maior carga que ele ja pegou")
     public void ele_pega_o_maior_carga_que_ele_ja_pegou() {
-        // Quando o usuário levanta mais peso que o recorde
-        Treino treinoNovo = new Treino(
+        // Quando o usuário levanta mais peso que o recorde anterior
+        treinoNovo = new Treino(
                 new TreinoId(2),
                 exercicio.getId(1),
                 TipoTreino.Peso,
@@ -59,6 +64,8 @@ public class ControleIntensidadeTeste {
                 3,
                 60
         );
+
+        plano.adicionarTreino(treinoNovo);
         novoRecorde = plano.atualizarRecorde(treinoNovo);
     }
 
@@ -82,7 +89,7 @@ public class ControleIntensidadeTeste {
     @When("evoluir nas minhas cargas e repetições")
     public void evoluir_nas_minhas_cargas_e_repeticoes() {
         // Simula dois treinos do mesmo exercício com aumento de peso
-        plano.adicionarTreino(new Treino(
+        Treino treino1 = new Treino(
                 new TreinoId(1),
                 exercicio.getId(1),
                 TipoTreino.Peso,
@@ -90,9 +97,9 @@ public class ControleIntensidadeTeste {
                 60f,
                 3,
                 60
-        ));
+        );
 
-        plano.adicionarTreino(new Treino(
+        Treino treino2 = new Treino(
                 new TreinoId(2),
                 exercicio.getId(1),
                 TipoTreino.Peso,
@@ -100,7 +107,10 @@ public class ControleIntensidadeTeste {
                 70f,
                 3,
                 60
-        ));
+        );
+
+        plano.adicionarTreino(treino1);
+        plano.adicionarTreino(treino2);
     }
 
     @Then("ter uma visualização de desenvolvimento das cargas e registro delas")

@@ -14,6 +14,7 @@ public class Treino {
     private int repeticoes;
     private float peso;
     private int series;
+    private float recordeCarga = 0f;
 
     public Treino(TreinoId id, ExercicioId exercicio, TipoTreino tipo) {
         this.id = id;
@@ -40,7 +41,46 @@ public class Treino {
         this.exercicio = novoExercicio;
     }
 
+    /**
+     * Inicializa/atualiza o recorde deste treino com o seu próprio peso atual.
+     * @return true se estabeleceu um novo recorde (peso > recorde anterior)
+     */
+    public boolean atualizarRecorde() {
+        if (this.peso > this.recordeCarga) {
+            this.recordeCarga = this.peso;
+            System.out.println("🏆 Novo recorde inicializado: " + recordeCarga + " kg no exercício " + exercicio);
+            return true;
+        }
+        return false;
+    }
+
+    /**
+     * Compara o peso do treino 'novo' com o recorde deste treino e atualiza se for maior.
+     * @param novo treino com peso a ser comparado
+     * @return true se houve novo recorde
+     */
+    public boolean atualizarRecorde(Treino novo) {
+        if (novo == null) return false;
+        if (novo.getPeso() > this.recordeCarga) {
+            this.recordeCarga = novo.getPeso();
+            System.out.println("🏆 Novo recorde! " + recordeCarga + " kg no exercício " + novo.getExercicio());
+            return true;
+        }
+        return false;
+    }
+
+    /**
+     * Verifica se o treino atual mostra progresso em relação ao anterior.
+     */
+    public boolean estaProgredindo(Treino anterior) {
+        return anterior != null &&
+                this.exercicio != null &&
+                this.exercicio.equals(anterior.exercicio) &&
+                this.peso > anterior.peso;
+    }
+
     // Getters
+    public float getRecordeCarga() { return recordeCarga; }
     public TreinoId getId() { return id; }
     public ExercicioId getExercicio() { return exercicio; }
     public TipoTreino getTipo() { return tipo; }
@@ -56,4 +96,5 @@ public class Treino {
     public void setRepeticoes(int repeticoes) { this.repeticoes = repeticoes; }
     public void setPeso(float peso) { this.peso = peso; }
     public void setSeries(int series) { this.series = series; }
+    public void setRecordeCarga(float recordeCarga) { this.recordeCarga = recordeCarga; }
 }
