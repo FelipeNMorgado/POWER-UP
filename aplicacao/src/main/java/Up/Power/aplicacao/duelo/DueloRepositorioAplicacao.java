@@ -1,6 +1,6 @@
 package Up.Power.aplicacao.duelo;
 
-import Up.Power.duelo.Duelo;
+import Up.Power.Duelo;
 import Up.Power.duelo.DueloId;
 
 import java.util.Optional;

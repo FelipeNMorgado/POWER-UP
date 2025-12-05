@@ -2,8 +2,6 @@ package Up.Power.infraestrutura.persistencia.jpa.rivalidade;
 
 import Up.Power.rivalidade.StatusRivalidade;
 import jakarta.persistence.*;
-import org.springframework.data.jpa.repository.JpaRepository;
-import org.springframework.data.jpa.repository.Query;
 import java.time.LocalDateTime;
 import Up.Power.Rivalidade;
 import Up.Power.rivalidade.RivalidadeId;
@@ -11,7 +9,6 @@ import Up.Power.rivalidade.RivalidadeRepository;
 import Up.Power.perfil.PerfilId;
 import org.springframework.stereotype.Repository;
 
-import java.util.List;
 import java.util.Optional;
 
 @Entity

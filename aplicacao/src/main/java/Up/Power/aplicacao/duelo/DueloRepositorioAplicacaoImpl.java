@@ -1,7 +1,7 @@
 package Up.Power.aplicacao.duelo;
 
 import Up.Power.avatar.AvatarRepository;
-import Up.Power.duelo.Duelo;
+import Up.Power.Duelo;
 import Up.Power.duelo.DueloId;
 import Up.Power.duelo.DueloRepository;
 import Up.Power.perfil.PerfilId;
