@@ -58,6 +58,9 @@ interface JpaFrequenciaRepository extends JpaRepository<FrequenciaJpa, Integer> 
 
     @Query("SELECT f FROM FrequenciaJpa f WHERE f.id = :id AND f.dataDePresenca = :data")
     Optional<FrequenciaJpa> buscarPorData(Integer id, LocalDateTime data);
+
+    @Query("SELECT f FROM FrequenciaJpa f WHERE f.perfilId = :perfilId")
+    List<FrequenciaJpa> findByPerfilId(Integer perfilId);
 }
 
 @Repository
@@ -83,4 +86,14 @@ class FrequenciaRepositoryImpl implements FrequenciaRepository {
                 .map(mapper::toDomain)
                 .orElse(null);
     }
+
+    @Override
+    public List<Frequencia> listarPorPerfil(Integer perfilId) {
+        return jpaRepo.findByPerfilId(perfilId)
+                .stream()
+                .map(mapper::toDomain)
+                .collect(Collectors.toList());
+    }
+
+
 }

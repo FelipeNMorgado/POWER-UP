@@ -83,14 +83,15 @@ interface JpaFeedbackRepository extends JpaRepository<FeedbackJpa, Integer> {
 class FeedbackRepositoryImpl implements FeedbackRepository {
 
     private final JpaFeedbackRepository jpaRepo;
+    private final FeedbackMapper mapper;
 
-    public FeedbackRepositoryImpl(JpaFeedbackRepository jpaRepo) {
+    public FeedbackRepositoryImpl(JpaFeedbackRepository jpaRepo, FeedbackMapper mapper) {
         this.jpaRepo = jpaRepo;
+        this.mapper = mapper;
     }
 
     @Override
     public Feedback salvar(Feedback feedback) {
-        FeedbackMapper mapper = null;
         FeedbackJpa entity = mapper.toEntity(feedback);
         FeedbackJpa saved = jpaRepo.save(entity);
         return mapper.toDomain(saved);
