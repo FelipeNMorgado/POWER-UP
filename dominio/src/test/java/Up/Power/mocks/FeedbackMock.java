@@ -24,9 +24,10 @@ public class FeedbackMock implements FeedbackRepository {
     }
 
     @Override
-    public void salvar(Feedback feedback) {
+    public Feedback salvar(Feedback feedback) {
         banco.put(feedback.getId(), feedback);
         System.out.println("Feedback salvo/atualizado: " + feedback.getId());
+        return feedback;
     }
 
     @Override
