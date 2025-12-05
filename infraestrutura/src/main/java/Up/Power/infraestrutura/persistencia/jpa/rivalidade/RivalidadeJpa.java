@@ -11,6 +11,7 @@ import Up.Power.rivalidade.RivalidadeRepository;
 import Up.Power.perfil.PerfilId;
 import org.springframework.stereotype.Repository;
 
+import java.util.List;
 import java.util.Optional;
 
 @Entity
@@ -59,18 +60,6 @@ public class RivalidadeJpa {
     public void setDataConvite(LocalDateTime dataConvite) {this.dataConvite = dataConvite;}
     public void setInicio(LocalDateTime inicio) {this.inicio = inicio;}
     public void setFim(LocalDateTime fim) {this.fim = fim;}
-}
-
-
-interface JpaRivalidadeRepository extends JpaRepository<RivalidadeJpa, Integer> {
-
-    @Query("""
-        SELECT CASE WHEN COUNT(r) > 0 THEN true ELSE false END
-        FROM RivalidadeJpa r
-        WHERE (r.perfil1Id = :perfilId OR r.perfil2Id = :perfilId)
-          AND r.status = 'ATIVA'
-    """)
-    boolean existsActiveRivalryForPerfil(Integer perfilId);
 }
 
 
