@@ -40,6 +40,11 @@ public class FrequenciaMock implements FrequenciaRepository {
                 .orElse(null);
     }
 
+    @Override
+    public List<Frequencia> listarPorPerfil(Integer perfilId) {
+        return List.of();
+    }
+
     // Extra útil para testes: retorna todas as frequências
     public List<Frequencia> listarTodas() {
         return banco.values().stream()
