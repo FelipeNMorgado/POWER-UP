@@ -27,8 +27,10 @@ public class Frequencia {
     public TreinoId getTreino() { return treino; }
     public LocalDateTime getDataDePresenca() { return dataDePresenca; }
     public String getFoto() { return foto; }
+    public PlanoTId getPlanoTId() { return planoTreino; }
 
     public void setFoto(String foto) { this.foto = foto; }
+    public void setPlanoT(PlanoTId planoTId) { this.planoTreino = planoTreino; }
 }
 
 
