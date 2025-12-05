@@ -1,24 +1,42 @@
 package Up.Power.aplicacao.rivalidade;
 
+import Up.Power.aplicacao.rivalidade.commands.*;
+import Up.Power.aplicacao.rivalidade.operacoes.*;
 import org.springframework.stereotype.Service;
-
-import java.util.List;
-import java.util.Optional;
 
 @Service
 public class RivalidadeServicoAplicacao {
 
-    private final RivalidadeRepositorioAplicacao repo;
+    private final EnviarConviteOperacao enviarConvite;
+    private final AceitarRivalidadeOperacao aceitar;
+    private final RecusarRivalidadeOperacao recusar;
+    private final FinalizarRivalidadeOperacao finalizar;
 
-    public RivalidadeServicoAplicacao(RivalidadeRepositorioAplicacao repo) {
-        this.repo = repo;
+    public RivalidadeServicoAplicacao(
+            EnviarConviteOperacao enviarConvite,
+            AceitarRivalidadeOperacao aceitar,
+            RecusarRivalidadeOperacao recusar,
+            FinalizarRivalidadeOperacao finalizar
+    ) {
+        this.enviarConvite = enviarConvite;
+        this.aceitar = aceitar;
+        this.recusar = recusar;
+        this.finalizar = finalizar;
     }
 
-    public Optional<RivalidadeResumo> obter(Integer id) {
-        return repo.obterPorId(id);
+    public RivalidadeResumo enviar(EnviarConviteCommand c) {
+        return enviarConvite.executar(c);
     }
 
-    public List<RivalidadeResumo> listarPorPerfil(Integer perfilId) {
-        return repo.listarPorPerfil(perfilId);
+    public RivalidadeResumo aceitar(AceitarRivalidadeCommand c) {
+        return aceitar.executar(c);
+    }
+
+    public RivalidadeResumo recusar(RecusarRivalidadeCommand c) {
+        return recusar.executar(c);
+    }
+
+    public RivalidadeResumo finalizar(FinalizarRivalidadeCommand c) {
+        return finalizar.executar(c);
     }
 }
