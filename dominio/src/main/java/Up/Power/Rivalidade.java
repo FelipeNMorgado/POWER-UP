@@ -26,6 +26,20 @@ public class Rivalidade {
         this.dataConvite = LocalDateTime.now();
     }
 
+    public Rivalidade(RivalidadeId id, PerfilId perfil1, PerfilId perfil2, ExercicioId exercicio, LocalDateTime dataConvite,
+            LocalDateTime inicio,
+            LocalDateTime fim,
+            StatusRivalidade status) {
+        this.id = id;
+        this.perfil1 = perfil1;
+        this.perfil2 = perfil2;
+        this.exercicio = exercicio;
+        this.dataConvite = dataConvite;
+        this.inicio = inicio;
+        this.fim = fim;
+        this.status = status;
+    }
+
     public void finalizar() {
         if (this.status == StatusRivalidade.ATIVA) {
             this.status = StatusRivalidade.FINALIZADA;
