@@ -70,11 +70,11 @@ interface JpaDueloRepository extends JpaRepository<DueloJpa, Integer> {
 
 
 @Repository
-class DueloRepositoryJpa implements DueloRepository {
+class DueloRepositoryImpl implements DueloRepository {
 
     private final JpaDueloRepository repo;
 
-    public DueloRepositoryJpa(JpaDueloRepository repo) {
+    public DueloRepositoryImpl(JpaDueloRepository repo) {
         this.repo = repo;
     }
 
