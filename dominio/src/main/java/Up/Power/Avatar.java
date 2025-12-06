@@ -47,4 +47,8 @@ public class Avatar {
     public void setForca(int forca) { // Setter adicionado
         this.forca = forca;
     }
+
+    public void setDinheiro(int dinheiro) {
+        this.dinheiro = dinheiro;
+    }
 }

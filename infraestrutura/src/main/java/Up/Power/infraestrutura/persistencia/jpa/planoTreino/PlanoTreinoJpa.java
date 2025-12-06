@@ -19,7 +19,7 @@ import java.util.List;
 // =====================================
 
 @Embeddable
-public class TreinoEmbedded {
+class TreinoEmbedded {
     @Column(name = "treino_id")
     private Integer treinoId;
     
@@ -178,8 +178,8 @@ class PlanoTreinoRepositoryImpl implements PlanoTreinoRepository {
     @Override
     public List<PlanoTreino> listar(PlanoTId id) {
         if (id != null) {
-            return repo.findById(id.getId())
-                    .stream()
+        return repo.findById(id.getId())
+                .stream()
                     .map(mapper::toDomain)
                     .toList();
         }

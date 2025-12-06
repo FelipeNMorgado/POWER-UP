@@ -23,6 +23,11 @@
             <version>3.5.7</version>
         </dependency>
         <dependency>
+            <groupId>com.mysql</groupId>
+            <artifactId>mysql-connector-j</artifactId>
+            <version>9.0.0</version>
+        </dependency>
+        <dependency>
             <groupId>org.example</groupId>
             <artifactId>dominio</artifactId>
             <version>1.0-SNAPSHOT</version>

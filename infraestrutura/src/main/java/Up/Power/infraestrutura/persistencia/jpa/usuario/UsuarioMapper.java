@@ -8,6 +8,7 @@ import java.time.LocalDate;
 import java.time.ZoneId;
 import java.util.Date;
 
+@Component
 public class UsuarioMapper {
 
     private Date toDate(LocalDate localDate) {

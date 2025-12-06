@@ -106,7 +106,7 @@ public class PlanoTreinoServicoAplicacao {
                 .orElseThrow(() -> new IllegalArgumentException("Plano não encontrado"));
         
         Treino treinoParaRemover = plano.getTreinos().stream()
-                .filter(t -> t.getId().getId().equals(treinoId))
+                .filter(t -> t.getId().getId() == treinoId)
                 .findFirst()
                 .orElseThrow(() -> new IllegalArgumentException("Treino não encontrado no plano"));
         
@@ -130,7 +130,7 @@ public class PlanoTreinoServicoAplicacao {
                 .orElseThrow(() -> new IllegalArgumentException("Plano não encontrado"));
         
         Treino treinoAntigo = plano.getTreinos().stream()
-                .filter(t -> t.getId().getId().equals(treinoId))
+                .filter(t -> t.getId().getId() == treinoId)
                 .findFirst()
                 .orElseThrow(() -> new IllegalArgumentException("Treino não encontrado"));
         
