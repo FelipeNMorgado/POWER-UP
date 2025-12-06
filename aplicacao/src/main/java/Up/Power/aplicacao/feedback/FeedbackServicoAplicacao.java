@@ -1,33 +1,27 @@
 package Up.Power.aplicacao.feedback;
 
-import Up.Power.Email;
 import Up.Power.Feedback;
-import Up.Power.feedback.FeedbackRepository;
 import Up.Power.feedback.FeedbackId;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
-import java.util.stream.Collectors;
 
 @Service
 public class FeedbackServicoAplicacao {
 
-    private final FeedbackRepository repo;
+    private final FeedbackRepositorioAplicacao repo;
 
-    public FeedbackServicoAplicacao(FeedbackRepository repo) {
+    public FeedbackServicoAplicacao(FeedbackRepositorioAplicacao repo) {
         this.repo = repo;
     }
 
     public FeedbackResumo obter(Integer id) {
-        var feedback = repo.obter(new FeedbackId(id));
+        var feedback = repo.obter(new FeedbackId(id).getId());
         return feedback == null ? null : toResumo(feedback);
     }
 
     public List<FeedbackResumo> listarPorUsuario(String email) {
-        return repo.listarFeedbacks(null, new Email(email))
-                .stream()
-                .map(this::toResumo)
-                .collect(Collectors.toList());
+        return repo.listarPorUsuario(email);
     }
 
     private FeedbackResumo toResumo(Feedback f) {
