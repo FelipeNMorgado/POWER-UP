@@ -8,6 +8,10 @@ import Up.Power.Email;
 import Up.Power.Perfil;
 import Up.Power.perfil.PerfilId;
 import Up.Power.perfil.PerfilRepository;
+import Up.Power.infraestrutura.persistencia.jpa.planoTreino.PlanoTreinoJpa;
+import Up.Power.infraestrutura.persistencia.jpa.consquista.ConquistaJpa;
+import Up.Power.infraestrutura.persistencia.jpa.meta.MetaJpa;
+import Up.Power.infraestrutura.persistencia.jpa.usuario.UsuarioJpa;
 
 import java.time.LocalDateTime;
 import java.util.List;
@@ -36,20 +40,55 @@ public class PerfilJpa {
     @Column
     private String foto;
 
-    // Nota: As listas (planosTreinos, conquistas, metas, amigos) são relações complexas
-    // que podem ser carregadas via queries específicas quando necessário
-    // Por enquanto, vamos persistir apenas os campos principais
+    // Relacionamentos ManyToMany
+    @ManyToMany
+    @JoinTable(
+            name = "perfil_plano_treino",
+            joinColumns = @JoinColumn(name = "perfil_id"),
+            inverseJoinColumns = @JoinColumn(name = "plano_treino_id")
+    )
+    private List<PlanoTreinoJpa> planosTreinos;
+
+    @ManyToMany
+    @JoinTable(
+            name = "perfil_conquista",
+            joinColumns = @JoinColumn(name = "perfil_id"),
+            inverseJoinColumns = @JoinColumn(name = "conquista_id")
+    )
+    private List<ConquistaJpa> conquistas;
+
+    @ManyToMany
+    @JoinTable(
+            name = "perfil_meta",
+            joinColumns = @JoinColumn(name = "perfil_id"),
+            inverseJoinColumns = @JoinColumn(name = "meta_id")
+    )
+    private List<MetaJpa> metas;
+
+    @ManyToMany
+    @JoinTable(
+            name = "perfil_amigos",
+            joinColumns = @JoinColumn(name = "perfil_id"),
+            inverseJoinColumns = @JoinColumn(name = "amigo_perfil_id")
+    )
+    private List<PerfilJpa> amigos;
 
     public PerfilJpa() {}
 
     public PerfilJpa(Integer id, String usuarioEmail, String username,
-                     Boolean estado, LocalDateTime criacao, String foto) {
+                     Boolean estado, LocalDateTime criacao, String foto,
+                     List<PlanoTreinoJpa> planosTreinos, List<ConquistaJpa> conquistas,
+                     List<MetaJpa> metas, List<PerfilJpa> amigos) {
         this.id = id;
         this.usuarioEmail = usuarioEmail;
         this.username = username;
         this.estado = estado;
         this.criacao = criacao;
         this.foto = foto;
+        this.planosTreinos = planosTreinos;
+        this.conquistas = conquistas;
+        this.metas = metas;
+        this.amigos = amigos;
     }
 
     // Getters
@@ -59,6 +98,10 @@ public class PerfilJpa {
     public Boolean getEstado() { return estado; }
     public LocalDateTime getCriacao() { return criacao; }
     public String getFoto() { return foto; }
+    public List<PlanoTreinoJpa> getPlanosTreinos() { return planosTreinos; }
+    public List<ConquistaJpa> getConquistas() { return conquistas; }
+    public List<MetaJpa> getMetas() { return metas; }
+    public List<PerfilJpa> getAmigos() { return amigos; }
 
     // Setters
     public void setId(Integer id) { this.id = id; }
@@ -67,6 +110,10 @@ public class PerfilJpa {
     public void setEstado(Boolean estado) { this.estado = estado; }
     public void setCriacao(LocalDateTime criacao) { this.criacao = criacao; }
     public void setFoto(String foto) { this.foto = foto; }
+    public void setPlanosTreinos(List<PlanoTreinoJpa> planosTreinos) { this.planosTreinos = planosTreinos; }
+    public void setConquistas(List<ConquistaJpa> conquistas) { this.conquistas = conquistas; }
+    public void setMetas(List<MetaJpa> metas) { this.metas = metas; }
+    public void setAmigos(List<PerfilJpa> amigos) { this.amigos = amigos; }
 }
 
 interface JpaPerfilRepository extends JpaRepository<PerfilJpa, Integer> {
@@ -77,22 +124,24 @@ interface JpaPerfilRepository extends JpaRepository<PerfilJpa, Integer> {
 class PerfilRepositoryImpl implements PerfilRepository {
 
     private final JpaPerfilRepository repo;
+    private final PerfilMapper mapper;
 
-    public PerfilRepositoryImpl(JpaPerfilRepository repo) {
+    public PerfilRepositoryImpl(JpaPerfilRepository repo, PerfilMapper mapper) {
         this.repo = repo;
+        this.mapper = mapper;
     }
 
     @Override
     public Optional<Perfil> findById(PerfilId id) {
         return repo.findById(id.getId())
-                .map(PerfilMapper::toDomain);
+                .map(mapper::toDomain);
     }
 
     @Override
     public Perfil save(Perfil perfil) {
-        PerfilJpa entity = PerfilMapper.toEntity(perfil);
+        PerfilJpa entity = mapper.toEntity(perfil);
         PerfilJpa saved = repo.save(entity);
-        return PerfilMapper.toDomain(saved);
+        return mapper.toDomain(saved);
     }
 
     @Override

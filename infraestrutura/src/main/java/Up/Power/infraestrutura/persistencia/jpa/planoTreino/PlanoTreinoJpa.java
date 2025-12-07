@@ -6,73 +6,16 @@ import Up.Power.PlanoTreino;
 import Up.Power.planoTreino.Dias;
 import Up.Power.planoTreino.PlanoTId;
 import Up.Power.planoTreino.PlanoTreinoRepository;
-import Up.Power.treino.TipoTreino;
+import Up.Power.infraestrutura.persistencia.jpa.treino.TreinoJpa;
+import Up.Power.infraestrutura.persistencia.jpa.treino.TreinoMapper;
+import Up.Power.infraestrutura.persistencia.jpa.treino.JpaTreinoRepository;
 
 import jakarta.persistence.*;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
 
 import java.util.List;
-
-// =====================================
-// =========== EMBEDDABLE ==============
-// =====================================
-
-@Embeddable
-class TreinoEmbedded {
-    @Column(name = "treino_id")
-    private Integer treinoId;
-    
-    @Column(name = "exercicio_id")
-    private Integer exercicioId;
-    
-    @Enumerated(EnumType.STRING)
-    @Column(name = "tipo_treino")
-    private TipoTreino tipo;
-    
-    @Column(name = "repeticoes")
-    private Integer repeticoes;
-    
-    @Column(name = "peso")
-    private Float peso;
-    
-    @Column(name = "series")
-    private Integer series;
-    
-    @Column(name = "recorde_carga")
-    private Float recordeCarga;
-
-    public TreinoEmbedded() {}
-
-    public TreinoEmbedded(Integer treinoId, Integer exercicioId, TipoTreino tipo,
-                         Integer repeticoes, Float peso, Integer series, Float recordeCarga) {
-        this.treinoId = treinoId;
-        this.exercicioId = exercicioId;
-        this.tipo = tipo;
-        this.repeticoes = repeticoes;
-        this.peso = peso;
-        this.series = series;
-        this.recordeCarga = recordeCarga;
-    }
-
-    // Getters
-    public Integer getTreinoId() { return treinoId; }
-    public Integer getExercicioId() { return exercicioId; }
-    public TipoTreino getTipo() { return tipo; }
-    public Integer getRepeticoes() { return repeticoes; }
-    public Float getPeso() { return peso; }
-    public Integer getSeries() { return series; }
-    public Float getRecordeCarga() { return recordeCarga; }
-
-    // Setters
-    public void setTreinoId(Integer treinoId) { this.treinoId = treinoId; }
-    public void setExercicioId(Integer exercicioId) { this.exercicioId = exercicioId; }
-    public void setTipo(TipoTreino tipo) { this.tipo = tipo; }
-    public void setRepeticoes(Integer repeticoes) { this.repeticoes = repeticoes; }
-    public void setPeso(Float peso) { this.peso = peso; }
-    public void setSeries(Integer series) { this.series = series; }
-    public void setRecordeCarga(Float recordeCarga) { this.recordeCarga = recordeCarga; }
-}
+import java.util.stream.Collectors;
 
 // =====================================
 // =========== ENTITY ==================
@@ -105,18 +48,19 @@ public class PlanoTreinoJpa {
     @Enumerated(EnumType.STRING)
     private List<Dias> dias;
 
-    @ElementCollection
-    @CollectionTable(
+    @ManyToMany
+    @JoinTable(
             name = "plano_treino_treinos",
-            joinColumns = @JoinColumn(name = "plano_id")
+            joinColumns = @JoinColumn(name = "plano_id"),
+            inverseJoinColumns = @JoinColumn(name = "treino_id")
     )
-    private List<TreinoEmbedded> treinos;
+    private List<TreinoJpa> treinos;
 
     public PlanoTreinoJpa() {}
 
     public PlanoTreinoJpa(Integer id, String usuarioEmail, String nome,
                           EstadoPlano estado, List<Dias> dias,
-                          List<TreinoEmbedded> treinos) {
+                          List<TreinoJpa> treinos) {
         this.id = id;
         this.usuarioEmail = usuarioEmail;
         this.nome = nome;
@@ -131,7 +75,7 @@ public class PlanoTreinoJpa {
     public String getNome() { return nome; }
     public EstadoPlano getEstado() { return estado; }
     public List<Dias> getDias() { return dias; }
-    public List<TreinoEmbedded> getTreinos() { return treinos; }
+    public List<TreinoJpa> getTreinos() { return treinos; }
 
     // Setters
     public void setId(Integer id) { this.id = id; }
@@ -139,7 +83,7 @@ public class PlanoTreinoJpa {
     public void setNome(String nome) { this.nome = nome; }
     public void setEstado(EstadoPlano estado) { this.estado = estado; }
     public void setDias(List<Dias> dias) { this.dias = dias; }
-    public void setTreinos(List<TreinoEmbedded> treinos) { this.treinos = treinos; }
+    public void setTreinos(List<TreinoJpa> treinos) { this.treinos = treinos; }
 }
 
 // =====================================
@@ -157,16 +101,29 @@ interface JpaPlanoTreinoRepository extends JpaRepository<PlanoTreinoJpa, Integer
 class PlanoTreinoRepositoryImpl implements PlanoTreinoRepository {
 
     private final JpaPlanoTreinoRepository repo;
+    private final JpaTreinoRepository treinoRepo;
     private final PlanoTreinoMapper mapper;
 
-    public PlanoTreinoRepositoryImpl(JpaPlanoTreinoRepository repo, PlanoTreinoMapper mapper) {
+    public PlanoTreinoRepositoryImpl(JpaPlanoTreinoRepository repo, 
+                                     JpaTreinoRepository treinoRepo,
+                                     PlanoTreinoMapper mapper) {
         this.repo = repo;
+        this.treinoRepo = treinoRepo;
         this.mapper = mapper;
     }
 
     @Override
     public void salvar(PlanoTreino plano) {
-        PlanoTreinoJpa entity = mapper.toEntity(plano);
+        // Primeiro, salvar todos os treinos na tabela treino
+        List<TreinoJpa> treinosJpa = plano.getTreinos().stream()
+                .map(treino -> {
+                    TreinoJpa treinoJpa = TreinoMapper.toEntity(treino);
+                    return treinoRepo.save(treinoJpa); // Salva e retorna com ID gerado
+                })
+                .collect(Collectors.toList());
+        
+        // Depois, criar o plano com os treinos já salvos
+        PlanoTreinoJpa entity = mapper.toEntity(plano, treinosJpa);
         repo.save(entity);
     }
 

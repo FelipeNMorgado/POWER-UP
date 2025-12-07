@@ -4,10 +4,10 @@ import Up.Power.Treino;
 import Up.Power.exercicio.ExercicioId;
 import Up.Power.treino.TreinoId;
 
-class TreinoMapper {
+public class TreinoMapper {
 
     // DOMAIN → ENTITY
-    static TreinoJpa toEntity(Treino domain) {
+    public static TreinoJpa toEntity(Treino domain) {
         return new TreinoJpa(
                 domain.getId().getId(),
                 domain.getExercicio().getId(),
@@ -22,7 +22,7 @@ class TreinoMapper {
     }
 
     // ENTITY → DOMAIN
-    static Treino toDomain(TreinoJpa entity) {
+    public static Treino toDomain(TreinoJpa entity) {
 
         Treino domain = new Treino(
                 new TreinoId(entity.getId()),

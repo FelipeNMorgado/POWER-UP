@@ -34,19 +34,15 @@ import java.util.List;
         @Column(nullable = false)
         private String nome;
 
-        @Column(nullable = false)
-        private boolean concluida;
-
         public ConquistaJpa() {}
 
         public ConquistaJpa(Integer id, Integer exercicioId, Integer treinoId,
-                            String descricao, String nome, boolean concluida) {
+                            String descricao, String nome) {
             this.id = id;
             this.exercicioId = exercicioId;
             this.treinoId = treinoId;
             this.descricao = descricao;
             this.nome = nome;
-            this.concluida = concluida;
         }
 
         public Integer getId() { return id; }
@@ -54,23 +50,17 @@ import java.util.List;
         public Integer getTreinoId() { return treinoId; }
         public String getDescricao() { return descricao; }
         public String getNome() { return nome; }
-        public boolean isConcluida() { return concluida; }
 
         public void setId(Integer id) { this.id = id; }
         public void setExercicioId(Integer exercicioId) { this.exercicioId = exercicioId; }
         public void setTreinoId(Integer treinoId) { this.treinoId = treinoId; }
         public void setDescricao(String descricao) { this.descricao = descricao; }
         public void setNome(String nome) { this.nome = nome; }
-        public void setConcluida(boolean concluida) { this.concluida = concluida; }
     }
 
 
 
     interface JpaConquistaRepository extends JpaRepository<ConquistaJpa, Integer> {
-
-        List<ConquistaJpa> findByConcluidaFalse();
-
-        List<ConquistaJpa> findByConcluidaTrue();
     }
 
     @Repository
@@ -94,13 +84,15 @@ import java.util.List;
         }
         @Override
         public void salvar(Conquista conquista) {
-            ConquistaJpa entity = ConquistaMapper.toEntity(conquista, false);
+            ConquistaJpa entity = ConquistaMapper.toEntity(conquista);
             repo.save(entity);
         }
 
         @Override
         public List<Conquista> listarAtivas() {
-            return repo.findByConcluidaFalse()
+            // Sem a coluna concluida, retorna todas as conquistas
+            // A lógica de "ativa" pode ser gerenciada via relacionamento perfil_conquista
+            return repo.findAll()
                     .stream()
                     .map(ConquistaMapper::toDomain)
                     .toList();
@@ -108,13 +100,16 @@ import java.util.List;
 
         @Override
         public void marcarComoConcluida(Conquista conquista) {
-            ConquistaJpa entity = ConquistaMapper.toEntity(conquista, true);
-            repo.save(entity);
+            // Sem a coluna concluida, apenas salva a conquista
+            // A marcação de "concluída" deve ser feita via relacionamento perfil_conquista
+            salvar(conquista);
         }
 
         @Override
         public List<Conquista> listarConcluidas() {
-            return repo.findByConcluidaTrue()
+            // Sem a coluna concluida, retorna todas as conquistas
+            // A lógica de "concluída" pode ser gerenciada via relacionamento perfil_conquista
+            return repo.findAll()
                     .stream()
                     .map(ConquistaMapper::toDomain)
                     .toList();

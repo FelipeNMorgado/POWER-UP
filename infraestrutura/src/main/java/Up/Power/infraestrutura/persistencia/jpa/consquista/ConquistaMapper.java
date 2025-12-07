@@ -7,14 +7,13 @@ import Up.Power.treino.TreinoId;
 
 public class ConquistaMapper {
 
-    public static ConquistaJpa toEntity(Conquista c, boolean concluida) {
+    public static ConquistaJpa toEntity(Conquista c) {
         return new ConquistaJpa(
                 c.getId() == null ? null : c.getId().getId(),
                 c.getExercicio().getId(),
                 c.getTreino().getId(),
                 c.getDescricao(),
-                c.getNome(),
-                concluida
+                c.getNome()
         );
     }
 

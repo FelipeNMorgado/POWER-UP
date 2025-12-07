@@ -83,7 +83,6 @@ public class TreinoJpa {
 }
 
 
-interface JpaTreinoRepository extends JpaRepository<TreinoJpa, Integer> {}
 
 
 
