@@ -1,10 +1,10 @@
 package Up.Power;
 
+import java.util.Date;
+
 import Up.Power.exercicio.ExercicioId;
 import Up.Power.meta.MetaId;
 import Up.Power.treino.TreinoId;
-
-import java.util.Date;
 
 public class Meta {
 
@@ -45,6 +45,18 @@ public class Meta {
     }
 
     public Date getFim() {
+        return fim;
+    }
+
+    public ExercicioId getExercicioId() {
+        return exercicio;
+    }
+
+    public TreinoId getTreinoId() {
+        return treino;
+    }
+
+    public Date getDataFim() {
         return fim;
     }
 }
