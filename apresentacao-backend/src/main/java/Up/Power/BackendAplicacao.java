@@ -5,7 +5,15 @@ import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.boot.autoconfigure.domain.EntityScan;
 import org.springframework.context.annotation.Bean;
 import org.springframework.data.jpa.repository.config.EnableJpaRepositories;
+import Up.Power.avatar.AvatarRepository;
+import Up.Power.avatar.AvatarService;
+import Up.Power.avatar.ExperienceService;
+import Up.Power.avatar.ExperienceServiceImpl;
 import Up.Power.perfil.PerfilRepository;
+import Up.Power.planoTreino.PlanoTreinoRepository;
+import Up.Power.planoTreino.PlanoTreinoService;
+import Up.Power.meta.RewardService;
+import Up.Power.meta.RewardServiceImpl;
 import Up.Power.rivalidade.RivalidadeRepository;
 import Up.Power.rivalidade.RivalidadeService;
 
@@ -26,6 +34,26 @@ public class BackendAplicacao {
             RivalidadeRepository rivalidadeRepository,
             PerfilRepository perfilRepository) {
         return new RivalidadeService(rivalidadeRepository, perfilRepository);
+    }
+    
+    @Bean
+    public PlanoTreinoService planoTreinoService(PlanoTreinoRepository planoTreinoRepository) {
+        return new PlanoTreinoService(planoTreinoRepository);
+    }
+    
+    @Bean
+    public AvatarService avatarService(AvatarRepository avatarRepository) {
+        return new AvatarService(avatarRepository);
+    }
+    
+    @Bean
+    public ExperienceService experienceService() {
+        return new ExperienceServiceImpl();
+    }
+    
+    @Bean
+    public RewardService rewardService() {
+        return new RewardServiceImpl();
     }
     
     public static void main(String[] args) {
