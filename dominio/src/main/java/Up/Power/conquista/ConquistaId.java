@@ -3,7 +3,7 @@ package Up.Power.conquista;
 import java.util.Objects;
 
 public class ConquistaId {
-    private int id;
+    private final int id;
 
     public ConquistaId(int id) { this.id = id; }
     public int getId() { return id; }
