@@ -38,6 +38,10 @@ public class PlanoNutricional {
         this.refeicoes.addAll(refeicoes);
     }
 
+    public void definirCaloriasTotais(int calorias) {
+        this.caloriasTotais = calorias;
+    }
+
 }
 
 
