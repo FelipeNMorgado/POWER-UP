@@ -5,9 +5,7 @@ import Up.Power.aplicacao.planoNutricional.commands.CriarPlanoNutricionalCommand
 import Up.Power.aplicacao.planoNutricional.commands.ModificarPlanoNutricionalCommand;
 import Up.Power.planoNutricional.Objetivo;
 import Up.Power.aplicacao.planoNutricional.service.PlanoNutricionalApplicationService;
-import org.springframework.stereotype.Component;
-
-@Component
+// Removido @Component - será criado manualmente na configuração
 public class CicloObjetivoDecorator extends PlanoNutricionalDecorator {
 
     public CicloObjetivoDecorator(PlanoNutricionalApplicationService next) {

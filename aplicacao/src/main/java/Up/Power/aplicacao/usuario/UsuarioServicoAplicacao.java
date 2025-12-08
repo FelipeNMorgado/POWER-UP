@@ -45,20 +45,17 @@ public class UsuarioServicoAplicacao implements UsuarioRepositorioAplicacao {
         Usuario remetente = repo.obter(new Email(emailRemetente));
         Usuario destinatario = repo.obter(new Email(emailDestinatario));
 
-        return amizadeService.enviarConvite(remetente, destinatario);
-    }
-
-    public String aceitarConvite(String email1, String email2) {
-        Usuario u1 = repo.obter(new Email(email1));
-        Usuario u2 = repo.obter(new Email(email2));
-
-        String resultado = amizadeService.aceitarConvite(u1, u2);
-
-        repo.salvar(u1);
-        repo.salvar(u2);
-
+        String resultado = amizadeService.enviarConvite(remetente, destinatario);
+        
+        // Salvar ambos os usuários com o novo amizadeId
+        repo.salvar(remetente);
+        repo.salvar(destinatario);
+        
         return resultado;
     }
+
+    // Método removido - amizade é criada automaticamente ao enviar convite
+    // Não é mais necessário aceitar convites
 
     public String removerAmizade(String email1, String email2) {
         Usuario u1 = repo.obter(new Email(email1));

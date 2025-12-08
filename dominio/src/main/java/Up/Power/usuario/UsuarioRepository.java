@@ -6,6 +6,7 @@ import Up.Power.Usuario;
 public interface UsuarioRepository {
     Usuario obter(Email usuarioEmail);
     void salvar(Usuario usuario);
+    int obterProximoAmizadeId();
 }
 
 

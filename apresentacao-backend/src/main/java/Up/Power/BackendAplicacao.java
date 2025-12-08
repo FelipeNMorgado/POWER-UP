@@ -16,6 +16,8 @@ import Up.Power.meta.RewardService;
 import Up.Power.meta.RewardServiceImpl;
 import Up.Power.rivalidade.RivalidadeRepository;
 import Up.Power.rivalidade.RivalidadeService;
+import Up.Power.usuario.AmizadeService;
+import Up.Power.usuario.UsuarioRepository;
 
 /**
  * Classe principal da aplicação Spring Boot.
@@ -23,7 +25,8 @@ import Up.Power.rivalidade.RivalidadeService;
  */
 @SpringBootApplication(scanBasePackages = {
     "Up.Power.aplicacao",
-    "Up.Power.infraestrutura"
+    "Up.Power.infraestrutura",
+    "Up.Power.apresentacao"
 })
 @EntityScan(basePackages = "Up.Power.infraestrutura.persistencia.jpa")
 @EnableJpaRepositories(basePackages = "Up.Power.infraestrutura.persistencia.jpa")
@@ -54,6 +57,11 @@ public class BackendAplicacao {
     @Bean
     public RewardService rewardService() {
         return new RewardServiceImpl();
+    }
+    
+    @Bean
+    public AmizadeService amizadeService(UsuarioRepository usuarioRepository) {
+        return new AmizadeService(usuarioRepository);
     }
     
     public static void main(String[] args) {

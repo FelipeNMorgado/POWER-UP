@@ -7,9 +7,7 @@ import Up.Power.aplicacao.planoNutricional.commands.ModificarPlanoNutricionalCom
 import Up.Power.aplicacao.planoNutricional.service.PlanoNutricionalApplicationService;
 import Up.Power.refeicao.RefeicaoId;
 import Up.Power.refeicao.RefeicaoRepository;
-import org.springframework.stereotype.Component;
-
-@Component
+// Removido @Component - será criado manualmente na configuração
 public class CalculoCaloriasDecorator extends PlanoNutricionalDecorator {
 
     private final RefeicaoRepository refeicaoRepository;

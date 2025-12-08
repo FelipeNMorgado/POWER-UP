@@ -27,8 +27,14 @@ public class PerfilMapper {
                              List<ConquistaJpa> conquistasJpa,
                              List<MetaJpa> metasJpa,
                              List<PerfilJpa> amigosJpa) {
+        // Se o ID for null ou 0, trata como null para que o Hibernate gere um novo ID
+        Integer id = null;
+        if (perfil.getId() != null && perfil.getId().getId() > 0) {
+            id = perfil.getId().getId();
+        }
+        
         return new PerfilJpa(
-                perfil.getId() == null ? null : perfil.getId().getId(),
+                id,
                 perfil.getUsuarioEmail().getCaracteres(),
                 perfil.getUsername(),
                 perfil.isEstado(),
@@ -47,8 +53,15 @@ public class PerfilMapper {
     }
 
     public Perfil toDomain(PerfilJpa entity) {
+        if (entity == null) {
+            throw new IllegalArgumentException("PerfilJpa não pode ser null");
+        }
+        
+        // Se o ID for null, usar 0 temporariamente (será atualizado após salvar)
+        PerfilId perfilId = entity.getId() != null ? new PerfilId(entity.getId()) : new PerfilId(0);
+        
         Perfil perfil = new Perfil(
-                new PerfilId(entity.getId()),
+                perfilId,
                 new Email(entity.getUsuarioEmail()),
                 entity.getUsername()
         );
@@ -57,13 +70,13 @@ public class PerfilMapper {
         perfil.setFoto(entity.getFoto());
         
         // Converter relacionamentos se existirem
-        if (entity.getConquistas() != null) {
+        if (entity.getConquistas() != null && !entity.getConquistas().isEmpty()) {
             entity.getConquistas().forEach(conquistaJpa -> {
                 perfil.adicionarConquista(ConquistaMapper.toDomain(conquistaJpa));
             });
         }
         
-        if (entity.getMetas() != null && metaMapper != null) {
+        if (entity.getMetas() != null && !entity.getMetas().isEmpty() && metaMapper != null) {
             entity.getMetas().forEach(metaJpa -> {
                 perfil.adicionarMeta(metaMapper.toDomain(metaJpa));
             });

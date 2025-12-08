@@ -4,9 +4,7 @@ import Up.Power.PlanoNutricional;
 import Up.Power.aplicacao.planoNutricional.commands.CriarPlanoNutricionalCommand;
 import Up.Power.aplicacao.planoNutricional.commands.ModificarPlanoNutricionalCommand;
 import Up.Power.aplicacao.planoNutricional.service.PlanoNutricionalApplicationService;
-import org.springframework.stereotype.Component;
-
-@Component
+// Removido @Component - será criado manualmente na configuração
 public class RegistroInfoDecorator extends PlanoNutricionalDecorator {
 
     public RegistroInfoDecorator(PlanoNutricionalApplicationService next) {

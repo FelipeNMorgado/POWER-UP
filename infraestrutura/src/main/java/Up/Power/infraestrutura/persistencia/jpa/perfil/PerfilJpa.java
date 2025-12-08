@@ -14,6 +14,7 @@ import Up.Power.infraestrutura.persistencia.jpa.meta.MetaJpa;
 import Up.Power.infraestrutura.persistencia.jpa.usuario.UsuarioJpa;
 
 import java.time.LocalDateTime;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
@@ -73,7 +74,13 @@ public class PerfilJpa {
     )
     private List<PerfilJpa> amigos;
 
-    public PerfilJpa() {}
+    public PerfilJpa() {
+        // Inicializar listas para evitar NullPointerException
+        this.planosTreinos = new ArrayList<>();
+        this.conquistas = new ArrayList<>();
+        this.metas = new ArrayList<>();
+        this.amigos = new ArrayList<>();
+    }
 
     public PerfilJpa(Integer id, String usuarioEmail, String username,
                      Boolean estado, LocalDateTime criacao, String foto,
@@ -118,48 +125,6 @@ public class PerfilJpa {
 
 interface JpaPerfilRepository extends JpaRepository<PerfilJpa, Integer> {
     Optional<PerfilJpa> findById(Integer id);
-}
-
-@Repository
-class PerfilRepositoryImpl implements PerfilRepository {
-
-    private final JpaPerfilRepository repo;
-    private final PerfilMapper mapper;
-
-    public PerfilRepositoryImpl(JpaPerfilRepository repo, PerfilMapper mapper) {
-        this.repo = repo;
-        this.mapper = mapper;
-    }
-
-    @Override
-    public Optional<Perfil> findById(PerfilId id) {
-        return repo.findById(id.getId())
-                .map(mapper::toDomain);
-    }
-
-    @Override
-    public Perfil save(Perfil perfil) {
-        PerfilJpa entity = mapper.toEntity(perfil);
-        PerfilJpa saved = repo.save(entity);
-        return mapper.toDomain(saved);
-    }
-
-    @Override
-    public boolean existsAmizade(PerfilId perfilId1, PerfilId perfilId2) {
-        // Implementação simplificada: verifica se ambos os perfis existem
-        // A lógica completa de amizade pode ser implementada via query específica
-        Optional<Perfil> perfil1 = findById(perfilId1);
-        Optional<Perfil> perfil2 = findById(perfilId2);
-        
-        if (perfil1.isEmpty() || perfil2.isEmpty()) {
-            return false;
-        }
-        
-        // Verifica se são amigos (verifica na lista de amigos de cada perfil)
-        return perfil1.get().getAmigos().stream()
-                .anyMatch(amigo -> amigo.getUsuarioEmail().equals(perfil2.get().getUsuarioEmail()))
-                || perfil2.get().getAmigos().stream()
-                .anyMatch(amigo -> amigo.getUsuarioEmail().equals(perfil1.get().getUsuarioEmail()));
-    }
+    Optional<PerfilJpa> findByUsuarioEmail(String usuarioEmail);
 }
 
