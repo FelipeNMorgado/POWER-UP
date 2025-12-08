@@ -5,17 +5,21 @@ import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.boot.autoconfigure.domain.EntityScan;
 import org.springframework.context.annotation.Bean;
 import org.springframework.data.jpa.repository.config.EnableJpaRepositories;
+
 import Up.Power.avatar.AvatarRepository;
 import Up.Power.avatar.AvatarService;
 import Up.Power.avatar.ExperienceService;
 import Up.Power.avatar.ExperienceServiceImpl;
+import Up.Power.meta.RewardService;
+import Up.Power.meta.RewardServiceImpl;
 import Up.Power.perfil.PerfilRepository;
 import Up.Power.planoTreino.PlanoTreinoRepository;
 import Up.Power.planoTreino.PlanoTreinoService;
-import Up.Power.meta.RewardService;
-import Up.Power.meta.RewardServiceImpl;
 import Up.Power.rivalidade.RivalidadeRepository;
 import Up.Power.rivalidade.RivalidadeService;
+import Up.Power.usuario.AmizadeService;
+import Up.Power.usuario.UsuarioRepository;
+import Up.Power.usuario.UsuarioService;
 
 /**
  * Classe principal da aplicação Spring Boot.
@@ -23,7 +27,8 @@ import Up.Power.rivalidade.RivalidadeService;
  */
 @SpringBootApplication(scanBasePackages = {
     "Up.Power.aplicacao",
-    "Up.Power.infraestrutura"
+    "Up.Power.infraestrutura",
+    "Up.Power.apresentacao"
 })
 @EntityScan(basePackages = "Up.Power.infraestrutura.persistencia.jpa")
 @EnableJpaRepositories(basePackages = "Up.Power.infraestrutura.persistencia.jpa")
@@ -54,6 +59,16 @@ public class BackendAplicacao {
     @Bean
     public RewardService rewardService() {
         return new RewardServiceImpl();
+    }
+
+    @Bean
+    public AmizadeService amizadeService(UsuarioRepository usuarioRepository) {
+        return new AmizadeService(usuarioRepository);
+    }
+
+    @Bean
+    public UsuarioService usuarioService(UsuarioRepository usuarioRepository) {
+        return new UsuarioService(usuarioRepository);
     }
     
     public static void main(String[] args) {
