@@ -5,19 +5,24 @@ import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.boot.autoconfigure.domain.EntityScan;
 import org.springframework.context.annotation.Bean;
 import org.springframework.data.jpa.repository.config.EnableJpaRepositories;
+
 import Up.Power.avatar.AvatarRepository;
 import Up.Power.avatar.AvatarService;
 import Up.Power.avatar.ExperienceService;
 import Up.Power.avatar.ExperienceServiceImpl;
+import Up.Power.meta.RewardService;
+import Up.Power.meta.RewardServiceImpl;
 import Up.Power.perfil.PerfilRepository;
 import Up.Power.planoTreino.PlanoTreinoRepository;
 import Up.Power.planoTreino.PlanoTreinoService;
-import Up.Power.meta.RewardService;
-import Up.Power.meta.RewardServiceImpl;
 import Up.Power.rivalidade.RivalidadeRepository;
 import Up.Power.rivalidade.RivalidadeService;
 import Up.Power.usuario.AmizadeService;
 import Up.Power.usuario.UsuarioRepository;
+<<<<<<< HEAD
+=======
+import Up.Power.usuario.UsuarioService;
+>>>>>>> f77d28b87b6f53cf6500eb270b7b86d3e980f714
 
 /**
  * Classe principal da aplicação Spring Boot.
@@ -57,6 +62,16 @@ public class BackendAplicacao {
     @Bean
     public RewardService rewardService() {
         return new RewardServiceImpl();
+    }
+
+    @Bean
+    public AmizadeService amizadeService(UsuarioRepository usuarioRepository) {
+        return new AmizadeService(usuarioRepository);
+    }
+
+    @Bean
+    public UsuarioService usuarioService(UsuarioRepository usuarioRepository) {
+        return new UsuarioService(usuarioRepository);
     }
     
     @Bean

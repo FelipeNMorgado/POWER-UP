@@ -5,6 +5,7 @@ import Up.Power.Usuario;
 import Up.Power.usuario.UsuarioRepository;
 
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 public class AmizadeMock implements UsuarioRepository {
@@ -22,6 +23,36 @@ public class AmizadeMock implements UsuarioRepository {
             throw new IllegalArgumentException("Usuário inválido");
         }
         bancoMemoria.put(usuario.getUsuarioEmail().getCaracteres(), usuario);
+    }
+
+    @Override
+    public Usuario obterPorId(Integer id) {
+        return null;
+    }
+
+    @Override
+    public boolean existePorEmail(Email usuarioEmail) {
+        return false;
+    }
+
+    @Override
+    public boolean validarSenha(Email usuarioEmail, String senha) {
+        return false;
+    }
+
+    @Override
+    public void atualizar(Usuario usuario) {
+
+    }
+
+    @Override
+    public void deletarPorId(Integer id) {
+
+    }
+
+    @Override
+    public List<Usuario> listarTodos() {
+        return List.of();
     }
 
     public boolean contem(Email email) {

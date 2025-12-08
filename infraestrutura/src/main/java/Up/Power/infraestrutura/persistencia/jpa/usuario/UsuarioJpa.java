@@ -13,10 +13,16 @@ import java.util.Optional;
 import jakarta.persistence.*;
 import org.springframework.data.jpa.repository.Query;
 import java.util.Date;
+import java.util.List;
+import java.util.stream.Collectors;
+import java.time.ZoneId;
 
 @Entity
 @Table(name = "usuario")
 public class UsuarioJpa {
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    private Integer id;
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -39,7 +45,11 @@ public class UsuarioJpa {
 
     public UsuarioJpa(Integer id, String usuarioEmail, Integer amizadeId,
                       String nome, String senha, Date dataNascimento) {
+<<<<<<< HEAD
         this.id = id;
+=======
+        this.id = null;
+>>>>>>> f77d28b87b6f53cf6500eb270b7b86d3e980f714
         this.usuarioEmail = usuarioEmail;
         this.amizadeId = amizadeId;
         this.nome = nome;
@@ -49,6 +59,10 @@ public class UsuarioJpa {
 
     public Integer getId() { return id; }
     public void setId(Integer id) { this.id = id; }
+<<<<<<< HEAD
+=======
+
+>>>>>>> f77d28b87b6f53cf6500eb270b7b86d3e980f714
     public String getUsuarioEmail() { return usuarioEmail; }
     public Integer getAmizadeId() { return amizadeId; }
     public String getNome() { return nome; }
@@ -100,6 +114,7 @@ class UsuarioRepositoryImpl implements UsuarioRepository {
 
     @Override
     public void salvar(Usuario usuario) {
+<<<<<<< HEAD
         String email = usuario.getUsuarioEmail().getCaracteres();
         
         // Verificar se o usuário já existe no banco
@@ -145,5 +160,47 @@ class UsuarioRepositoryImpl implements UsuarioRepository {
         Optional<Integer> maxId = jpaRepository.findMaxAmizadeId();
         // Se não houver nenhum, começar com 1, senão incrementar
         return maxId.map(id -> id + 1).orElse(1);
+=======
+        UsuarioJpa entity = mapper.toEntity(usuario);
+        // preserve id if entity already exists (by email)
+        jpaRepository.findByUsuarioEmail(entity.getUsuarioEmail()).ifPresent(existing -> entity.setId(existing.getId()));
+        jpaRepository.save(entity);
+>>>>>>> f77d28b87b6f53cf6500eb270b7b86d3e980f714
+    }
+
+    @Override
+    public Usuario obterPorId(Integer id) {
+        return jpaRepository.findById(id)
+                .map(mapper::toDomain)
+                .orElse(null);
+    }
+
+    @Override
+    public boolean existePorEmail(Email usuarioEmail) {
+        return jpaRepository.findByUsuarioEmail(usuarioEmail.getCaracteres()).isPresent();
+    }
+
+    @Override
+    public boolean validarSenha(Email usuarioEmail, String senha) {
+        return jpaRepository.findByUsuarioEmail(usuarioEmail.getCaracteres())
+                .map(e -> e.getSenha() != null && e.getSenha().equals(senha))
+                .orElse(false);
+    }
+
+    @Override
+    public void atualizar(Usuario usuario) {
+        UsuarioJpa entity = mapper.toEntity(usuario);
+        jpaRepository.findByUsuarioEmail(entity.getUsuarioEmail()).ifPresent(existing -> entity.setId(existing.getId()));
+        jpaRepository.save(entity);
+    }
+
+    @Override
+    public void deletarPorId(Integer id) {
+        jpaRepository.deleteById(id);
+    }
+
+    @Override
+    public java.util.List<Usuario> listarTodos() {
+        return jpaRepository.findAll().stream().map(mapper::toDomain).collect(java.util.stream.Collectors.toList());
     }
 }
