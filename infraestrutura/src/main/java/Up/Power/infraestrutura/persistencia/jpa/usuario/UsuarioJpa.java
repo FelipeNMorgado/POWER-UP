@@ -17,10 +17,6 @@ import java.util.Date;
 @Table(name = "usuario")
 public class UsuarioJpa {
 
-    @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Integer id;
-
     @Column(name = "email", nullable = false, unique = true)
     private String usuarioEmail;
 
@@ -36,9 +32,8 @@ public class UsuarioJpa {
 
     public UsuarioJpa() {}
 
-    public UsuarioJpa(Integer id, String usuarioEmail, Integer amizadeId,
+    public UsuarioJpa(String usuarioEmail, Integer amizadeId,
                       String nome, String senha, Date dataNascimento) {
-        this.id = id;
         this.usuarioEmail = usuarioEmail;
         this.amizadeId = amizadeId;
         this.nome = nome;
@@ -46,14 +41,12 @@ public class UsuarioJpa {
         this.dataNascimento = dataNascimento;
     }
 
-    public Integer getId() { return id; }
     public String getUsuarioEmail() { return usuarioEmail; }
     public Integer getAmizadeId() { return amizadeId; }
     public String getNome() { return nome; }
     public String getSenha() { return senha; }
     public Date getDataNascimento() { return dataNascimento; }
 
-    public void setId(Integer id) { this.id = id; }
     public void setUsuarioEmail(String usuarioEmail) { this.usuarioEmail = usuarioEmail; }
     public void setAmizadeId(Integer amizadeId) { this.amizadeId = amizadeId; }
     public void setNome(String nome) { this.nome = nome; }
