@@ -19,15 +19,9 @@ import Up.Power.rivalidade.RivalidadeRepository;
 import Up.Power.rivalidade.RivalidadeService;
 import Up.Power.usuario.AmizadeService;
 import Up.Power.usuario.UsuarioRepository;
-<<<<<<< HEAD
-=======
 import Up.Power.usuario.UsuarioService;
->>>>>>> f77d28b87b6f53cf6500eb270b7b86d3e980f714
 
-/**
- * Classe principal da aplicação Spring Boot.
- * Configura o escaneamento de componentes, entidades JPA e repositórios.
- */
+
 @SpringBootApplication(scanBasePackages = {
     "Up.Power.aplicacao",
     "Up.Power.infraestrutura",
@@ -73,11 +67,7 @@ public class BackendAplicacao {
     public UsuarioService usuarioService(UsuarioRepository usuarioRepository) {
         return new UsuarioService(usuarioRepository);
     }
-    
-    @Bean
-    public AmizadeService amizadeService(UsuarioRepository usuarioRepository) {
-        return new AmizadeService(usuarioRepository);
-    }
+
     
     public static void main(String[] args) {
         SpringApplication.run(BackendAplicacao.class, args);
