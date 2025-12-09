@@ -14,11 +14,9 @@ public class AvatarService {
                 .orElseThrow(() -> new NoSuchElementException("Avatar não encontrado: " + avatarId));
     }
 
-    // Esses metodos serao usandos para fazer o calculo dos atributos fisicos do usuario //
-    // A "formula" paara o calculo ainda nao foi totalmente decidida entao esta sendo realizado um calculo//
-    // mais basico para a realizacao dos testes //
+
     public int getForca(AvatarId avatarId) {
-        return getAvatar(avatarId).getNivel() * 2; // Exemplo de cálculo
+        return getAvatar(avatarId).getForca(); // Exemplo de cálculo
     }
 
     public int getResistencia(AvatarId avatarId) {

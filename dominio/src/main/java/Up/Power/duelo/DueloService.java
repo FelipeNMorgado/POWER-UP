@@ -85,9 +85,9 @@ public class DueloService {
 
         String resultado;
         if (vitoriasAvatar1 > vitoriasAvatar2) {
-            resultado = "VITORIA_DESAFIANTE";
+            resultado = "VITORIA_DESAFIANTE(A1)";
         } else if (vitoriasAvatar2 > vitoriasAvatar1) {
-            resultado = "VITORIA_DESAFIADO";
+            resultado = "VITORIA_DESAFIADO(A2)";
         } else {
             resultado = "EMPATE";
         }

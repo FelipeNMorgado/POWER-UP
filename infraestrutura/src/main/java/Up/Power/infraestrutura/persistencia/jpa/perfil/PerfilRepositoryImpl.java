@@ -1,12 +1,12 @@
 package Up.Power.infraestrutura.persistencia.jpa.perfil;
 
-import Up.Power.Email;
+import java.util.Optional;
+
+import org.springframework.stereotype.Repository;
+
 import Up.Power.Perfil;
 import Up.Power.perfil.PerfilId;
 import Up.Power.perfil.PerfilRepository;
-import org.springframework.stereotype.Repository;
-
-import java.util.Optional;
 
 @Repository
 public class PerfilRepositoryImpl implements PerfilRepository {
@@ -39,20 +39,22 @@ public class PerfilRepositoryImpl implements PerfilRepository {
 
     @Override
     public boolean existsAmizade(PerfilId perfilId1, PerfilId perfilId2) {
-        // Implementação simplificada: verifica se ambos os perfis existem
-        // A lógica completa de amizade pode ser implementada via query específica
-        Optional<Perfil> perfil1 = findById(perfilId1);
-        Optional<Perfil> perfil2 = findById(perfilId2);
-        
-        if (perfil1.isEmpty() || perfil2.isEmpty()) {
+        // Verifica existência de amizade diretamente na tabela de join para evitar carregar coleções
+        if (perfilId1 == null || perfilId2 == null) {
             return false;
         }
-        
-        // Verifica se são amigos (verifica na lista de amigos de cada perfil)
-        return perfil1.get().getAmigos().stream()
-                .anyMatch(amigo -> amigo.getUsuarioEmail().equals(perfil2.get().getUsuarioEmail()))
-                || perfil2.get().getAmigos().stream()
-                .anyMatch(amigo -> amigo.getUsuarioEmail().equals(perfil1.get().getUsuarioEmail()));
+
+        Integer id1 = perfilId1.getId();
+        Integer id2 = perfilId2.getId();
+
+        if (id1 == null || id2 == null) {
+            return false;
+        }
+
+        // Checa em ambas as direções (perfil -> amigo) para garantir compatibilidade
+        boolean direct = repo.existsFriendship(id1, id2);
+        boolean reverse = repo.existsFriendship(id2, id1);
+        return direct || reverse;
     }
 }
 
