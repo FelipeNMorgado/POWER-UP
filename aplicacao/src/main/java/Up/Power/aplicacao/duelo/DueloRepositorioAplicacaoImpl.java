@@ -5,8 +5,11 @@ import Up.Power.Duelo;
 import Up.Power.duelo.DueloId;
 import Up.Power.duelo.DueloRepository;
 import Up.Power.perfil.PerfilId;
+import Up.Power.avatar.AvatarId;
 import org.springframework.stereotype.Component;
 
+import java.time.LocalDateTime;
+import java.util.List;
 import java.util.Optional;
 
 @Component
@@ -36,5 +39,10 @@ public class DueloRepositorioAplicacaoImpl implements DueloRepositorioAplicacao 
     @Override
     public Duelo salvar(Duelo duelo) {
         return dueloRepository.save(duelo);
+    }
+
+    @Override
+    public List<Duelo> findDuelsBetweenSince(AvatarId avatarId1, AvatarId avatarId2, LocalDateTime dataInicio) {
+        return dueloRepository.findDuelsBetweenSince(avatarId1, avatarId2, dataInicio);
     }
 }

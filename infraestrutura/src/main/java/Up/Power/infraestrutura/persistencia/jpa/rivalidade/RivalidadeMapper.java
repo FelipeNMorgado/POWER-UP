@@ -27,23 +27,18 @@ public class RivalidadeMapper {
     }
 
     public Rivalidade toDomain(RivalidadeJpa entity) {
+        // Usar o construtor completo que aceita todos os campos, incluindo status
+        // Isso evita chamar métodos de transição de estado que têm validações
         Rivalidade domain = new Rivalidade(
+                new RivalidadeId(entity.getId()),
                 new PerfilId(entity.getPerfil1Id()),
                 new PerfilId(entity.getPerfil2Id()),
-                new ExercicioId(entity.getExercicioId())
+                new ExercicioId(entity.getExercicioId()),
+                entity.getDataConvite(),
+                entity.getInicio(),
+                entity.getFim(),
+                entity.getStatus()
         );
-
-        domain.setId(new RivalidadeId(entity.getId()));
-
-        // aplicar estado real vindo do banco
-        if (entity.getStatus() != null) {
-            switch (entity.getStatus()) {
-                case ATIVA -> domain.aceitar();
-                case RECUSADA -> domain.recusar();
-                case FINALIZADA -> domain.finalizar();
-                case PENDENTE -> {} // nada
-            }
-        }
 
         return domain;
     }

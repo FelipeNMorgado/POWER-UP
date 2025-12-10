@@ -11,6 +11,7 @@ import Up.Power.duelo.DueloId;
 import Up.Power.duelo.DueloRepository;
 import org.springframework.stereotype.Repository;
 
+import java.util.List;
 import java.util.Optional;
 
 @Entity
@@ -67,6 +68,15 @@ interface JpaDueloRepository extends JpaRepository<DueloJpa, Integer> {
         LIMIT 1
     """)
     Optional<DueloJpa> findLastDuelBetween(@Param("a") Integer a, @Param("b") Integer b);
+
+    @Query("""
+        SELECT d FROM DueloJpa d
+        WHERE ((d.avatar1Id = :a AND d.avatar2Id = :b)
+           OR (d.avatar1Id = :b AND d.avatar2Id = :a))
+           AND d.dataDuelo >= :dataInicio
+        ORDER BY d.dataDuelo DESC
+    """)
+    java.util.List<DueloJpa> findDuelsBetweenSince(@Param("a") Integer a, @Param("b") Integer b, @Param("dataInicio") java.time.LocalDateTime dataInicio);
 }
 
 
@@ -98,5 +108,16 @@ class DueloRepositoryImpl implements DueloRepository {
                 avatarId1.getId(),
                 avatarId2.getId()
         ).map(DueloMapper::toDomain);
+    }
+
+    @Override
+    public List<Duelo> findDuelsBetweenSince(AvatarId avatarId1, AvatarId avatarId2, LocalDateTime dataInicio) {
+        return repo.findDuelsBetweenSince(
+                avatarId1.getId(),
+                avatarId2.getId(),
+                dataInicio
+        ).stream()
+                .map(DueloMapper::toDomain)
+                .collect(java.util.stream.Collectors.toList());
     }
 }

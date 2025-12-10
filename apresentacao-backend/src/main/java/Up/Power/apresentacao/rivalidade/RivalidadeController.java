@@ -7,6 +7,10 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+
 @RestController
 @RequestMapping("/api/rivalidades")
 public class RivalidadeController {
@@ -18,10 +22,15 @@ public class RivalidadeController {
     }
 
     @PostMapping("/enviar-convite")
-    public ResponseEntity<RivalidadeResumo> enviarConvite(@RequestBody EnviarConviteCommand command) {
+    public ResponseEntity<?> enviarConvite(@RequestBody EnviarConviteCommand command) {
         try {
             RivalidadeResumo rivalidade = rivalidadeServicoAplicacao.enviar(command);
             return ResponseEntity.ok(rivalidade);
+        } catch (IllegalStateException e) {
+            e.printStackTrace();
+            Map<String, String> errorResponse = new HashMap<>();
+            errorResponse.put("mensagem", e.getMessage());
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(errorResponse);
         } catch (Exception e) {
             e.printStackTrace();
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
@@ -55,6 +64,34 @@ public class RivalidadeController {
         try {
             RivalidadeResumo rivalidade = rivalidadeServicoAplicacao.finalizar(command);
             return ResponseEntity.ok(rivalidade);
+        } catch (Exception e) {
+            e.printStackTrace();
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
+        }
+    }
+
+    @GetMapping("/perfil/{perfilId}")
+    public ResponseEntity<List<RivalidadeResumo>> listarPorPerfil(@PathVariable("perfilId") Integer perfilId) {
+        try {
+            List<RivalidadeResumo> rivalidades = rivalidadeServicoAplicacao.listarPorPerfil(perfilId);
+            return ResponseEntity.ok(rivalidades);
+        } catch (Exception e) {
+            e.printStackTrace();
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
+        }
+    }
+
+    @GetMapping("/{rivalidadeId}/comparacao")
+    public ResponseEntity<RivalidadeServicoAplicacao.ComparacaoRivalidade> obterComparacao(
+            @PathVariable("rivalidadeId") Integer rivalidadeId,
+            @RequestParam("perfilId") Integer perfilId) {
+        try {
+            RivalidadeServicoAplicacao.ComparacaoRivalidade comparacao = 
+                    rivalidadeServicoAplicacao.obterComparacao(rivalidadeId, perfilId);
+            return ResponseEntity.ok(comparacao);
+        } catch (IllegalArgumentException | IllegalStateException e) {
+            e.printStackTrace();
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).build();
         } catch (Exception e) {
             e.printStackTrace();
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
