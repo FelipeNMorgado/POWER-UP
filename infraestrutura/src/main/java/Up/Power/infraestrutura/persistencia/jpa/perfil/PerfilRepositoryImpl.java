@@ -1,9 +1,11 @@
 package Up.Power.infraestrutura.persistencia.jpa.perfil;
 
+import java.util.List;
 import java.util.Optional;
 
 import org.springframework.stereotype.Repository;
 
+import Up.Power.Email;
 import Up.Power.Perfil;
 import Up.Power.perfil.PerfilId;
 import Up.Power.perfil.PerfilRepository;
@@ -32,6 +34,7 @@ public class PerfilRepositoryImpl implements PerfilRepository {
         return mapper.toDomain(saved);
     }
 
+    @Override
     public Optional<Perfil> findByUsuarioEmail(String usuarioEmail) {
         return repo.findByUsuarioEmail(usuarioEmail)
                 .map(mapper::toDomain);
@@ -55,6 +58,108 @@ public class PerfilRepositoryImpl implements PerfilRepository {
         boolean direct = repo.existsFriendship(id1, id2);
         boolean reverse = repo.existsFriendship(id2, id1);
         return direct || reverse;
+    }
+
+    @Override
+    public List<Perfil> listarTodos() {
+        return repo.findAll().stream()
+                .map(mapper::toDomain)
+                .collect(java.util.stream.Collectors.toList());
+    }
+
+    @Override
+    public void deletarPorId(Integer id) {
+        repo.deleteById(id);
+    }
+
+    @Override
+    public boolean existePorEmail(Email usuarioEmail) {
+        return repo.existsByUsuarioEmail(usuarioEmail.getCaracteres());
+    }
+
+    @Override
+    public void atualizar(Perfil perfil) {
+        // O método save já faz update se o ID existir
+        save(perfil);
+    }
+
+    @Override
+    public void adicionarAmizade(PerfilId perfilId1, PerfilId perfilId2) {
+        if (perfilId1 == null || perfilId2 == null) {
+            throw new IllegalArgumentException("PerfilIds não podem ser null");
+        }
+        
+        if (perfilId1.equals(perfilId2)) {
+            throw new IllegalArgumentException("Um perfil não pode ser amigo de si mesmo");
+        }
+        
+        // Verificar se já são amigos
+        if (existsAmizade(perfilId1, perfilId2)) {
+            return; // Já são amigos, não precisa fazer nada
+        }
+        
+        // Buscar ambos os perfis
+        Optional<PerfilJpa> perfil1Opt = repo.findById(perfilId1.getId());
+        Optional<PerfilJpa> perfil2Opt = repo.findById(perfilId2.getId());
+        
+        if (perfil1Opt.isEmpty() || perfil2Opt.isEmpty()) {
+            throw new IllegalArgumentException("Um ou ambos os perfis não foram encontrados");
+        }
+        
+        PerfilJpa perfil1 = perfil1Opt.get();
+        PerfilJpa perfil2 = perfil2Opt.get();
+        
+        // Adicionar amizade bidirecional
+        if (!perfil1.getAmigos().contains(perfil2)) {
+            perfil1.getAmigos().add(perfil2);
+        }
+        if (!perfil2.getAmigos().contains(perfil1)) {
+            perfil2.getAmigos().add(perfil1);
+        }
+        
+        // Salvar ambos
+        repo.save(perfil1);
+        repo.save(perfil2);
+    }
+
+    @Override
+    public void removerAmizade(PerfilId perfilId1, PerfilId perfilId2) {
+        if (perfilId1 == null || perfilId2 == null) {
+            throw new IllegalArgumentException("PerfilIds não podem ser null");
+        }
+        
+        // Buscar ambos os perfis
+        Optional<PerfilJpa> perfil1Opt = repo.findById(perfilId1.getId());
+        Optional<PerfilJpa> perfil2Opt = repo.findById(perfilId2.getId());
+        
+        if (perfil1Opt.isEmpty() || perfil2Opt.isEmpty()) {
+            return; // Se não existem, não há nada para remover
+        }
+        
+        PerfilJpa perfil1 = perfil1Opt.get();
+        PerfilJpa perfil2 = perfil2Opt.get();
+        
+        // Remover amizade bidirecional
+        perfil1.getAmigos().remove(perfil2);
+        perfil2.getAmigos().remove(perfil1);
+        
+        // Salvar ambos
+        repo.save(perfil1);
+        repo.save(perfil2);
+    }
+
+    @Override
+    public List<Perfil> listarAmigos(PerfilId perfilId) {
+        if (perfilId == null) {
+            throw new IllegalArgumentException("PerfilId não pode ser null");
+        }
+        
+        // Buscar amigos diretos (perfil -> amigos)
+        List<PerfilJpa> amigosJpa = repo.findAmigosDiretosByPerfilId(perfilId.getId());
+        
+        return amigosJpa.stream()
+                .map(mapper::toDomain)
+                .collect(java.util.stream.Collectors.toList());
     }
 }
 

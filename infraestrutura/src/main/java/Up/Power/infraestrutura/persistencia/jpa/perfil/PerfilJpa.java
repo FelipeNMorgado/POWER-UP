@@ -135,5 +135,10 @@ interface JpaPerfilRepository extends JpaRepository<PerfilJpa, Integer> {
                    "FROM PerfilJpa p JOIN p.amigos a " +
                    "WHERE p.id = :p1 AND a.id = :p2")
         boolean existsFriendship(@Param("p1") Integer p1, @Param("p2") Integer p2);
+        
+        boolean existsByUsuarioEmail(String usuarioEmail);
+        
+        @Query("SELECT a FROM PerfilJpa p JOIN p.amigos a WHERE p.id = :perfilId")
+        List<PerfilJpa> findAmigosDiretosByPerfilId(@Param("perfilId") Integer perfilId);
 }
 

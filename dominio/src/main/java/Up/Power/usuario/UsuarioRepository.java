@@ -15,6 +15,7 @@ public interface UsuarioRepository {
     void atualizar(Usuario usuario); // atualiza campos persistidos
     void deletarPorId(Integer id);
     List<Usuario> listarTodos();
+    List<Usuario> obterPorCodigoAmizade(int codigoAmizade);
 }
 
 

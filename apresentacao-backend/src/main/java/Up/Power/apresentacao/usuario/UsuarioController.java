@@ -47,24 +47,23 @@ public class UsuarioController {
         }
     }
 
-    @PostMapping("/{emailRemetente}/convites/{emailDestinatario}")
-    public ResponseEntity<String> enviarConvite(
+    @PostMapping("/{emailRemetente}/adicionar-amigo/{codigoAmizade}")
+    public ResponseEntity<String> adicionarAmigoPorCodigo(
             @PathVariable("emailRemetente") String emailRemetente,
-            @PathVariable("emailDestinatario") String emailDestinatario) {
+            @PathVariable("codigoAmizade") int codigoAmizade) {
         try {
             String emailRemetenteDecodificado = java.net.URLDecoder.decode(emailRemetente, "UTF-8");
-            String emailDestinatarioDecodificado = java.net.URLDecoder.decode(emailDestinatario, "UTF-8");
-            String resultado = usuarioServicoAplicacao.enviarConvite(emailRemetenteDecodificado, emailDestinatarioDecodificado);
+            String resultado = usuarioServicoAplicacao.adicionarAmigoPorCodigo(emailRemetenteDecodificado, codigoAmizade);
             return ResponseEntity.ok(resultado);
+        } catch (IllegalArgumentException e) {
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST)
+                    .body(e.getMessage());
         } catch (Exception e) {
             e.printStackTrace();
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
-                    .body("Erro ao enviar convite: " + e.getMessage());
+                    .body("Erro ao adicionar amigo: " + e.getMessage());
         }
     }
-
-    // Endpoint removido - amizade é criada automaticamente ao enviar convite
-    // Não é mais necessário aceitar convites
 
     @DeleteMapping("/{email1}/amizade/{email2}")
     public ResponseEntity<String> removerAmizade(
@@ -96,5 +95,6 @@ public class UsuarioController {
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
         }
     }
+
 }
 

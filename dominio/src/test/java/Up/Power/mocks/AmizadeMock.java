@@ -60,6 +60,11 @@ public class AmizadeMock implements UsuarioRepository {
         return List.of();
     }
 
+    @Override
+    public List<Usuario> obterPorCodigoAmizade(int codigoAmizade) {
+        return List.of();
+    }
+
     public boolean contem(Email email) {
         return bancoMemoria.containsKey(email.getCaracteres());
     }

@@ -31,13 +31,13 @@ public class LoginController {
             
             if (usuarioResumo == null) {
                 return ResponseEntity.status(HttpStatus.UNAUTHORIZED)
-                        .body(new LoginResponse(false, "Usuário não encontrado", null, null, null));
+                        .body(new LoginResponse(false, "Usuário não encontrado", null, null, null, null));
             }
 
             // Verificar senha (comparação simples - em produção, usar hash)
             if (!usuarioResumo.senha().equals(request.senha())) {
                 return ResponseEntity.status(HttpStatus.UNAUTHORIZED)
-                        .body(new LoginResponse(false, "Senha incorreta", null, null, null));
+                        .body(new LoginResponse(false, "Senha incorreta", null, null, null, null));
             }
 
             // Buscar perfil do usuário
@@ -61,11 +61,12 @@ public class LoginController {
                     "Login realizado com sucesso",
                     request.email(),
                     perfilId,
-                    username
+                    username,
+                    usuarioResumo.amizadeId()
             ));
         } catch (Exception e) {
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
-                    .body(new LoginResponse(false, "Erro ao realizar login: " + e.getMessage(), null, null, null));
+                    .body(new LoginResponse(false, "Erro ao realizar login: " + e.getMessage(), null, null, null, null));
         }
     }
 }

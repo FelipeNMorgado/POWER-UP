@@ -5,6 +5,7 @@ public record LoginResponse(
         String mensagem,
         String email,
         Integer perfilId,
-        String username
+        String username,
+        Integer amizadeId
 ) {}
 

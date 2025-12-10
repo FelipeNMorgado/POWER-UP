@@ -91,7 +91,7 @@ public class DueloFeature {
 
         Duelo dueloEncontradoNoRepo = dueloEncontradoOptional.get();
         assertEquals(this.dueloResultado, dueloEncontradoNoRepo);
-        assertEquals("VITORIA_DESAFIANTE", dueloEncontradoNoRepo.getResultado());
+        assertEquals("VITORIA_DESAFIANTE(A1)", dueloEncontradoNoRepo.getResultado());
 
         System.out.println("Então: Duelo iniciado com sucesso e confirmado no repositório!");
     }

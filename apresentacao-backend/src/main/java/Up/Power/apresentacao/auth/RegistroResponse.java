@@ -5,6 +5,7 @@ public record RegistroResponse(
         String mensagem,
         String email,
         Integer perfilId,  // Pode ser null
-        String username
+        String username,
+        Integer amizadeId
 ) {}
 

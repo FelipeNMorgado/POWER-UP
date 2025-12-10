@@ -17,8 +17,14 @@ public class AvatarMapper {
                 .map(a -> a.getId().getId())
                 .collect(Collectors.toList());
 
+        // Se o ID for null ou 0, trata como null para que o Hibernate gere um novo ID
+        Integer id = null;
+        if (avatar.getId() != null && avatar.getId().getId() > 0) {
+            id = avatar.getId().getId();
+        }
+
         return new AvatarJpa(
-                avatar.getId() == null ? null : avatar.getId().getId(),
+                id,
                 avatar.getPerfil().getId(),
                 acessorioIds,
                 avatar.getNivel(),

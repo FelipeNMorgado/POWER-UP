@@ -1,11 +1,13 @@
 package Up.Power.mocks;
 
 
+import Up.Power.Email;
 import Up.Power.Perfil;
 import Up.Power.perfil.PerfilId;
 import Up.Power.perfil.PerfilRepository;
 
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 
@@ -54,5 +56,45 @@ public class PerfilMock implements PerfilRepository {
                 .anyMatch(amigo -> amigo.getUsuarioEmail().equals(perfil1.getUsuarioEmail()));
 
         return amigoEmUmaDirecao || amigoNaOutraDirecao;
+    }
+
+    @Override
+    public Optional<Perfil> findByUsuarioEmail(String usuarioEmail) {
+        return Optional.empty();
+    }
+
+    @Override
+    public List<Perfil> listarTodos() {
+        return List.of();
+    }
+
+    @Override
+    public void deletarPorId(Integer id) {
+
+    }
+
+    @Override
+    public boolean existePorEmail(Email usuarioEmail) {
+        return false;
+    }
+
+    @Override
+    public void atualizar(Perfil perfil) {
+
+    }
+
+    @Override
+    public void adicionarAmizade(PerfilId perfilId1, PerfilId perfilId2) {
+
+    }
+
+    @Override
+    public void removerAmizade(PerfilId perfilId1, PerfilId perfilId2) {
+
+    }
+
+    @Override
+    public List<Perfil> listarAmigos(PerfilId perfilId) {
+        return List.of();
     }
 }

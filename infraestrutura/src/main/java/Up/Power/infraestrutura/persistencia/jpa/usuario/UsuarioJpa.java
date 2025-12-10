@@ -7,7 +7,9 @@ import Up.Power.AmizadeId;
 import org.springframework.stereotype.Repository;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
+import org.springframework.data.repository.query.Param;
 
+import java.util.List;
 import java.util.Optional;
 import jakarta.persistence.*;
 import java.util.Date;
@@ -67,6 +69,9 @@ interface JpaUsuarioRepository extends JpaRepository<UsuarioJpa, Integer> {
     
     @Query("SELECT MAX(u.amizadeId) FROM UsuarioJpa u WHERE u.amizadeId IS NOT NULL")
     Optional<Integer> findMaxAmizadeId();
+    
+    @Query("SELECT u FROM UsuarioJpa u WHERE u.amizadeId = :amizadeId")
+    List<UsuarioJpa> findByAmizadeId(@Param("amizadeId") Integer amizadeId);
 }
 
 @Repository
@@ -171,5 +176,12 @@ class UsuarioRepositoryImpl implements UsuarioRepository {
     @Override
     public java.util.List<Usuario> listarTodos() {
         return jpaRepository.findAll().stream().map(mapper::toDomain).collect(java.util.stream.Collectors.toList());
+    }
+
+    @Override
+    public java.util.List<Usuario> obterPorCodigoAmizade(int codigoAmizade) {
+        return jpaRepository.findByAmizadeId(codigoAmizade).stream()
+                .map(mapper::toDomain)
+                .collect(java.util.stream.Collectors.toList());
     }
 }

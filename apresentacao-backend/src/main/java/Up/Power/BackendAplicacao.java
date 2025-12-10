@@ -19,9 +19,9 @@ import Up.Power.conquista.ConquistaRepository;
 import Up.Power.conquista.ConquistaService;
 import Up.Power.rivalidade.RivalidadeRepository;
 import Up.Power.rivalidade.RivalidadeService;
-import Up.Power.usuario.AmizadeService;
 import Up.Power.usuario.UsuarioRepository;
 import Up.Power.usuario.UsuarioService;
+import Up.Power.perfil.PerfilService;
 import Up.Power.feedback.FeedbackService;
 import Up.Power.feedback.FeedbackRepository;
 
@@ -62,8 +62,8 @@ public class BackendAplicacao {
     }
 
     @Bean
-    public AmizadeService amizadeService(UsuarioRepository usuarioRepository) {
-        return new AmizadeService(usuarioRepository);
+    public PerfilService perfilService(PerfilRepository perfilRepository) {
+        return new PerfilService(perfilRepository);
     }
 
     @Bean
