@@ -3,19 +3,15 @@ package Up.Power.infraestrutura.persistencia.jpa.usuario;
 import Up.Power.Usuario;
 import Up.Power.Email;
 import Up.Power.usuario.UsuarioRepository;
-import org.springframework.stereotype.Repository;
 import Up.Power.AmizadeId;
-import org.springframework.stereotype.Component;
-import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
+import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.data.jpa.repository.Query;
 
 import java.util.Optional;
 import jakarta.persistence.*;
-import org.springframework.data.jpa.repository.Query;
 import java.util.Date;
-import java.util.List;
 import java.util.stream.Collectors;
-import java.time.ZoneId;
 
 @Entity
 @Table(name = "usuario")

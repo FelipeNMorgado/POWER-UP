@@ -1,22 +1,26 @@
 package Up.Power.infraestrutura.persistencia.jpa.perfil;
 
-import jakarta.persistence.*;
-import org.springframework.data.jpa.repository.JpaRepository;
-import org.springframework.data.jpa.repository.Query;
-import org.springframework.stereotype.Repository;
-import Up.Power.Email;
-import Up.Power.Perfil;
-import Up.Power.perfil.PerfilId;
-import Up.Power.perfil.PerfilRepository;
-import Up.Power.infraestrutura.persistencia.jpa.planoTreino.PlanoTreinoJpa;
-import Up.Power.infraestrutura.persistencia.jpa.consquista.ConquistaJpa;
-import Up.Power.infraestrutura.persistencia.jpa.meta.MetaJpa;
-import Up.Power.infraestrutura.persistencia.jpa.usuario.UsuarioJpa;
-
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
+
+import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.data.jpa.repository.Query;
+import org.springframework.data.repository.query.Param;
+
+import Up.Power.infraestrutura.persistencia.jpa.consquista.ConquistaJpa;
+import Up.Power.infraestrutura.persistencia.jpa.meta.MetaJpa;
+import Up.Power.infraestrutura.persistencia.jpa.planoTreino.PlanoTreinoJpa;
+import jakarta.persistence.Column;
+import jakarta.persistence.Entity;
+import jakarta.persistence.GeneratedValue;
+import jakarta.persistence.GenerationType;
+import jakarta.persistence.Id;
+import jakarta.persistence.JoinColumn;
+import jakarta.persistence.JoinTable;
+import jakarta.persistence.ManyToMany;
+import jakarta.persistence.Table;
 
 @Entity
 @Table(name = "perfil")
@@ -124,7 +128,12 @@ public class PerfilJpa {
 }
 
 interface JpaPerfilRepository extends JpaRepository<PerfilJpa, Integer> {
-    Optional<PerfilJpa> findById(Integer id);
-    Optional<PerfilJpa> findByUsuarioEmail(String usuarioEmail);
+        Optional<PerfilJpa> findById(Integer id);
+        Optional<PerfilJpa> findByUsuarioEmail(String usuarioEmail);
+
+        @Query("SELECT CASE WHEN COUNT(a) > 0 THEN true ELSE false END " +
+                   "FROM PerfilJpa p JOIN p.amigos a " +
+                   "WHERE p.id = :p1 AND a.id = :p2")
+        boolean existsFriendship(@Param("p1") Integer p1, @Param("p2") Integer p2);
 }
 

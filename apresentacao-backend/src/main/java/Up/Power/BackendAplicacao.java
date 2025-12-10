@@ -25,10 +25,6 @@ import Up.Power.usuario.UsuarioService;
 import Up.Power.feedback.FeedbackService;
 import Up.Power.feedback.FeedbackRepository;
 
-/**
- * Classe principal da aplicação Spring Boot.
- * Configura o escaneamento de componentes, entidades JPA e repositórios.
- */
 @SpringBootApplication(scanBasePackages = {
     "Up.Power.aplicacao",
     "Up.Power.infraestrutura",

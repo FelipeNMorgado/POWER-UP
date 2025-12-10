@@ -4,6 +4,7 @@ import jakarta.persistence.*;
 import java.time.LocalDateTime;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
+import org.springframework.data.repository.query.Param;
 import Up.Power.Duelo;
 import Up.Power.avatar.AvatarId;
 import Up.Power.duelo.DueloId;
@@ -65,7 +66,7 @@ interface JpaDueloRepository extends JpaRepository<DueloJpa, Integer> {
         ORDER BY d.dataDuelo DESC
         LIMIT 1
     """)
-    Optional<DueloJpa> findLastDuelBetween(Integer a, Integer b);
+    Optional<DueloJpa> findLastDuelBetween(@Param("a") Integer a, @Param("b") Integer b);
 }
 
 
