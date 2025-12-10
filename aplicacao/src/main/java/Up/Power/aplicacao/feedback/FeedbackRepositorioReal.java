@@ -20,17 +20,40 @@ public class FeedbackRepositorioReal implements FeedbackRepositorioAplicacao {
 
     @Override
     public List<FeedbackResumo> listarPorUsuario(String email) {
-        return repo.listarFeedbacks(null, new Email(email))
-                .stream()
-                .map(f -> new FeedbackResumo(
-                        f.getId().getId(),
-                        f.getFrequencia().getId(),
-                        f.getClassificacao(),
-                        f.getFeedback(),
-                        f.getEmail().getCaracteres(),
-                        f.getData()
-                ))
-                .collect(Collectors.toList());
+        System.out.println("[FEEDBACK_REPO_REAL] Listando feedbacks para: " + email);
+        try {
+            List<Feedback> feedbacks = repo.listarFeedbacks(null, new Email(email));
+            System.out.println("[FEEDBACK_REPO_REAL] Feedbacks do repositório: " + feedbacks.size());
+            
+            List<FeedbackResumo> resumos = feedbacks.stream()
+                    .map(f -> {
+                        try {
+                            return new FeedbackResumo(
+                                    f.getId().getId(),
+                                    f.getFrequencia().getId(),
+                                    f.getClassificacao(),
+                                    f.getFeedback() != null ? f.getFeedback() : "",
+                                    f.getEmail().getCaracteres(),
+                                    f.getData()
+                            );
+                        } catch (Exception e) {
+                            System.err.println("[FEEDBACK_REPO_REAL] ERRO ao criar resumo: " + e.getMessage());
+                            e.printStackTrace();
+                            return null;
+                        }
+                    })
+                    .filter(r -> r != null)
+                    .collect(Collectors.toList());
+            
+            System.out.println("[FEEDBACK_REPO_REAL] Resumos criados: " + resumos.size());
+            return resumos;
+        } catch (Exception e) {
+            System.err.println("[FEEDBACK_REPO_REAL] ERRO ao listar feedbacks:");
+            System.err.println("[FEEDBACK_REPO_REAL] Tipo: " + e.getClass().getName());
+            System.err.println("[FEEDBACK_REPO_REAL] Mensagem: " + e.getMessage());
+            e.printStackTrace();
+            throw e;
+        }
     }
 
     @Override
@@ -39,5 +62,19 @@ public class FeedbackRepositorioReal implements FeedbackRepositorioAplicacao {
         return feedback; // retorna a entidade
     }
 
+    @Override
+    public Feedback criar(Feedback feedback) {
+        return repo.salvar(feedback);
+    }
+
+    @Override
+    public Feedback modificar(Feedback feedback) {
+        return repo.salvar(feedback);
+    }
+
+    @Override
+    public void excluir(Integer id) {
+        repo.deletar(new FeedbackId(id));
+    }
 }
 

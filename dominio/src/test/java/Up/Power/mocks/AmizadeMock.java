@@ -26,6 +26,11 @@ public class AmizadeMock implements UsuarioRepository {
     }
 
     @Override
+    public int obterProximoAmizadeId() {
+        return 1;
+    }
+
+    @Override
     public Usuario obterPorId(Integer id) {
         return null;
     }

@@ -8,21 +8,21 @@ public class Alimento {
     private Categoria categoria;
     private String nome;
     private int calorias;
-    private float quantidade;
+    private float gramas;
 
-    public Alimento(AlimentoId id, Categoria categoria, String nome, int calorias, float quantidade) {
+    public Alimento(AlimentoId id, Categoria categoria, String nome, int calorias, float gramas) {
         this.id = id;
         this.categoria = categoria;
         this.nome = nome;
         this.calorias = calorias;
-        this.quantidade = quantidade;
+        this.gramas = gramas;
     }
 
     public AlimentoId getAlimento() { return id; }
     public Categoria getCategoria() { return categoria; }
     public String getNome() { return nome; }
     public int getCalorias() { return calorias; }
-    public float getQuantidade() { return quantidade; }
+    public float getGramas() { return gramas; }
 }
 
 

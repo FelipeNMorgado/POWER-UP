@@ -15,14 +15,15 @@ import Up.Power.meta.RewardServiceImpl;
 import Up.Power.perfil.PerfilRepository;
 import Up.Power.planoTreino.PlanoTreinoRepository;
 import Up.Power.planoTreino.PlanoTreinoService;
+import Up.Power.conquista.ConquistaRepository;
+import Up.Power.conquista.ConquistaService;
 import Up.Power.rivalidade.RivalidadeRepository;
 import Up.Power.rivalidade.RivalidadeService;
 import Up.Power.usuario.AmizadeService;
 import Up.Power.usuario.UsuarioRepository;
-<<<<<<< HEAD
-=======
 import Up.Power.usuario.UsuarioService;
->>>>>>> f77d28b87b6f53cf6500eb270b7b86d3e980f714
+import Up.Power.feedback.FeedbackService;
+import Up.Power.feedback.FeedbackRepository;
 
 /**
  * Classe principal da aplicação Spring Boot.
@@ -73,10 +74,15 @@ public class BackendAplicacao {
     public UsuarioService usuarioService(UsuarioRepository usuarioRepository) {
         return new UsuarioService(usuarioRepository);
     }
-    
+
     @Bean
-    public AmizadeService amizadeService(UsuarioRepository usuarioRepository) {
-        return new AmizadeService(usuarioRepository);
+    public ConquistaService conquistaService(ConquistaRepository conquistaRepository) {
+        return new ConquistaService(conquistaRepository);
+    }
+
+    @Bean
+    public FeedbackService feedbackService(FeedbackRepository feedbackRepository) {
+        return new FeedbackService(feedbackRepository);
     }
     
     public static void main(String[] args) {

@@ -8,6 +8,7 @@ import Up.Power.refeicao.TipoRefeicao;
 import jakarta.persistence.*;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.Date;
 import java.util.List;
@@ -52,9 +53,10 @@ public class RefeicaoJpa {
 
     public RefeicaoJpa(Integer id, TipoRefeicao tipo, List<Integer> alimentosIds,
                        Integer caloriasTotais, Date inicio, Date fim) {
-        this.id = id;
+        // Se o ID for 0 ou null, definir como null para que JPA faça INSERT (persist) em vez de UPDATE (merge)
+        this.id = (id != null && id != 0) ? id : null;
         this.tipo = tipo;
-        this.alimentosIds = alimentosIds;
+        this.alimentosIds = alimentosIds != null ? alimentosIds : new java.util.ArrayList<>();
         this.caloriasTotais = caloriasTotais;
         this.inicio = inicio;
         this.fim = fim;
@@ -100,9 +102,34 @@ class RefeicaoRepositoryImpl implements RefeicaoRepository {
     }
 
     @Override
-    public void salvar(Refeicao refeicao) {
+    @Transactional
+    public Refeicao salvar(Refeicao refeicao) {
+        System.out.println("[REFEICAO_REPOSITORY] ========================================");
+        System.out.println("[REFEICAO_REPOSITORY] salvar() chamado");
+        System.out.println("[REFEICAO_REPOSITORY] Refeicao ID: " + 
+                (refeicao.getId() != null ? refeicao.getId().getId() : "null"));
+        
         RefeicaoJpa entity = mapper.toEntity(refeicao);
-        repo.save(entity);
+        System.out.println("[REFEICAO_REPOSITORY] Entity mapeada. ID antes de salvar: " + entity.getId());
+        System.out.println("[REFEICAO_REPOSITORY] Tipo: " + entity.getTipo());
+        System.out.println("[REFEICAO_REPOSITORY] Alimentos IDs: " + 
+                (entity.getAlimentosIds() != null ? entity.getAlimentosIds() : "null"));
+        System.out.println("[REFEICAO_REPOSITORY] Calorias totais: " + entity.getCaloriasTotais());
+        
+        // Usar jpaRepository.save() que automaticamente faz persist() ou merge() baseado no ID
+        // Se a entidade tem ID null, será um INSERT (persist)
+        // Se a entidade tem ID não-null, será um UPDATE (merge)
+        System.out.println("[REFEICAO_REPOSITORY] Chamando repo.save()...");
+        RefeicaoJpa salvo = repo.save(entity);
+        System.out.println("[REFEICAO_REPOSITORY] repo.save() concluído com sucesso!");
+        System.out.println("[REFEICAO_REPOSITORY] ID gerado pelo banco: " + salvo.getId());
+        
+        Refeicao domain = mapper.toDomain(salvo);
+        
+        System.out.println("[REFEICAO_REPOSITORY] Domain convertido. ID: " + 
+                (domain.getId() != null ? domain.getId().getId() : "null"));
+        System.out.println("[REFEICAO_REPOSITORY] ========================================");
+        return domain;
     }
 
     @Override

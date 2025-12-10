@@ -13,11 +13,13 @@ public class planoNutricionalFeature {
     private PlanoNId id;
     private Objetivo objetivo;
     private String mensagem;
+    private Email usuarioEmail;
 
     @Given("que um usuario criou seu plano nutricional e esta tudo preenchido")
     public void criar_plano_completo() {
         id = new PlanoNId(1);
         objetivo = Objetivo.Bulking;
+        usuarioEmail = new Email("teste@example.com");
         repository = new PlanoNutricionalMock();
         service = new PlanoNutricionalService(repository);
     }
@@ -25,7 +27,7 @@ public class planoNutricionalFeature {
     @When("o usuario tentar salva-lo")
     public void salvar_plano() {
         try {
-            service.criarPlano(id, objetivo);
+            service.criarPlano(id, objetivo, usuarioEmail);
             mensagem = "Plano salvo com sucesso";
         } catch (Exception e) {
             mensagem = e.getMessage();
@@ -44,8 +46,9 @@ public class planoNutricionalFeature {
     public void plano_salvo_para_edicao() {
         repository = new PlanoNutricionalMock();
         service = new PlanoNutricionalService(repository);
-        planoNutricional = new PlanoNutricional(new PlanoNId(2), Objetivo.Cutting);
-        service.criarPlano(planoNutricional.getId(), planoNutricional.getObjetivo());
+        usuarioEmail = new Email("teste@example.com");
+        planoNutricional = new PlanoNutricional(new PlanoNId(2), Objetivo.Cutting, usuarioEmail);
+        service.criarPlano(planoNutricional.getId(), planoNutricional.getObjetivo(), usuarioEmail);
     }
 
     @When("o usario fizer alteracoes no plano e confirmar as mudancas")
@@ -69,8 +72,9 @@ public class planoNutricionalFeature {
     public void usuario_tem_plano() {
         repository = new PlanoNutricionalMock();
         service = new PlanoNutricionalService(repository);
-        planoNutricional = new PlanoNutricional(new PlanoNId(3), Objetivo.Cutting);
-        service.criarPlano(planoNutricional.getId(), planoNutricional.getObjetivo());
+        usuarioEmail = new Email("teste@example.com");
+        planoNutricional = new PlanoNutricional(new PlanoNId(3), Objetivo.Cutting, usuarioEmail);
+        service.criarPlano(planoNutricional.getId(), planoNutricional.getObjetivo(), usuarioEmail);
     }
 
     @When("o usauario tentar colocar campos obricatorios em branco")
@@ -91,8 +95,9 @@ public class planoNutricionalFeature {
     public void plano_ativo() {
         repository = new PlanoNutricionalMock();
         service = new PlanoNutricionalService(repository);
-        planoNutricional = new PlanoNutricional(new PlanoNId(4), Objetivo.Bulking);
-        service.criarPlano(planoNutricional.getId(), planoNutricional.getObjetivo());
+        usuarioEmail = new Email("teste@example.com");
+        planoNutricional = new PlanoNutricional(new PlanoNId(4), Objetivo.Bulking, usuarioEmail);
+        service.criarPlano(planoNutricional.getId(), planoNutricional.getObjetivo(), usuarioEmail);
     }
 
     @When("o usuario tentar modificar um campo especifico com valores nao esperados")

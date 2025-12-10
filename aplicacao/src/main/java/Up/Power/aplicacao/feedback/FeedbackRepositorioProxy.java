@@ -43,5 +43,42 @@ public class FeedbackRepositorioProxy implements FeedbackRepositorioAplicacao {
         return resultado;
     }
 
+    @Override
+    public Feedback criar(Feedback feedback) {
+        System.out.println("[Proxy] Criando feedback");
+        long inicio = System.currentTimeMillis();
+
+        var resultado = real.criar(feedback);
+
+        long fim = System.currentTimeMillis();
+        System.out.println("[Proxy] Tempo da criação: " + (fim - inicio) + "ms");
+
+        return resultado;
+    }
+
+    @Override
+    public Feedback modificar(Feedback feedback) {
+        System.out.println("[Proxy] Modificando feedback id: " + feedback.getId().getId());
+        long inicio = System.currentTimeMillis();
+
+        var resultado = real.modificar(feedback);
+
+        long fim = System.currentTimeMillis();
+        System.out.println("[Proxy] Tempo da modificação: " + (fim - inicio) + "ms");
+
+        return resultado;
+    }
+
+    @Override
+    public void excluir(Integer id) {
+        System.out.println("[Proxy] Excluindo feedback id: " + id);
+        long inicio = System.currentTimeMillis();
+
+        real.excluir(id);
+
+        long fim = System.currentTimeMillis();
+        System.out.println("[Proxy] Tempo da exclusão: " + (fim - inicio) + "ms");
+    }
+
 }
 

@@ -6,5 +6,6 @@ import java.util.List;
 public record ModificarPlanoNutricionalCommand(
         int planoId,
         Objetivo objetivo,
-        List<Integer> refeicoesIds
+        List<Integer> refeicoesIds,
+        String usuarioEmail
 ) {}

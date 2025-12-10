@@ -4,9 +4,11 @@ import Up.Power.Conquista;
 import Up.Power.conquista.ConquistaId;
 import Up.Power.conquista.ConquistaRepository;
 import Up.Power.conquista.ConquistaService;
+import org.springframework.stereotype.Service;
 
 import java.util.List;
 
+@Service
 public class ConquistaServicoAplicacao {
 
     private final ConquistaAssembler assembler;

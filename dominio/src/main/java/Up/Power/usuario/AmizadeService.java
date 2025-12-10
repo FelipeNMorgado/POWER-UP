@@ -55,7 +55,13 @@ public class AmizadeService {
         return "Usuários agora são amigos";
     }
 
-    public String recusarConvite() {
+    public String recusarConvite(Usuario usuario1, Usuario usuario2) {
+        AmizadeId id = usuario1.getCodigoAmizade();
+        if (id != null && amizades.containsKey(id)) {
+            amizades.remove(id);
+            usuario1.setCodigoAmizade(null);
+            usuario2.setCodigoAmizade(null);
+        }
         return "Usuário recusou o pedido de amizade";
     }
 

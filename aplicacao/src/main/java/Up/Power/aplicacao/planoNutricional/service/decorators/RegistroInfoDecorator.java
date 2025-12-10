@@ -14,14 +14,22 @@ public class RegistroInfoDecorator extends PlanoNutricionalDecorator {
     @Override
     public PlanoNutricional criar(CriarPlanoNutricionalCommand command) {
         PlanoNutricional plano = next.criar(command);
-        System.out.println("[LOG] Plano criado: " + plano.getId().getId());
+        if (plano != null && plano.getId() != null) {
+            System.out.println("[LOG] Plano criado: " + plano.getId().getId());
+        } else {
+            System.out.println("[LOG] Plano criado, mas ID não disponível");
+        }
         return plano;
     }
 
     @Override
     public PlanoNutricional modificar(ModificarPlanoNutricionalCommand command) {
         PlanoNutricional plano = next.modificar(command);
-        System.out.println("[LOG] Plano modificado: " + plano.getId().getId());
+        if (plano != null && plano.getId() != null) {
+            System.out.println("[LOG] Plano modificado: " + plano.getId().getId());
+        } else {
+            System.out.println("[LOG] Plano modificado, mas ID não disponível");
+        }
         return plano;
     }
 }

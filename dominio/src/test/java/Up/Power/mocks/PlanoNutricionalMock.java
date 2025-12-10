@@ -5,7 +5,9 @@ import Up.Power.planoNutricional.PlanoNId;
 import Up.Power.planoNutricional.PlanoNutricionalRepository;
 
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
+import java.util.stream.Collectors;
 
 public class PlanoNutricionalMock implements PlanoNutricionalRepository {
 
@@ -29,6 +31,18 @@ public class PlanoNutricionalMock implements PlanoNutricionalRepository {
         return bancoMemoria.get(planoId.getId());
     }
 
+    @Override
+    public List<PlanoNutricional> listarPorUsuario(String usuarioEmail) {
+        return bancoMemoria.values().stream()
+                .filter(plano -> plano.getUsuarioEmail() != null && 
+                        plano.getUsuarioEmail().getCaracteres().equals(usuarioEmail))
+                .collect(Collectors.toList());
+    }
+
+    @Override
+    public void excluir(PlanoNId id) {
+        bancoMemoria.remove(id.getId());
+    }
 
     public void limpar() {
         bancoMemoria.clear();

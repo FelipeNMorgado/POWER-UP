@@ -2,6 +2,7 @@ package Up.Power.apresentacao.auth;
 
 import Up.Power.Email;
 import Up.Power.Usuario;
+import Up.Power.AmizadeId;
 import Up.Power.usuario.UsuarioRepository;
 import Up.Power.perfil.PerfilRepository;
 import Up.Power.perfil.PerfilId;
@@ -41,6 +42,10 @@ public class RegistroController {
                     request.senha(),
                     request.dataNascimento()
             );
+
+            // Atribuir um código de amizade único na criação
+            int proximoCodigoAmizade = usuarioRepository.obterProximoAmizadeId();
+            novoUsuario.setCodigoAmizade(new AmizadeId(proximoCodigoAmizade));
 
             // Salvar usuário
             usuarioRepository.salvar(novoUsuario);

@@ -7,4 +7,6 @@ import Up.Power.aplicacao.planoNutricional.commands.ModificarPlanoNutricionalCom
 public interface PlanoNutricionalApplicationService {
     PlanoNutricional criar(CriarPlanoNutricionalCommand command);
     PlanoNutricional modificar(ModificarPlanoNutricionalCommand command);
+    java.util.List<PlanoNutricional> listarPorUsuario(String usuarioEmail);
+    void excluir(int planoId);
 }

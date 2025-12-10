@@ -64,7 +64,7 @@ public class AmizadeFeature {
 
     @And("o usuário que recebeu o convite recusa")
     public void recusar_convite() {
-        mensagem = amizadeService.recusarConvite();
+        mensagem = amizadeService.recusarConvite(usuario1, usuario2);
     }
 
     @Then("o sistema informa que os usuários não são amigos")

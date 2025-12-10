@@ -4,7 +4,9 @@ import Up.Power.Conquista;
 import Up.Power.conquista.ConquistaId;
 import Up.Power.exercicio.ExercicioId;
 import Up.Power.treino.TreinoId;
+import org.springframework.stereotype.Component;
 
+@Component
 public class ConquistaAssembler {
 
     public Conquista criarDominio(

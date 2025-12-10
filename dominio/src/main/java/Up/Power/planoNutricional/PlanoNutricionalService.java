@@ -1,6 +1,7 @@
 package Up.Power.planoNutricional;
 
 import Up.Power.PlanoNutricional;
+import Up.Power.Email;
 
 public class PlanoNutricionalService {
 
@@ -10,12 +11,12 @@ public class PlanoNutricionalService {
         this.repository = repository;
     }
 
-    public void criarPlano(PlanoNId id, Objetivo objetivo) {
-        if (id == null || objetivo == null) {
+    public void criarPlano(PlanoNId id, Objetivo objetivo, Email usuarioEmail) {
+        if (id == null || objetivo == null || usuarioEmail == null) {
             throw new IllegalArgumentException("Campos obrigatórios em branco");
         }
 
-        PlanoNutricional plano = new PlanoNutricional(id, objetivo);
+        PlanoNutricional plano = new PlanoNutricional(id, objetivo, usuarioEmail);
         repository.salvar(plano);
     }
 
@@ -38,7 +39,8 @@ public class PlanoNutricionalService {
                 ? novasCaloriasObjetivo
                 : calcularCaloriasObjetivo(planoExistente.getCaloriasTotais(), novoObjetivo);
 
-        PlanoNutricional planoAtualizado = new PlanoNutricional(id, novoObjetivo);
+        // Manter o email do plano existente ao modificar
+        PlanoNutricional planoAtualizado = new PlanoNutricional(id, novoObjetivo, planoExistente.getUsuarioEmail());
         planoAtualizado.adicionarRefeicaoList(planoExistente.getRefeicoes());
         planoAtualizado.definirCaloriasObjetivo(calorias);
 

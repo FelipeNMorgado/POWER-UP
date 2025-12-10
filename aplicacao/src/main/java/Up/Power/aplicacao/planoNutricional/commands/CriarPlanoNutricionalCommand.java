@@ -5,5 +5,7 @@ import java.util.List;
 
 public record CriarPlanoNutricionalCommand(
         Objetivo objetivo,
-        List<Integer> refeicoesIds
+        List<Integer> refeicoesIds,
+        String usuarioEmail,
+        Integer caloriasObjetivo // Meta de calorias opcional fornecida pelo usuário
 ) {}
