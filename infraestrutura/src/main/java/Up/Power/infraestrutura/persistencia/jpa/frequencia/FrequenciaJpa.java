@@ -5,8 +5,10 @@ import Up.Power.frequencia.FrequenciaId;
 import Up.Power.frequencia.FrequenciaRepository;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
+import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
 
+import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.Date;
 import java.util.List;
@@ -57,10 +59,16 @@ public class FrequenciaJpa {
 interface JpaFrequenciaRepository extends JpaRepository<FrequenciaJpa, Integer> {
 
     @Query("SELECT f FROM FrequenciaJpa f WHERE f.id = :id AND f.dataDePresenca = :data")
-    Optional<FrequenciaJpa> buscarPorData(Integer id, LocalDateTime data);
+    Optional<FrequenciaJpa> buscarPorData(@Param("id") Integer id, @Param("data") LocalDateTime data);
 
     @Query("SELECT f FROM FrequenciaJpa f WHERE f.perfilId = :perfilId")
-    List<FrequenciaJpa> findByPerfilId(Integer perfilId);
+    List<FrequenciaJpa> findByPerfilId(@Param("perfilId") Integer perfilId);
+    
+    @Query("SELECT f FROM FrequenciaJpa f WHERE f.perfilId = :perfilId AND f.planoTreinoId = :planoTreinoId ORDER BY f.dataDePresenca DESC")
+    List<FrequenciaJpa> findByPerfilIdAndPlanoTreinoId(@Param("perfilId") Integer perfilId, @Param("planoTreinoId") Integer planoTreinoId);
+    
+    @Query("SELECT f FROM FrequenciaJpa f WHERE f.perfilId = :perfilId AND f.dataDePresenca >= :inicioDia AND f.dataDePresenca < :fimDia")
+    List<FrequenciaJpa> findByPerfilIdAndData(@Param("perfilId") Integer perfilId, @Param("inicioDia") LocalDateTime inicioDia, @Param("fimDia") LocalDateTime fimDia);
 }
 
 @Repository
@@ -95,5 +103,22 @@ class FrequenciaRepositoryImpl implements FrequenciaRepository {
                 .collect(Collectors.toList());
     }
 
+    @Override
+    public List<Frequencia> listarPorPerfilEPlanoTreino(Integer perfilId, Integer planoTreinoId) {
+        return jpaRepo.findByPerfilIdAndPlanoTreinoId(perfilId, planoTreinoId)
+                .stream()
+                .map(mapper::toDomain)
+                .collect(Collectors.toList());
+    }
+
+    @Override
+    public List<Frequencia> listarPorPerfilEData(Integer perfilId, java.time.LocalDate data) {
+        LocalDateTime inicioDia = data.atStartOfDay();
+        LocalDateTime fimDia = data.plusDays(1).atStartOfDay();
+        return jpaRepo.findByPerfilIdAndData(perfilId, inicioDia, fimDia)
+                .stream()
+                .map(mapper::toDomain)
+                .collect(Collectors.toList());
+    }
 
 }

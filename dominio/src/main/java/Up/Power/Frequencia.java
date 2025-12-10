@@ -30,7 +30,7 @@ public class Frequencia {
     public PlanoTId getPlanoTId() { return planoTreino; }
 
     public void setFoto(String foto) { this.foto = foto; }
-    public void setPlanoT(PlanoTId planoTId) { this.planoTreino = planoTreino; }
+    public void setPlanoT(PlanoTId planoTId) { this.planoTreino = planoTId; }
 }
 
 

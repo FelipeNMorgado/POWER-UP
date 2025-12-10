@@ -135,6 +135,19 @@ public class PlanoTreinoController {
         }
     }
 
+    @PutMapping("/{planoTId}/dias")
+    public ResponseEntity<PlanoTreinoResumo> atualizarDias(
+            @PathVariable("planoTId") Integer planoTId,
+            @RequestBody AtualizarDiasRequest request) {
+        try {
+            PlanoTreinoResumo plano = planoTreinoServicoAplicacao.atualizarDias(planoTId, request.dias());
+            return ResponseEntity.ok(plano);
+        } catch (Exception e) {
+            e.printStackTrace();
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
+        }
+    }
+
     @PutMapping("/{planoTId}/estado")
     public ResponseEntity<PlanoTreinoResumo> alterarEstado(
             @PathVariable("planoTId") Integer planoTId,
@@ -168,6 +181,7 @@ public class PlanoTreinoController {
                                          Integer repeticoes, Float peso, Integer series,
                                          Float distancia, java.time.LocalDateTime tempo) {}
     public record AdicionarDiaRequest(Dias dia) {}
+    public record AtualizarDiasRequest(List<Dias> dias) {}
     public record AlterarEstadoRequest(EstadoPlano estado) {}
 }
 

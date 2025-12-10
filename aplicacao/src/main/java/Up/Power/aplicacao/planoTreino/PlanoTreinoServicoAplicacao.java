@@ -202,6 +202,14 @@ public class PlanoTreinoServicoAplicacao {
     }
 
     /**
+     * Atualiza todos os dias do plano de treino.
+     */
+    public PlanoTreinoResumo atualizarDias(Integer planoTId, List<Dias> dias) {
+        planoTreinoService.atualizarDias(new PlanoTId(planoTId), dias);
+        return obterPorId(planoTId);
+    }
+
+    /**
      * Altera o estado do plano de treino.
      */
     public PlanoTreinoResumo alterarEstado(Integer planoTId, EstadoPlano estado) {

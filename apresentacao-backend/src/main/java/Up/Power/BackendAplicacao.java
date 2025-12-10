@@ -24,6 +24,8 @@ import Up.Power.usuario.UsuarioService;
 import Up.Power.perfil.PerfilService;
 import Up.Power.feedback.FeedbackService;
 import Up.Power.feedback.FeedbackRepository;
+import Up.Power.frequencia.FrequenciaRepository;
+import Up.Power.frequencia.FrequenciaService;
 
 @SpringBootApplication(scanBasePackages = {
     "Up.Power.aplicacao",
@@ -79,6 +81,11 @@ public class BackendAplicacao {
     @Bean
     public FeedbackService feedbackService(FeedbackRepository feedbackRepository) {
         return new FeedbackService(feedbackRepository);
+    }
+
+    @Bean
+    public FrequenciaService frequenciaService(FrequenciaRepository frequenciaRepository) {
+        return new FrequenciaService(frequenciaRepository);
     }
     
     public static void main(String[] args) {

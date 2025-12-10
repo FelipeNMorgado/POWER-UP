@@ -99,6 +99,24 @@ public class PlanoTreinoService {
     }
 
     /**
+     * Atualiza todos os dias de um plano existente.
+     */
+    public void atualizarDias(PlanoTId planoTId, List<Dias> dias) {
+        if (planoTId == null || dias == null) {
+            throw new IllegalArgumentException("ID do plano e dias não podem ser nulos");
+        }
+        
+        List<PlanoTreino> planos = PlanoTreinoRepository.listar(planoTId);
+        if (planos.isEmpty()) {
+            throw new IllegalArgumentException("Plano de treino não encontrado");
+        }
+        
+        PlanoTreino plano = planos.get(0);
+        plano.setDias(dias);
+        PlanoTreinoRepository.salvar(plano);
+    }
+
+    /**
      * Atualiza um treino em um plano existente.
      */
     public void atualizarTreino(PlanoTId planoTId, Treino treinoAntigo, Treino treinoNovo) {

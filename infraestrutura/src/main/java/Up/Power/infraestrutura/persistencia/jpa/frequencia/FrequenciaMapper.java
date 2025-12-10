@@ -13,7 +13,8 @@ public class FrequenciaMapper {
     public FrequenciaJpa toEntity(Frequencia domain) {
         FrequenciaJpa entity = new FrequenciaJpa();
 
-        if (domain.getId() != null)
+        // Só define o ID se for diferente de 0 (nova entidade tem ID 0)
+        if (domain.getId() != null && domain.getId().getId() != 0)
             entity.setId(domain.getId().getId());
 
         if (domain.getPerfil() != null)
