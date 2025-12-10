@@ -173,4 +173,55 @@ public class FrequenciaService {
 
         return sequencia;
     }
+
+    /**
+     * Calcula a sequência de dias consecutivos desde uma data específica.
+     * Considera apenas frequências registradas a partir da data de referência.
+     */
+    public int calcularSequenciaDiasDesdeData(PerfilId perfilId, LocalDate dataReferencia) {
+        List<Frequencia> todasFrequencias = repository.listarPorPerfil(perfilId.getId());
+        
+        // Filtrar frequências a partir da data de referência
+        List<Frequencia> frequenciasDesdeData = todasFrequencias.stream()
+                .filter(f -> !f.getDataDePresenca().toLocalDate().isBefore(dataReferencia))
+                .collect(Collectors.toList());
+        
+        if (frequenciasDesdeData.isEmpty()) {
+            return 0;
+        }
+
+        // Obter todas as datas únicas
+        List<LocalDate> datas = frequenciasDesdeData.stream()
+                .map(f -> f.getDataDePresenca().toLocalDate())
+                .distinct()
+                .sorted((a, b) -> b.compareTo(a)) // Ordenar descendente (mais recente primeiro)
+                .collect(Collectors.toList());
+
+        if (datas.isEmpty()) {
+            return 0;
+        }
+
+        LocalDate hoje = LocalDate.now();
+        LocalDate dataMaisRecente = datas.get(0);
+        
+        // Se a data mais recente não for hoje ou ontem, sequência é 0
+        if (dataMaisRecente.isBefore(hoje.minusDays(1))) {
+            return 0;
+        }
+
+        // Contar dias consecutivos a partir de hoje
+        int sequencia = 0;
+        LocalDate dataEsperada = hoje;
+        
+        for (LocalDate data : datas) {
+            if (data.equals(dataEsperada) || data.equals(dataEsperada.minusDays(1))) {
+                sequencia++;
+                dataEsperada = data.minusDays(1);
+            } else {
+                break;
+            }
+        }
+
+        return sequencia;
+    }
 }

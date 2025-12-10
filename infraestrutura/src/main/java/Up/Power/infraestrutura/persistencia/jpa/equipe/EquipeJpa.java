@@ -37,7 +37,7 @@ public class EquipeJpa {
     @Column(name = "usuario_adm", nullable = false)
     private String usuarioAdm;
 
-    @ElementCollection
+    @ElementCollection(fetch = FetchType.EAGER)
     @CollectionTable(
             name = "equipe_membros",
             joinColumns = @JoinColumn(name = "equipe_id")
@@ -45,7 +45,9 @@ public class EquipeJpa {
     @Column(name = "usuario_email")
     private List<String> usuariosEmails;
 
-    public EquipeJpa() {}
+    public EquipeJpa() {
+        this.usuariosEmails = new java.util.ArrayList<>();
+    }
 
     public EquipeJpa(Integer id, String nome, String descricao, String foto,
                      LocalDate inicio, LocalDate fim, String usuarioAdm,
@@ -86,6 +88,8 @@ public class EquipeJpa {
 // =====================================
 
 interface JpaEquipeRepository extends JpaRepository<EquipeJpa, Integer> {
+    @org.springframework.data.jpa.repository.Query("SELECT e FROM EquipeJpa e WHERE e.fim IS NOT NULL AND e.fim < :hoje")
+    java.util.List<EquipeJpa> findEquipesExpiradas(@org.springframework.data.repository.query.Param("hoje") java.time.LocalDate hoje);
 }
 
 // =====================================
@@ -106,22 +110,42 @@ class EquipeRepositoryImpl implements Up.Power.equipe.EquipeRepository {
     @Override
     public void salvar(Up.Power.Equipe equipe) {
         EquipeJpa entity = mapper.toEntity(equipe);
-        jpaRepository.save(entity);
+        EquipeJpa saved = jpaRepository.save(entity);
+        // O ID será atualizado automaticamente pelo JPA quando salvo
     }
 
     @Override
     public java.util.List<Up.Power.Equipe> listarEquipe(Up.Power.equipe.EquipeId id, Up.Power.perfil.PerfilId perfil) {
+        // Primeiro, excluir equipes expiradas
+        excluirEquipesExpiradas();
+        
         if (id != null) {
             return jpaRepository.findById(id.getId())
                     .map(mapper::toDomain)
+                    .filter(equipe -> equipe.getFim() == null || !equipe.getFim().isBefore(java.time.LocalDate.now()))
                     .map(java.util.List::of)
                     .orElse(java.util.List.of());
         }
         
-        // Se não há filtro por ID, retorna todas as equipes
+        // Se não há filtro por ID, retorna todas as equipes (exceto expiradas)
+        java.time.LocalDate hoje = java.time.LocalDate.now();
         return jpaRepository.findAll().stream()
                 .map(mapper::toDomain)
+                .filter(equipe -> equipe.getFim() == null || !equipe.getFim().isBefore(hoje))
                 .toList();
+    }
+
+    private void excluirEquipesExpiradas() {
+        java.time.LocalDate hoje = java.time.LocalDate.now();
+        java.util.List<EquipeJpa> equipesExpiradas = jpaRepository.findEquipesExpiradas(hoje);
+        if (!equipesExpiradas.isEmpty()) {
+            jpaRepository.deleteAll(equipesExpiradas);
+        }
+    }
+
+    @Override
+    public void excluir(Up.Power.equipe.EquipeId id) {
+        jpaRepository.deleteById(id.getId());
     }
 }
 

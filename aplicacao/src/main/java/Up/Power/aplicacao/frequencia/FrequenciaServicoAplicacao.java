@@ -176,6 +176,13 @@ public class FrequenciaServicoAplicacao {
         return frequenciaService.calcularSequenciaDiasTotal(new PerfilId(perfilId));
     }
 
+    /**
+     * Calcula a sequência de dias consecutivos desde uma data específica
+     */
+    public int calcularSequenciaDiasDesdeData(Integer perfilId, LocalDate dataReferencia) {
+        return frequenciaService.calcularSequenciaDiasDesdeData(new PerfilId(perfilId), dataReferencia);
+    }
+
     private FrequenciaResumo toResumo(Frequencia f) {
         return new FrequenciaResumo(
                 f.getId().getId(),

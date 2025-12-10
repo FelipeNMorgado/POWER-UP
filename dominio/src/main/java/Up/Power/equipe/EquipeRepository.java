@@ -8,6 +8,7 @@ import java.util.List;
 public interface EquipeRepository {
     void salvar(Equipe equipe);
     List<Equipe> listarEquipe(EquipeId id, PerfilId perfil);
+    void excluir(EquipeId id);
 }
 
 

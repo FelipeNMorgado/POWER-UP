@@ -42,8 +42,7 @@ public class EquipeRepositorioAplicacaoImpl implements EquipeRepositorioAplicaca
 
     @Override
     public void excluir(EquipeId id) {
-        // A exclusão pode ser implementada no repositório de domínio se necessário
-        // Por enquanto, apenas marca como removida ou usa outro mecanismo
+        equipeRepository.excluir(id);
     }
 }
 

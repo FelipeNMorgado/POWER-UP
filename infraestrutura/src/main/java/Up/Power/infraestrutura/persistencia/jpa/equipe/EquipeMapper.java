@@ -17,16 +17,20 @@ public class EquipeMapper {
                 .map(Email::getCaracteres)
                 .collect(Collectors.toList());
 
-        EquipeJpa entity = new EquipeJpa(
-                equipe.getId().getId(),
-                equipe.getNome(),
-                equipe.getDescricao(),
-                equipe.getFoto(),
-                equipe.getInicio(),
-                equipe.getFim(),
-                equipe.getUsuarioAdm().getCaracteres(),
-                usuariosEmails
-        );
+        EquipeJpa entity = new EquipeJpa();
+        
+        // Só define ID se não for 0 (nova equipe)
+        if (equipe.getId() != null && equipe.getId().getId() != 0) {
+            entity.setId(equipe.getId().getId());
+        }
+        
+        entity.setNome(equipe.getNome());
+        entity.setDescricao(equipe.getDescricao());
+        entity.setFoto(equipe.getFoto());
+        entity.setInicio(equipe.getInicio());
+        entity.setFim(equipe.getFim());
+        entity.setUsuarioAdm(equipe.getUsuarioAdm().getCaracteres());
+        entity.setUsuariosEmails(usuariosEmails);
 
         return entity;
     }

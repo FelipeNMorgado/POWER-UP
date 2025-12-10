@@ -7,7 +7,9 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.time.LocalDate;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 @RestController
 @RequestMapping("/api/equipes")
@@ -22,10 +24,13 @@ public class EquipeController {
     @PostMapping
     public ResponseEntity<EquipeResumo> criarEquipe(@RequestBody CriarEquipeRequest request) {
         try {
+            // Se o ID não foi fornecido, usar 0 para que o banco gere automaticamente
+            Integer id = request.id() != null ? request.id() : 0;
             EquipeResumo equipe = equipeServicoAplicacao.criarEquipe(
-                    request.id(),
+                    id,
                     request.nome(),
-                    request.usuarioAdmEmail()
+                    request.usuarioAdmEmail(),
+                    request.descricao()
             );
             return ResponseEntity.ok(equipe);
         } catch (Exception e) {
@@ -76,11 +81,16 @@ public class EquipeController {
     @DeleteMapping("/{equipeId}/membros/{email}")
     public ResponseEntity<EquipeResumo> removerMembro(
             @PathVariable("equipeId") Integer equipeId,
-            @PathVariable("email") String membroEmail) {
+            @PathVariable("email") String membroEmail,
+            @RequestParam("usuarioEmail") String usuarioEmail) {
         try {
             String emailDecodificado = java.net.URLDecoder.decode(membroEmail, "UTF-8");
-            EquipeResumo equipe = equipeServicoAplicacao.removerMembro(equipeId, emailDecodificado);
+            String usuarioEmailDecodificado = java.net.URLDecoder.decode(usuarioEmail, "UTF-8");
+            EquipeResumo equipe = equipeServicoAplicacao.removerMembro(equipeId, emailDecodificado, usuarioEmailDecodificado);
             return ResponseEntity.ok(equipe);
+        } catch (IllegalStateException | IllegalArgumentException e) {
+            e.printStackTrace();
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(null);
         } catch (Exception e) {
             e.printStackTrace();
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
@@ -110,12 +120,18 @@ public class EquipeController {
             @PathVariable("equipeId") Integer equipeId,
             @RequestBody DefinirPeriodoRequest request) {
         try {
+            LocalDate inicio = request.inicio() != null ? LocalDate.parse(request.inicio()) : null;
+            LocalDate fim = request.fim() != null ? LocalDate.parse(request.fim()) : null;
+            
             EquipeResumo equipe = equipeServicoAplicacao.definirPeriodo(
                     equipeId,
-                    request.inicio(),
-                    request.fim()
+                    inicio,
+                    fim
             );
             return ResponseEntity.ok(equipe);
+        } catch (IllegalStateException | IllegalArgumentException e) {
+            e.printStackTrace();
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).build();
         } catch (Exception e) {
             e.printStackTrace();
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
@@ -161,10 +177,42 @@ public class EquipeController {
         }
     }
 
+    @DeleteMapping("/{equipeId}")
+    public ResponseEntity<Map<String, String>> excluirEquipe(
+            @PathVariable("equipeId") Integer equipeId,
+            @RequestParam("usuarioEmail") String usuarioEmail) {
+        try {
+            String usuarioEmailDecodificado = java.net.URLDecoder.decode(usuarioEmail, "UTF-8");
+            equipeServicoAplicacao.excluirEquipe(equipeId, usuarioEmailDecodificado);
+            Map<String, String> response = new HashMap<>();
+            response.put("mensagem", "Equipe excluída com sucesso");
+            return ResponseEntity.ok(response);
+        } catch (IllegalStateException | IllegalArgumentException e) {
+            e.printStackTrace();
+            Map<String, String> errorResponse = new HashMap<>();
+            errorResponse.put("mensagem", e.getMessage());
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(errorResponse);
+        } catch (Exception e) {
+            e.printStackTrace();
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
+        }
+    }
+
+    @GetMapping("/{equipeId}/ranking")
+    public ResponseEntity<List<EquipeServicoAplicacao.MembroRanking>> obterRanking(@PathVariable("equipeId") Integer equipeId) {
+        try {
+            List<EquipeServicoAplicacao.MembroRanking> ranking = equipeServicoAplicacao.obterRanking(equipeId);
+            return ResponseEntity.ok(ranking);
+        } catch (Exception e) {
+            e.printStackTrace();
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
+        }
+    }
+
     // DTOs de Request
-    public record CriarEquipeRequest(Integer id, String nome, String usuarioAdmEmail) {}
+    public record CriarEquipeRequest(Integer id, String nome, String usuarioAdmEmail, String descricao) {}
     public record AdicionarMembroRequest(String novoMembroEmail) {}
     public record AtualizarInformacoesRequest(String nome, String descricao, String foto) {}
-    public record DefinirPeriodoRequest(LocalDate inicio, LocalDate fim) {}
+    public record DefinirPeriodoRequest(String inicio, String fim) {}
 }
 

@@ -19,7 +19,7 @@ public class EquipeService {
     
     public Equipe criarEquipe(EquipeId id, String nome, Email usuarioAdm) {
         Equipe equipe = new Equipe(id, nome, usuarioAdm);
-        equipeRepository.salvar(equipe); // COMENTAR PARA TESTAR DEPENDÊNCIA DO SERVICE
+        // Não salvar aqui - o salvamento será feito no serviço de aplicação após configurar todos os campos
         return equipe;
     }
     
