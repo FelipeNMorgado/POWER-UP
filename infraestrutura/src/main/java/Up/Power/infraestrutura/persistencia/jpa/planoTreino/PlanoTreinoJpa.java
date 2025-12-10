@@ -14,6 +14,7 @@ import jakarta.persistence.*;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -114,17 +115,54 @@ class PlanoTreinoRepositoryImpl implements PlanoTreinoRepository {
 
     @Override
     public void salvar(PlanoTreino plano) {
+        // Se o plano já existe (tem ID), buscar os treinos antigos para comparar
+        List<Integer> treinosAntigosIds = new ArrayList<>();
+        if (plano.getId() != null && plano.getId().getId() != 0) {
+            repo.findById(plano.getId().getId()).ifPresent(planoAntigo -> {
+                if (planoAntigo.getTreinos() != null) {
+                    treinosAntigosIds.addAll(
+                        planoAntigo.getTreinos().stream()
+                            .map(TreinoJpa::getId)
+                            .filter(id -> id != null)
+                            .collect(Collectors.toList())
+                    );
+                }
+            });
+        }
+        
         // Primeiro, salvar todos os treinos na tabela treino
         List<TreinoJpa> treinosJpa = plano.getTreinos().stream()
                 .map(treino -> {
                     TreinoJpa treinoJpa = TreinoMapper.toEntity(treino);
+                    // Se o ID for null, é um novo treino - save() detecta automaticamente e faz persist
+                    // Se o ID não for null, é um treino existente - save() faz merge
                     return treinoRepo.save(treinoJpa); // Salva e retorna com ID gerado
                 })
                 .collect(Collectors.toList());
         
         // Depois, criar o plano com os treinos já salvos
         PlanoTreinoJpa entity = mapper.toEntity(plano, treinosJpa);
-        repo.save(entity);
+        PlanoTreinoJpa saved = repo.save(entity);
+        
+        // Identificar treinos que foram removidos (estavam na lista antiga mas não estão na nova)
+        List<Integer> treinosNovosIds = treinosJpa.stream()
+                .map(TreinoJpa::getId)
+                .filter(id -> id != null)
+                .collect(Collectors.toList());
+        
+        List<Integer> treinosParaDeletar = treinosAntigosIds.stream()
+                .filter(idAntigo -> !treinosNovosIds.contains(idAntigo))
+                .collect(Collectors.toList());
+        
+        // Deletar treinos que foram removidos do plano
+        for (Integer treinoIdParaDeletar : treinosParaDeletar) {
+            treinoRepo.deleteById(treinoIdParaDeletar);
+        }
+        
+        // Atualizar o ID do plano de domínio com o ID gerado pelo banco
+        if (saved.getId() != null && (plano.getId() == null || plano.getId().getId() == 0)) {
+            plano.setId(new PlanoTId(saved.getId()));
+        }
     }
 
     @Override

@@ -35,7 +35,9 @@ public final class PlanoTreinoResumoAssembler {
                 treino.getRepeticoes(),
                 treino.getPeso(),
                 treino.getSeries(),
-                treino.getRecordeCarga()
+                treino.getRecordeCarga(),
+                treino.getDistancia(),
+                treino.getTempo()
         );
     }
 }

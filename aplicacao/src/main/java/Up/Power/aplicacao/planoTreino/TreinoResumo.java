@@ -1,6 +1,7 @@
 package Up.Power.aplicacao.planoTreino;
 
 import Up.Power.treino.TipoTreino;
+import java.time.LocalDateTime;
 
 public record TreinoResumo(
         Integer id,
@@ -9,6 +10,8 @@ public record TreinoResumo(
         Integer repeticoes,
         Float peso,
         Integer series,
-        Float recordeCarga
+        Float recordeCarga,
+        Float distancia,
+        LocalDateTime tempo
 ) {}
 

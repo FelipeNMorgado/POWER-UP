@@ -6,6 +6,7 @@ import jakarta.persistence.*;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
 
+import java.util.List;
 import java.util.Optional;
 
 // ===========================
@@ -72,6 +73,13 @@ class ExercicioRepositoryImpl implements Up.Power.exercicio.ExercicioRepository 
     public Optional<Exercicio> obter(ExercicioId id) {
         return repo.findById(id.getId())
                 .map(mapper::toDomain);
+    }
+
+    @Override
+    public List<Exercicio> listarTodos() {
+        return repo.findAll().stream()
+                .map(mapper::toDomain)
+                .collect(java.util.stream.Collectors.toList());
     }
 }
 

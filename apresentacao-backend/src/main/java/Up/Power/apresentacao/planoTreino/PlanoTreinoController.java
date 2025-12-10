@@ -74,7 +74,9 @@ public class PlanoTreinoController {
                     request.tipo(),
                     request.repeticoes(),
                     request.peso(),
-                    request.series()
+                    request.series(),
+                    request.distancia(),
+                    request.tempo()
             );
             return ResponseEntity.ok(plano);
         } catch (Exception e) {
@@ -109,7 +111,9 @@ public class PlanoTreinoController {
                     request.tipo(),
                     request.repeticoes(),
                     request.peso(),
-                    request.series()
+                    request.series(),
+                    request.distancia(),
+                    request.tempo()
             );
             return ResponseEntity.ok(plano);
         } catch (Exception e) {
@@ -158,9 +162,11 @@ public class PlanoTreinoController {
     // DTOs de Request
     public record CriarPlanoTreinoRequest(Integer id, String usuarioEmail, String nome) {}
     public record AdicionarTreinoRequest(Integer treinoId, Integer exercicioId, TipoTreino tipo, 
-                                         Integer repeticoes, Float peso, Integer series) {}
+                                         Integer repeticoes, Float peso, Integer series,
+                                         Float distancia, java.time.LocalDateTime tempo) {}
     public record AtualizarTreinoRequest(Integer exercicioId, TipoTreino tipo, 
-                                         Integer repeticoes, Float peso, Integer series) {}
+                                         Integer repeticoes, Float peso, Integer series,
+                                         Float distancia, java.time.LocalDateTime tempo) {}
     public record AdicionarDiaRequest(Dias dia) {}
     public record AlterarEstadoRequest(EstadoPlano estado) {}
 }

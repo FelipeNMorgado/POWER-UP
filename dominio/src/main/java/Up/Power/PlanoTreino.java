@@ -27,7 +27,11 @@ public class PlanoTreino {
     }
 
     public void removerTreino(Treino treino) {
-        this.treinos.remove(treino);
+        if (treino == null || treino.getId() == null) {
+            return;
+        }
+        // Remove por ID para garantir que funciona mesmo se os objetos não forem iguais
+        this.treinos.removeIf(t -> t.getId() != null && t.getId().equals(treino.getId()));
     }
 
     public void adicionarDia(Dias dia) {
@@ -100,4 +104,5 @@ public class PlanoTreino {
     public void setNome(String nome) { this.nome = nome; }
     public void setTreinos(List<Treino> treinos) { this.treinos = treinos; }
     public void setDias(List<Dias> dias) { this.dias = dias; }
+    public void setId(PlanoTId id) { this.id = id; }
 }

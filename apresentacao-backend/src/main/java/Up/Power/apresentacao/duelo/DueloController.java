@@ -25,12 +25,23 @@ public class DueloController {
     }
 
     @PostMapping
-    public ResponseEntity<DueloResumo> realizarDuelo(@RequestBody RealizarDueloRequest request) {
-        DueloResumo resumo = dueloServicoAplicacao.realizarDuelo(
-                new RealizarDueloCommand(request.desafiantePerfilId(), request.desafiadoPerfilId())
-        );
-        return ResponseEntity.status(HttpStatus.CREATED).body(resumo);
+    public ResponseEntity<?> realizarDuelo(@RequestBody RealizarDueloRequest request) {
+        try {
+            DueloResumo resumo = dueloServicoAplicacao.realizarDuelo(
+                    new RealizarDueloCommand(request.desafiantePerfilId(), request.desafiadoPerfilId())
+            );
+            return ResponseEntity.status(HttpStatus.CREATED).body(resumo);
+        } catch (IllegalStateException e) {
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST)
+                    .body(new ErrorResponse(e.getMessage()));
+        } catch (Exception e) {
+            e.printStackTrace();
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
+                    .body(new ErrorResponse("Erro ao realizar duelo: " + e.getMessage()));
+        }
     }
+    
+    private record ErrorResponse(String message) {}
 
     @GetMapping("/{id}")
     public ResponseEntity<DueloResumo> obterPorId(@PathVariable("id") Integer id) {

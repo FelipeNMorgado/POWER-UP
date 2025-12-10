@@ -24,8 +24,10 @@ public class DueloService {
 
         validarAmizade(desafianteId, desafiadoId);
 
-        Avatar avatar1 = avatarRepository.findByPerfilId(desafianteId).orElseThrow();
-        Avatar avatar2 = avatarRepository.findByPerfilId(desafiadoId).orElseThrow();
+        Avatar avatar1 = avatarRepository.findByPerfilId(desafianteId)
+                .orElseThrow(() -> new IllegalStateException("Avatar do desafiante não encontrado. O perfil precisa ter um avatar cadastrado."));
+        Avatar avatar2 = avatarRepository.findByPerfilId(desafiadoId)
+                .orElseThrow(() -> new IllegalStateException("Avatar do desafiado não encontrado. O perfil precisa ter um avatar cadastrado."));
 
         validarCooldownDuelo(avatar1.getId(), avatar2.getId());
 

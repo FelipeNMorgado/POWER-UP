@@ -41,12 +41,19 @@ public class PlanoTreinoServicoAplicacao {
      * Cria um novo plano de treino.
      */
     public PlanoTreinoResumo criarPlanoTreino(Integer id, String usuarioEmail, String nome) {
+        // Se id for null, usar 0 (será gerado pelo banco)
+        int planoTId = (id != null) ? id : 0;
         PlanoTreino plano = planoTreinoService.criarPlanoTreino(
-                new PlanoTId(id),
+                new PlanoTId(planoTId),
                 new Email(usuarioEmail),
                 nome
         );
-        return PlanoTreinoResumoAssembler.toResumo(plano);
+        // Salvar o plano no repositório
+        planoTreinoService.salvarPlanoTreino(plano);
+        // Recarregar o plano salvo para obter o ID gerado pelo banco
+        return planoTreinoRepositorioAplicacao.obterPorId(plano.getId())
+                .map(PlanoTreinoResumoAssembler::toResumo)
+                .orElse(PlanoTreinoResumoAssembler.toResumo(plano));
     }
 
     /**
@@ -77,11 +84,16 @@ public class PlanoTreinoServicoAplicacao {
             TipoTreino tipo,
             Integer repeticoes,
             Float peso,
-            Integer series) {
+            Integer series,
+            Float distancia,
+            java.time.LocalDateTime tempo) {
+        
+        // Se treinoId for null, usar 0 (será gerado pelo banco)
+        int treinoIdValue = (treinoId != null) ? treinoId : 0;
         
         // Cria o treino
         Treino treino = new Treino(
-                new TreinoId(treinoId),
+                new TreinoId(treinoIdValue),
                 new ExercicioId(exercicioId),
                 tipo,
                 repeticoes,
@@ -89,6 +101,14 @@ public class PlanoTreinoServicoAplicacao {
                 series,
                 60 // descanso padrão
         );
+        
+        // Define distancia e tempo se fornecidos
+        if (distancia != null) {
+            treino.setDistancia(distancia);
+        }
+        if (tempo != null) {
+            treino.setTempo(tempo);
+        }
 
         // Valida usando a estratégia configurada (Strategy pattern)
         validacaoStrategy.validar(treino);
@@ -102,13 +122,20 @@ public class PlanoTreinoServicoAplicacao {
      * Remove um treino do plano.
      */
     public PlanoTreinoResumo removerTreino(Integer planoTId, Integer treinoId) {
+        if (planoTId == null) {
+            throw new IllegalArgumentException("ID do plano não pode ser nulo");
+        }
+        if (treinoId == null) {
+            throw new IllegalArgumentException("ID do treino não pode ser nulo");
+        }
+        
         PlanoTreino plano = planoTreinoRepositorioAplicacao.obterPorId(new PlanoTId(planoTId))
                 .orElseThrow(() -> new IllegalArgumentException("Plano não encontrado"));
         
         Treino treinoParaRemover = plano.getTreinos().stream()
-                .filter(t -> t.getId().getId() == treinoId)
+                .filter(t -> t.getId() != null && t.getId().getId() == treinoId)
                 .findFirst()
-                .orElseThrow(() -> new IllegalArgumentException("Treino não encontrado no plano"));
+                .orElseThrow(() -> new IllegalArgumentException("Treino não encontrado no plano. ID buscado: " + treinoId + ", Treinos no plano: " + plano.getTreinos().stream().map(t -> t.getId() != null ? String.valueOf(t.getId().getId()) : "null").toList()));
         
         planoTreinoService.removerTreino(new PlanoTId(planoTId), treinoParaRemover);
         return obterPorId(planoTId);
@@ -124,7 +151,9 @@ public class PlanoTreinoServicoAplicacao {
             TipoTreino tipo,
             Integer repeticoes,
             Float peso,
-            Integer series) {
+            Integer series,
+            Float distancia,
+            java.time.LocalDateTime tempo) {
         
         PlanoTreino plano = planoTreinoRepositorioAplicacao.obterPorId(new PlanoTId(planoTId))
                 .orElseThrow(() -> new IllegalArgumentException("Plano não encontrado"));
@@ -133,6 +162,11 @@ public class PlanoTreinoServicoAplicacao {
                 .filter(t -> t.getId().getId() == treinoId)
                 .findFirst()
                 .orElseThrow(() -> new IllegalArgumentException("Treino não encontrado"));
+        
+        // Para atualizar, o treinoId não pode ser null
+        if (treinoId == null) {
+            throw new IllegalArgumentException("TreinoId não pode ser null ao atualizar um treino");
+        }
         
         Treino treinoNovo = new Treino(
                 new TreinoId(treinoId),
@@ -143,6 +177,14 @@ public class PlanoTreinoServicoAplicacao {
                 series,
                 60
         );
+        
+        // Define distancia e tempo se fornecidos
+        if (distancia != null) {
+            treinoNovo.setDistancia(distancia);
+        }
+        if (tempo != null) {
+            treinoNovo.setTempo(tempo);
+        }
 
         // Valida usando a estratégia configurada
         validacaoStrategy.validar(treinoNovo);

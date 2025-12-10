@@ -15,8 +15,12 @@ public class PlanoTreinoMapper {
     // DOMAIN → ENTITY
     // Nota: Os treinos devem ser salvos primeiro na tabela treino antes de associar ao plano
     public PlanoTreinoJpa toEntity(PlanoTreino plano, List<TreinoJpa> treinosJpa) {
+        // Se o ID for 0, passar null para que o banco gere o ID automaticamente
+        Integer id = (plano.getId() != null && plano.getId().getId() != 0) 
+                ? plano.getId().getId() 
+                : null;
         return new PlanoTreinoJpa(
-                plano.getId().getId(),
+                id,
                 plano.getUsuarioEmail().getCaracteres(),
                 plano.getNome(),
                 plano.getEstadoPlano(),
@@ -27,8 +31,10 @@ public class PlanoTreinoMapper {
 
     // ENTITY → DOMAIN
     public PlanoTreino toDomain(PlanoTreinoJpa entity) {
+        // Se o ID for null, usar 0 (será tratado como novo plano)
+        int planoTId = (entity.getId() != null) ? entity.getId() : 0;
         PlanoTreino plano = new PlanoTreino(
-                new PlanoTId(entity.getId()),
+                new PlanoTId(planoTId),
                 new Email(entity.getUsuarioEmail()),
                 entity.getNome()
         );

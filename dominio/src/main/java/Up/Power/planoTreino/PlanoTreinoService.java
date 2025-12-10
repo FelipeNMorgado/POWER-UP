@@ -22,11 +22,13 @@ public class PlanoTreinoService {
      * Cria um novo plano de treino.
      */
     public PlanoTreino criarPlanoTreino(PlanoTId id, Email usuarioEmail, String nome) {
-        if (id == null || usuarioEmail == null || nome == null || nome.trim().isEmpty()) {
+        if (usuarioEmail == null || nome == null || nome.trim().isEmpty()) {
             throw new IllegalArgumentException("Campos obrigatórios não podem ser nulos ou vazios");
         }
         
-        PlanoTreino plano = new PlanoTreino(id, usuarioEmail, nome);
+        // Se id for null, criar com ID 0 (será gerado pelo banco)
+        PlanoTId planoTId = (id != null) ? id : new PlanoTId(0);
+        PlanoTreino plano = new PlanoTreino(planoTId, usuarioEmail, nome);
         return plano;
     }
 
@@ -38,11 +40,8 @@ public class PlanoTreinoService {
             throw new IllegalArgumentException("Plano não pode ser nulo");
         }
         
-        if (!plano.temExercicios()) {
-            throw new IllegalArgumentException("Plano de treino deve conter ao menos um exercício");
-        }
-        
-        PlanoTreinoRepository.salvar(plano); // COMENTAR PARA TESTAR DEPENDÊNCIA DO SERVICE
+        // Permitir salvar plano vazio (exercícios podem ser adicionados depois)
+        PlanoTreinoRepository.salvar(plano);
     }
 
     /**
