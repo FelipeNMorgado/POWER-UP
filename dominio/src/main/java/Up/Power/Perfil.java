@@ -18,6 +18,7 @@ public class Perfil {
     private LocalDateTime criacao;
     private String username;
     private String foto;
+    private String conquistasSelecionadas; // IDs separados por vírgula (máximo 3)
 
     public Perfil(PerfilId id, Email usuarioEmail, String username) {
         this.id = id;
@@ -83,6 +84,10 @@ public class Perfil {
         return foto;
     }
 
+    public String getConquistasSelecionadas() {
+        return conquistasSelecionadas;
+    }
+
     public void setEstado(boolean estado) {
         this.estado = estado;
     }
@@ -93,6 +98,17 @@ public class Perfil {
 
     public void setFoto(String foto) {
         this.foto = foto;
+    }
+
+    public void setConquistasSelecionadas(String conquistasSelecionadas) {
+        // Validar que não há mais de 3 conquistas
+        if (conquistasSelecionadas != null && !conquistasSelecionadas.isEmpty()) {
+            String[] ids = conquistasSelecionadas.split(",");
+            if (ids.length > 3) {
+                throw new IllegalArgumentException("Máximo de 3 conquistas podem ser selecionadas");
+            }
+        }
+        this.conquistasSelecionadas = conquistasSelecionadas;
     }
 
     // Operações do agregado (idempotentes)

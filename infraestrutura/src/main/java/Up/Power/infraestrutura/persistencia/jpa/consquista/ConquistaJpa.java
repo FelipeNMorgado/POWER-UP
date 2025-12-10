@@ -6,7 +6,9 @@ import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
 import Up.Power.Conquista;
 import Up.Power.conquista.ConquistaRepository;
+import Up.Power.infraestrutura.persistencia.jpa.consquista.JpaConquistaRepository;
 import java.util.Optional;
+import java.util.Objects;
 
 import java.util.List;
 
@@ -33,6 +35,22 @@ import java.util.List;
 
         @Column(nullable = false)
         private String nome;
+        
+        // Critérios para conquistar automaticamente
+        @Column(name = "peso_minimo")
+        private Float pesoMinimo;
+        
+        @Column(name = "atributo_minimo")
+        private Integer atributoMinimo;
+        
+        @Column(name = "tipo_atributo", length = 50)
+        private String tipoAtributo; // "forca", "resistencia", "agilidade", "nivel"
+        
+        @Column(name = "repeticoes_minimas")
+        private Integer repeticoesMinimas;
+        
+        @Column(name = "series_minimas")
+        private Integer seriesMinimas;
 
         public ConquistaJpa() {}
 
@@ -50,17 +68,39 @@ import java.util.List;
         public Integer getTreinoId() { return treinoId; }
         public String getDescricao() { return descricao; }
         public String getNome() { return nome; }
+        
+        // Getters para critérios
+        public Float getPesoMinimo() { return pesoMinimo; }
+        public Integer getAtributoMinimo() { return atributoMinimo; }
+        public String getTipoAtributo() { return tipoAtributo; }
+        public Integer getRepeticoesMinimas() { return repeticoesMinimas; }
+        public Integer getSeriesMinimas() { return seriesMinimas; }
 
         public void setId(Integer id) { this.id = id; }
         public void setExercicioId(Integer exercicioId) { this.exercicioId = exercicioId; }
         public void setTreinoId(Integer treinoId) { this.treinoId = treinoId; }
         public void setDescricao(String descricao) { this.descricao = descricao; }
         public void setNome(String nome) { this.nome = nome; }
-    }
+        
+        // Setters para critérios
+        public void setPesoMinimo(Float pesoMinimo) { this.pesoMinimo = pesoMinimo; }
+        public void setAtributoMinimo(Integer atributoMinimo) { this.atributoMinimo = atributoMinimo; }
+        public void setTipoAtributo(String tipoAtributo) { this.tipoAtributo = tipoAtributo; }
+        public void setRepeticoesMinimas(Integer repeticoesMinimas) { this.repeticoesMinimas = repeticoesMinimas; }
+        public void setSeriesMinimas(Integer seriesMinimas) { this.seriesMinimas = seriesMinimas; }
 
+        @Override
+        public boolean equals(Object o) {
+            if (this == o) return true;
+            if (o == null || getClass() != o.getClass()) return false;
+            ConquistaJpa that = (ConquistaJpa) o;
+            return Objects.equals(id, that.id);
+        }
 
-
-    interface JpaConquistaRepository extends JpaRepository<ConquistaJpa, Integer> {
+        @Override
+        public int hashCode() {
+            return Objects.hash(id);
+        }
     }
 
     @Repository

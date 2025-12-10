@@ -1,19 +1,22 @@
 package Up.Power.aplicacao.frequencia;
 
 import Up.Power.Frequencia;
+import Up.Power.aplicacao.avatar.AdicionarXpCommand;
+import Up.Power.aplicacao.avatar.AvatarServicoAplicacao;
+import Up.Power.aplicacao.planoTreino.PlanoTreinoRepositorioAplicacao;
 import Up.Power.frequencia.FrequenciaId;
 import Up.Power.frequencia.FrequenciaRepository;
 import Up.Power.frequencia.FrequenciaService;
 import Up.Power.perfil.PerfilId;
 import Up.Power.planoTreino.Dias;
 import Up.Power.planoTreino.PlanoTId;
-import Up.Power.aplicacao.planoTreino.PlanoTreinoRepositorioAplicacao;
 import Up.Power.treino.TreinoId;
 import org.springframework.stereotype.Service;
 
 import java.time.DayOfWeek;
 import java.time.LocalDate;
 import java.util.List;
+import java.util.Optional;
 import java.util.stream.Collectors;
 
 @Service
@@ -22,14 +25,19 @@ public class FrequenciaServicoAplicacao {
     private final FrequenciaRepository repo;
     private final FrequenciaService frequenciaService;
     private final PlanoTreinoRepositorioAplicacao planoTreinoRepositorioAplicacao;
+    private final AvatarServicoAplicacao avatarServicoAplicacao;
+
+    private static final int XP_POR_FREQUENCIA = 10; // XP ganho por cada ida à academia
 
     public FrequenciaServicoAplicacao(
             FrequenciaRepository repo, 
             FrequenciaService frequenciaService,
-            PlanoTreinoRepositorioAplicacao planoTreinoRepositorioAplicacao) {
+            PlanoTreinoRepositorioAplicacao planoTreinoRepositorioAplicacao,
+            AvatarServicoAplicacao avatarServicoAplicacao) {
         this.repo = repo;
         this.frequenciaService = frequenciaService;
         this.planoTreinoRepositorioAplicacao = planoTreinoRepositorioAplicacao;
+        this.avatarServicoAplicacao = avatarServicoAplicacao;
     }
 
     public FrequenciaResumo obterPorId(Integer id) {
@@ -50,6 +58,9 @@ public class FrequenciaServicoAplicacao {
             new TreinoId(treinoId),
             new PlanoTId(planoTreinoId)
         );
+        
+        // Adicionar XP ao avatar após registrar frequência
+        adicionarXpAoAvatar(perfilId);
     }
 
     public void registrarPresencaComFoto(Integer perfilId, Integer treinoId, Integer planoTreinoId, String fotoBase64) {
@@ -59,6 +70,9 @@ public class FrequenciaServicoAplicacao {
             new PlanoTId(planoTreinoId),
             fotoBase64
         );
+        
+        // Adicionar XP ao avatar após registrar frequência
+        adicionarXpAoAvatar(perfilId);
     }
 
     /**
@@ -100,6 +114,9 @@ public class FrequenciaServicoAplicacao {
             new TreinoId(treinoId),
             planoTId
         );
+        
+        // Adicionar XP ao avatar após registrar frequência
+        adicionarXpAoAvatar(perfilId);
     }
 
     /**
@@ -141,6 +158,9 @@ public class FrequenciaServicoAplicacao {
             planoTId,
             fotoBase64
         );
+        
+        // Adicionar XP ao avatar após registrar frequência
+        adicionarXpAoAvatar(perfilId);
     }
 
     private Dias converterDayOfWeekParaDias(DayOfWeek dayOfWeek) {
@@ -181,6 +201,21 @@ public class FrequenciaServicoAplicacao {
      */
     public int calcularSequenciaDiasDesdeData(Integer perfilId, LocalDate dataReferencia) {
         return frequenciaService.calcularSequenciaDiasDesdeData(new PerfilId(perfilId), dataReferencia);
+    }
+
+    /**
+     * Adiciona XP ao avatar quando uma frequência é registrada.
+     * A avaliação de conquistas por atributos será feita automaticamente
+     * pelo AvatarServicoAplicacao quando o XP for adicionado.
+     */
+    private void adicionarXpAoAvatar(Integer perfilId) {
+        try {
+            avatarServicoAplicacao.adicionarXp(new AdicionarXpCommand(perfilId, XP_POR_FREQUENCIA));
+        } catch (Exception e) {
+            // Log do erro mas não interrompe o registro de frequência
+            System.err.println("Erro ao adicionar XP ao avatar: " + e.getMessage());
+            e.printStackTrace();
+        }
     }
 
     private FrequenciaResumo toResumo(Frequencia f) {

@@ -42,8 +42,11 @@ public class PerfilJpa {
     @Column(nullable = false)
     private LocalDateTime criacao;
 
-    @Column
+    @Column(columnDefinition = "LONGTEXT")
     private String foto;
+
+    @Column(name = "conquistas_selecionadas", length = 255)
+    private String conquistasSelecionadas; // IDs separados por vírgula (máximo 3)
 
     // Relacionamentos ManyToMany
     @ManyToMany
@@ -96,10 +99,11 @@ public class PerfilJpa {
         this.estado = estado;
         this.criacao = criacao;
         this.foto = foto;
-        this.planosTreinos = planosTreinos;
-        this.conquistas = conquistas;
-        this.metas = metas;
-        this.amigos = amigos;
+        this.conquistasSelecionadas = null;
+        this.planosTreinos = planosTreinos != null ? planosTreinos : new ArrayList<>();
+        this.conquistas = conquistas != null ? conquistas : new ArrayList<>();
+        this.metas = metas != null ? metas : new ArrayList<>();
+        this.amigos = amigos != null ? amigos : new ArrayList<>();
     }
 
     // Getters
@@ -109,6 +113,7 @@ public class PerfilJpa {
     public Boolean getEstado() { return estado; }
     public LocalDateTime getCriacao() { return criacao; }
     public String getFoto() { return foto; }
+    public String getConquistasSelecionadas() { return conquistasSelecionadas; }
     public List<PlanoTreinoJpa> getPlanosTreinos() { return planosTreinos; }
     public List<ConquistaJpa> getConquistas() { return conquistas; }
     public List<MetaJpa> getMetas() { return metas; }
@@ -121,6 +126,7 @@ public class PerfilJpa {
     public void setEstado(Boolean estado) { this.estado = estado; }
     public void setCriacao(LocalDateTime criacao) { this.criacao = criacao; }
     public void setFoto(String foto) { this.foto = foto; }
+    public void setConquistasSelecionadas(String conquistasSelecionadas) { this.conquistasSelecionadas = conquistasSelecionadas; }
     public void setPlanosTreinos(List<PlanoTreinoJpa> planosTreinos) { this.planosTreinos = planosTreinos; }
     public void setConquistas(List<ConquistaJpa> conquistas) { this.conquistas = conquistas; }
     public void setMetas(List<MetaJpa> metas) { this.metas = metas; }
@@ -128,8 +134,11 @@ public class PerfilJpa {
 }
 
 interface JpaPerfilRepository extends JpaRepository<PerfilJpa, Integer> {
-        Optional<PerfilJpa> findById(Integer id);
-        Optional<PerfilJpa> findByUsuarioEmail(String usuarioEmail);
+        @Query("SELECT DISTINCT p FROM PerfilJpa p LEFT JOIN FETCH p.conquistas WHERE p.id = :id")
+        Optional<PerfilJpa> findById(@Param("id") Integer id);
+        
+        @Query("SELECT DISTINCT p FROM PerfilJpa p LEFT JOIN FETCH p.conquistas WHERE p.usuarioEmail = :email")
+        Optional<PerfilJpa> findByUsuarioEmail(@Param("email") String usuarioEmail);
 
         @Query("SELECT CASE WHEN COUNT(a) > 0 THEN true ELSE false END " +
                    "FROM PerfilJpa p JOIN p.amigos a " +

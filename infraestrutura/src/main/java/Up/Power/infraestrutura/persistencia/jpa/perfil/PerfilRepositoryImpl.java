@@ -2,6 +2,7 @@ package Up.Power.infraestrutura.persistencia.jpa.perfil;
 
 import java.util.List;
 import java.util.Optional;
+import java.util.ArrayList;
 
 import org.springframework.stereotype.Repository;
 
@@ -9,16 +10,24 @@ import Up.Power.Email;
 import Up.Power.Perfil;
 import Up.Power.perfil.PerfilId;
 import Up.Power.perfil.PerfilRepository;
+import Up.Power.infraestrutura.persistencia.jpa.consquista.ConquistaJpa;
+import Up.Power.infraestrutura.persistencia.jpa.consquista.JpaConquistaRepository;
 
 @Repository
 public class PerfilRepositoryImpl implements PerfilRepository {
 
     private final JpaPerfilRepository repo;
     private final PerfilMapper mapper;
+    private final JpaConquistaRepository conquistaRepo;
 
-    public PerfilRepositoryImpl(JpaPerfilRepository repo, PerfilMapper mapper) {
+    public PerfilRepositoryImpl(
+            JpaPerfilRepository repo, 
+            PerfilMapper mapper,
+            JpaConquistaRepository conquistaRepo
+    ) {
         this.repo = repo;
         this.mapper = mapper;
+        this.conquistaRepo = conquistaRepo;
     }
 
     @Override
@@ -29,7 +38,58 @@ public class PerfilRepositoryImpl implements PerfilRepository {
 
     @Override
     public Perfil save(Perfil perfil) {
-        PerfilJpa entity = mapper.toEntity(perfil);
+        // Se o perfil já existe, carregar a entidade existente com relacionamentos
+        if (perfil.getId() != null && perfil.getId().getId() > 0) {
+            Optional<PerfilJpa> existingOpt = repo.findById(perfil.getId().getId());
+            if (existingOpt.isPresent()) {
+                PerfilJpa existing = existingOpt.get();
+                
+                // Atualizar campos simples
+                existing.setUsername(perfil.getUsername());
+                existing.setFoto(perfil.getFoto());
+                existing.setEstado(perfil.isEstado());
+                existing.setConquistasSelecionadas(perfil.getConquistasSelecionadas());
+                
+                // IMPORTANTE: Sincronizar conquistas do objeto de domínio com a entidade JPA
+                // Limpar conquistas existentes
+                existing.getConquistas().clear();
+                
+                // Adicionar as conquistas do objeto de domínio
+                for (Up.Power.Conquista conquista : perfil.getConquistas()) {
+                    // Buscar a ConquistaJpa do banco pelo ID
+                    Optional<ConquistaJpa> conquistaJpaOpt = conquistaRepo.findById(conquista.getId().getId());
+                    if (conquistaJpaOpt.isPresent()) {
+                        ConquistaJpa conquistaJpa = conquistaJpaOpt.get();
+                        // Adicionar se ainda não estiver na lista (evitar duplicatas)
+                        if (!existing.getConquistas().contains(conquistaJpa)) {
+                            existing.getConquistas().add(conquistaJpa);
+                        }
+                    }
+                }
+                
+                PerfilJpa saved = repo.save(existing);
+                return mapper.toDomain(saved);
+            }
+        }
+        
+        // Para novos perfis, precisamos mapear as conquistas também
+        // Buscar as ConquistaJpa correspondentes
+        List<ConquistaJpa> conquistasJpa = new ArrayList<>();
+        for (Up.Power.Conquista conquista : perfil.getConquistas()) {
+            Optional<ConquistaJpa> conquistaJpaOpt = conquistaRepo.findById(conquista.getId().getId());
+            if (conquistaJpaOpt.isPresent()) {
+                conquistasJpa.add(conquistaJpaOpt.get());
+            }
+        }
+        
+        // Usar o mapper com as conquistas JPA
+        PerfilJpa entity = mapper.toEntity(
+            perfil,
+            new ArrayList<>(), // planosTreinos - pode ser vazio para novos perfis
+            conquistasJpa,     // conquistas
+            new ArrayList<>(), // metas
+            new ArrayList<>()  // amigos
+        );
         PerfilJpa saved = repo.save(entity);
         return mapper.toDomain(saved);
     }

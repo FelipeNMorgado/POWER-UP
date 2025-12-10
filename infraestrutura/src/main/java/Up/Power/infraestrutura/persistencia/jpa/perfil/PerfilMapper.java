@@ -33,7 +33,7 @@ public class PerfilMapper {
             id = perfil.getId().getId();
         }
         
-        return new PerfilJpa(
+        PerfilJpa perfilJpa = new PerfilJpa(
                 id,
                 perfil.getUsuarioEmail().getCaracteres(),
                 perfil.getUsername(),
@@ -45,6 +45,8 @@ public class PerfilMapper {
                 metasJpa != null ? metasJpa : new ArrayList<>(),
                 amigosJpa != null ? amigosJpa : new ArrayList<>()
         );
+        perfilJpa.setConquistasSelecionadas(perfil.getConquistasSelecionadas());
+        return perfilJpa;
     }
 
     public PerfilJpa toEntity(Perfil perfil) {
@@ -68,6 +70,7 @@ public class PerfilMapper {
         
         perfil.setEstado(entity.getEstado());
         perfil.setFoto(entity.getFoto());
+        perfil.setConquistasSelecionadas(entity.getConquistasSelecionadas());
         
         // Converter relacionamentos se existirem
         if (entity.getConquistas() != null && !entity.getConquistas().isEmpty()) {

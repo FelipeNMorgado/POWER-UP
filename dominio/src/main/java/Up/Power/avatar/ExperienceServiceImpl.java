@@ -11,15 +11,17 @@ public class ExperienceServiceImpl implements ExperienceService {
         int xpAtual = avatar.getExperiencia();
         int novoXpTotal = xpAtual + xpGanha;
 
-        // Lógica para subir de nível
-        if (novoXpTotal >= XP_PARA_PROXIMO_NIVEL) {
-            int nivelAtual = avatar.getNivel();
-            avatar.setNivel(nivelAtual + 1);
-            // Zera o XP ou subtrai o custo, dependendo da regra de negócio
-            avatar.setExperiencia(novoXpTotal - XP_PARA_PROXIMO_NIVEL);
-        } else {
-            avatar.setExperiencia(novoXpTotal);
+        // Lógica para subir de nível (pode subir múltiplos níveis se XP for suficiente)
+        int nivelAtual = avatar.getNivel();
+        int xpRestante = novoXpTotal;
+        
+        while (xpRestante >= XP_PARA_PROXIMO_NIVEL) {
+            nivelAtual++;
+            xpRestante -= XP_PARA_PROXIMO_NIVEL;
         }
+        
+        avatar.setNivel(nivelAtual);
+        avatar.setExperiencia(xpRestante);
     }
 
     @Override

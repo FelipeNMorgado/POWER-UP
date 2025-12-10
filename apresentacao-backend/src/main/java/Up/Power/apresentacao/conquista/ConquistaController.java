@@ -59,6 +59,28 @@ public class ConquistaController {
         }
     }
 
+    @GetMapping
+    public ResponseEntity<List<ConquistaResumo>> listarTodas() {
+        try {
+            List<ConquistaResumo> conquistas = conquistaServicoAplicacao.listarTodas();
+            return ResponseEntity.ok(conquistas);
+        } catch (Exception e) {
+            e.printStackTrace();
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
+        }
+    }
+
+    @GetMapping("/perfil/{perfilId}")
+    public ResponseEntity<List<ConquistaResumo>> listarPorPerfil(@PathVariable("perfilId") Integer perfilId) {
+        try {
+            List<ConquistaResumo> conquistas = conquistaServicoAplicacao.listarPorPerfil(perfilId);
+            return ResponseEntity.ok(conquistas);
+        } catch (Exception e) {
+            e.printStackTrace();
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
+        }
+    }
+
     // DTOs de Request
     public record CriarConquistaRequest(Integer exercicioId, Integer treinoId, String nome, String descricao) {}
     public record EscolherBadgeRequest(String badge) {}

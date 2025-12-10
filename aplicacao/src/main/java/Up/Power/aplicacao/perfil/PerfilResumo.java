@@ -8,6 +8,7 @@ public record PerfilResumo(
         String username,
         String foto,
         Boolean estado,
-        LocalDateTime criacao
+        LocalDateTime criacao,
+        String conquistasSelecionadas
 ) {}
 

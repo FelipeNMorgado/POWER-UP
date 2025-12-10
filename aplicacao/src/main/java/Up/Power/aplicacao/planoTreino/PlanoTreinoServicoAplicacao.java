@@ -4,7 +4,9 @@ import Up.Power.Email;
 import Up.Power.EstadoPlano;
 import Up.Power.PlanoTreino;
 import Up.Power.Treino;
+import Up.Power.aplicacao.conquista.ConquistaAvaliadorAplicacao;
 import Up.Power.exercicio.ExercicioId;
+import Up.Power.perfil.PerfilRepository;
 import Up.Power.planoTreino.Dias;
 import Up.Power.planoTreino.PlanoTId;
 import Up.Power.planoTreino.PlanoTreinoRepository;
@@ -14,6 +16,7 @@ import Up.Power.treino.TreinoId;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
+import java.util.Optional;
 import java.util.stream.Collectors;
 
 /**
@@ -26,15 +29,21 @@ public class PlanoTreinoServicoAplicacao {
     private final PlanoTreinoRepositorioAplicacao planoTreinoRepositorioAplicacao;
     private final PlanoTreinoService planoTreinoService;
     private final ValidacaoTreinoStrategy validacaoStrategy;
+    private final ConquistaAvaliadorAplicacao conquistaAvaliador;
+    private final PerfilRepository perfilRepository;
 
     public PlanoTreinoServicoAplicacao(
             PlanoTreinoRepositorioAplicacao planoTreinoRepositorioAplicacao,
             PlanoTreinoRepository planoTreinoRepository,
-            ValidacaoTreinoStrategy validacaoStrategy) {
+            ValidacaoTreinoStrategy validacaoStrategy,
+            ConquistaAvaliadorAplicacao conquistaAvaliador,
+            PerfilRepository perfilRepository) {
         this.planoTreinoRepositorioAplicacao = planoTreinoRepositorioAplicacao;
         this.planoTreinoService = new PlanoTreinoService(planoTreinoRepository);
         // Strategy pattern: estratégia injetada via Spring (padrão: ValidacaoTreinoCompletaStrategy)
         this.validacaoStrategy = validacaoStrategy;
+        this.conquistaAvaliador = conquistaAvaliador;
+        this.perfilRepository = perfilRepository;
     }
 
     /**
@@ -115,6 +124,28 @@ public class PlanoTreinoServicoAplicacao {
 
         // Adiciona ao plano
         planoTreinoService.adicionarTreino(new PlanoTId(planoTId), treino);
+        
+        // Buscar o plano para obter o email do usuário
+        Optional<PlanoTreino> planoOpt = planoTreinoRepositorioAplicacao.obterPorId(new PlanoTId(planoTId));
+        if (planoOpt.isPresent()) {
+            PlanoTreino plano = planoOpt.get();
+            // Buscar perfil pelo email para obter o perfilId
+            perfilRepository.findByUsuarioEmail(plano.getUsuarioEmail().getCaracteres())
+                    .ifPresent(perfil -> {
+                        // Avaliar conquistas baseadas no treino
+                        try {
+                            conquistaAvaliador.avaliarEAdicionarConquistasPorTreino(
+                                    perfil.getId().getId(),
+                                    treino
+                            );
+                        } catch (Exception e) {
+                            // Log do erro mas não interrompe a adição do treino
+                            System.err.println("Erro ao avaliar conquistas por treino: " + e.getMessage());
+                            e.printStackTrace();
+                        }
+                    });
+        }
+        
         return obterPorId(planoTId);
     }
 
