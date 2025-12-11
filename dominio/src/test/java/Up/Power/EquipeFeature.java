@@ -37,6 +37,8 @@ public class EquipeFeature {
     public void ele_criar_uma_equipe() {
         EquipeId id = new EquipeId();
         equipe = equipeService.criarEquipe(id, "Equipe Top", usuarioLogado.getUsuarioEmail());
+        // Salvar a equipe no repositório para que possa ser recuperada depois
+        equipeRepository.salvar(equipe);
         // Geração de código de convite apenas para validação no cenário (não persistido)
         codigoConvite = UUID.randomUUID().toString().substring(0, 8).toUpperCase();
     }
@@ -217,10 +219,12 @@ public class EquipeFeature {
         // Criar segunda equipe
         EquipeId segundaEquipeId = new EquipeId();
         Equipe segundaEquipe = equipeService.criarEquipe(segundaEquipeId, "Equipe Secundária", usuarioLogado.getUsuarioEmail());
+        equipeRepository.salvar(segundaEquipe);
         
         // Criar terceira equipe
         EquipeId terceiraEquipeId = new EquipeId();
         Equipe terceiraEquipe = equipeService.criarEquipe(terceiraEquipeId, "Equipe Terciária", usuarioLogado.getUsuarioEmail());
+        equipeRepository.salvar(terceiraEquipe);
     }
 
     @When("ele solicitar a listagem de suas equipes")
@@ -281,6 +285,7 @@ public class EquipeFeature {
         Email outroLider = new Email("outro@lider.com");
         EquipeId novaEquipeId = new EquipeId();
         Equipe novaEquipe = equipeService.criarEquipe(novaEquipeId, "Equipe de Outro Líder", outroLider);
+        equipeRepository.salvar(novaEquipe);
         
         // Adiciona o usuário atual como membro comum
         equipeService.adicionarMembro(novaEquipeId, usuarioLogado.getUsuarioEmail());

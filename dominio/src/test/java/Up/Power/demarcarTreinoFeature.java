@@ -63,26 +63,28 @@ public class demarcarTreinoFeature {
 
     @When("o usuário tentar demarcar sua frequência")
     public void o_usuario_tentar_demarcar_sua_frequencia() {
-        frequenciaService.registrarPresenca(frequenciaId, perfilId, treinoId);
+        frequenciaService.registrarPresenca(perfilId, treinoId, new Up.Power.planoTreino.PlanoTId(1));
         System.out.println("Frequência registrada!");
     }
 
     @Then("o sistema demarca que o usuário foi à academia")
     public void o_sistema_demarcar_que_o_usuario_foi_a_academia() {
-        boolean presente = frequenciaService.usuarioFoiAoTreino(frequenciaId);
+        List<Frequencia> frequencias = ((FrequenciaMock) repositoryMock).listarPorPerfil(perfilId.getId());
+        boolean presente = !frequencias.isEmpty();
         assertTrue(presente);
         System.out.println("Presença confirmada.");
     }
 
     @And("adiciona um dia a mais na contagem de treinos da semana")
     public void adiciona_um_dia_a_mais_na_contagem_de_treinos_da_semana() {
-        assertTrue(frequenciaService.getContagemSemanal() > 0);
-        System.out.println("Contagem atual de treinos: " + frequenciaService.getContagemSemanal());
+        int contagem = frequenciaService.calcularFrequenciaSemanal(perfilId, new Up.Power.planoTreino.PlanoTId(1));
+        assertTrue(contagem > 0);
+        System.out.println("Contagem atual de treinos: " + contagem);
     }
 
     @When("o usuário não marcar presença em um dia específico")
     public void o_usuario_nao_marcar_presenca_em_um_dia_especifico() {
-        frequenciaService.registrarAusencia(frequenciaId);
+        // Simula ausência não registrando presença
         System.out.println("Usuário não marcou presença hoje.");
     }
 
@@ -95,20 +97,22 @@ public class demarcarTreinoFeature {
 
     @And("zera a contagem de treinos em sequência")
     public void zera_a_contagem_de_treinos_em_sequencia() {
-        assertEquals(0, frequenciaService.getContagemSemanal());
+        int contagem = frequenciaService.calcularFrequenciaSemanal(perfilId, new Up.Power.planoTreino.PlanoTId(1));
+        assertEquals(0, contagem);
         System.out.println("Contagem zerada.");
     }
-
     @When("o usuário tentar demarcar sua frequência com foto")
     public void o_usuario_tentar_demarcar_sua_frequencia_com_foto() {
         String fotoFake = "base64ImagemSimulada123==";
-        frequenciaService.registrarPresencaComFoto(frequenciaId, perfilId, treinoId, fotoFake);
+        frequenciaService.registrarPresencaComFoto(perfilId, treinoId, new Up.Power.planoTreino.PlanoTId(1), fotoFake);
         System.out.println("Frequência registrada com foto!");
     }
 
     @Then("o sistema registra a presença")
     public void o_sistema_registra_a_presenca_com_a_foto_anexada() {
-        var freq = ((FrequenciaMock) repositoryMock).obterFrequencia(frequenciaId, java.time.LocalDateTime.now());
+        List<Frequencia> frequencias = ((FrequenciaMock) repositoryMock).listarPorPerfil(perfilId.getId());
+        assertFalse(frequencias.isEmpty());
+        Frequencia freq = frequencias.get(frequencias.size() - 1);
         assertNotNull(freq);
         assertNotNull(freq.getFoto());
         System.out.println("Foto anexada: " + freq.getFoto());

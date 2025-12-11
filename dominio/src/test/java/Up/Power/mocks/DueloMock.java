@@ -1,12 +1,17 @@
 package Up.Power.mocks;
 
+import java.util.ArrayList;
+import java.util.Comparator;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+import java.util.Optional;
+import java.util.concurrent.atomic.AtomicInteger;
+
 import Up.Power.Duelo;
 import Up.Power.avatar.AvatarId;
 import Up.Power.duelo.DueloId;
 import Up.Power.duelo.DueloRepository;
-
-import java.util.*;
-import java.util.concurrent.atomic.AtomicInteger;
 
 public class DueloMock implements DueloRepository {
 
@@ -52,6 +57,18 @@ public class DueloMock implements DueloRepository {
                 )
 
                 .max(Comparator.comparing(Duelo::getDataDuelo));
+    }
+
+    @Override
+    public List<Duelo> findDuelsBetweenSince(AvatarId avatarId1, AvatarId avatarId2, java.time.LocalDateTime dataInicio) {
+        return bancoEmMemoria.values().stream()
+                .filter(duelo ->
+                        (duelo.getAvatar1().equals(avatarId1) && duelo.getAvatar2().equals(avatarId2)) ||
+                                (duelo.getAvatar1().equals(avatarId2) && duelo.getAvatar2().equals(avatarId1))
+                )
+                .filter(duelo -> !duelo.getDataDuelo().isBefore(dataInicio))
+                .sorted(Comparator.comparing(Duelo::getDataDuelo).reversed())
+                .toList();
     }
 
     public List<Duelo> findAll() {

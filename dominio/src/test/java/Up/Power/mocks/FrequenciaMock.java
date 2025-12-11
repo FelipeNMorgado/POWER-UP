@@ -1,11 +1,16 @@
 package Up.Power.mocks;
 
+import java.time.LocalDateTime;
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.Comparator;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+
 import Up.Power.Frequencia;
 import Up.Power.frequencia.FrequenciaId;
 import Up.Power.frequencia.FrequenciaRepository;
-
-import java.time.LocalDateTime;
-import java.util.*;
 
 public class FrequenciaMock implements FrequenciaRepository {
 
@@ -42,7 +47,28 @@ public class FrequenciaMock implements FrequenciaRepository {
 
     @Override
     public List<Frequencia> listarPorPerfil(Integer perfilId) {
-        return List.of();
+        return banco.values().stream()
+                .flatMap(List::stream)
+                .filter(f -> f.getPerfil().getId() == (int) perfilId)
+                .toList();
+    }
+
+    @Override
+    public List<Frequencia> listarPorPerfilEPlanoTreino(Integer perfilId, Integer planoTreinoId) {
+        return banco.values().stream()
+                .flatMap(List::stream)
+                .filter(f -> f.getPerfil().getId() == (int) perfilId)
+                .filter(f -> f.getPlanoTId() != null && f.getPlanoTId().getId() == (int) planoTreinoId)
+                .toList();
+    }
+
+    @Override
+    public List<Frequencia> listarPorPerfilEData(Integer perfilId, java.time.LocalDate data) {
+        return banco.values().stream()
+                .flatMap(List::stream)
+                .filter(f -> f.getPerfil().getId() == (int) perfilId)
+                .filter(f -> f.getDataDePresenca().toLocalDate().equals(data))
+                .toList();
     }
 
     // Extra útil para testes: retorna todas as frequências
