@@ -36,6 +36,7 @@ O script:
 - Insere ~30 usuarios/perfis/avatares com XP variado.
 - Cria amizades, equipes e membros.
 - Gera feedbacks, conquistas (e vinculos) e frequencias.
+- Popular loja: insere acessórios (com qualidade/categoria/subcategoria) e limpa `acessorio`/`avatar_acessorios` antes de inserir.
 
 ## Ajustes opcionais
 - Edite `CONFIG` no topo de `seed_powerup.py` para host/porta/credenciais.

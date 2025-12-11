@@ -2,6 +2,8 @@ package Up.Power.aplicacao.avatar;
 
 import Up.Power.Avatar;
 import Up.Power.aplicacao.conquista.ConquistaAvaliadorAplicacao;
+import Up.Power.acessorio.AcessorioId;
+import Up.Power.acessorio.AcessorioRepository;
 import Up.Power.avatar.AvatarService;
 import Up.Power.avatar.ExperienceService;
 import Up.Power.avatar.AvatarId;
@@ -18,17 +20,20 @@ public class AvatarServicoAplicacao {
     private final AvatarService avatarDominioService;
     private final ExperienceService experienceService;
     private final ConquistaAvaliadorAplicacao conquistaAvaliador;
+    private final AcessorioRepository acessorioRepository;
 
     public AvatarServicoAplicacao(
             AvatarRepositorioAplicacao avatarRepositorio,
             AvatarService avatarDominioService,
             ExperienceService experienceService,
-            @Lazy ConquistaAvaliadorAplicacao conquistaAvaliador
+            @Lazy ConquistaAvaliadorAplicacao conquistaAvaliador,
+            AcessorioRepository acessorioRepository
     ) {
         this.avatarRepositorio = avatarRepositorio;
         this.avatarDominioService = avatarDominioService;
         this.experienceService = experienceService;
         this.conquistaAvaliador = conquistaAvaliador;
+        this.acessorioRepository = acessorioRepository;
     }
 
     public AvatarResumo obterPorPerfilId(Integer perfilId) {
@@ -83,5 +88,60 @@ public class AvatarServicoAplicacao {
         int agilidade = avatarDominioService.getAgilidade(id);
         
         return new AtributosCalculadosResumo(forca, resistencia, agilidade);
+    }
+
+    public AvatarResumo equiparAcessorios(Integer avatarId, java.util.List<Integer> acessorioIds) {
+        var avatarOpt = avatarRepositorio.obterPorId(new AvatarId(avatarId));
+        if (avatarOpt.isEmpty()) {
+            throw new NoSuchElementException("Avatar não encontrado: " + avatarId);
+        }
+        var avatar = avatarOpt.get();
+
+        if (acessorioIds == null) {
+            acessorioIds = java.util.Collections.emptyList();
+        }
+
+        // Garante que todo item do inventário tenha entrada na flag (default false)
+        avatar.getAcessorios().forEach(acc -> {
+            if (acc.getId() != null) {
+                avatar.getAcessoriosEquipados().putIfAbsent(acc.getId().getId(), false);
+            }
+        });
+
+        // Atualiza flags de equipado preservando inventário existente
+        var idsUnicos = acessorioIds.stream().distinct().toList();
+
+        // Regra: apenas 1 item equipado por subcategoria
+        java.util.Map<String, Integer> escolhidosPorSubcat = new java.util.HashMap<>();
+
+        for (Integer id : idsUnicos) {
+            acessorioRepository.findById(new AcessorioId(id)).ifPresent(acc -> {
+                String key = normalizarSubcat(acc.getSubcategoria());
+                // guarda o primeiro de cada subcategoria
+                escolhidosPorSubcat.putIfAbsent(key, id);
+                // garante presença no inventário
+                avatar.adicionarAcessorio(acc, false);
+            });
+        }
+
+        // Zera flags e aplica apenas os escolhidos
+        avatar.getAcessoriosEquipados().replaceAll((k, v) -> false);
+        escolhidosPorSubcat.values().forEach(id -> avatar.getAcessoriosEquipados().put(id, true));
+
+        avatarRepositorio.salvar(avatar);
+        return AvatarResumoAssembler.toResumo(avatar);
+    }
+
+    public AvatarResumo equiparAcessoriosPorPerfil(Integer perfilId, java.util.List<Integer> acessorioIds) {
+        var avatarOpt = avatarRepositorio.obterPorPerfilId(perfilId);
+        if (avatarOpt.isEmpty()) {
+            throw new NoSuchElementException("Avatar não encontrado para o perfil: " + perfilId);
+        }
+        return equiparAcessorios(avatarOpt.get().getId().getId(), acessorioIds);
+    }
+
+    private String normalizarSubcat(String subcat) {
+        if (subcat == null || subcat.isBlank()) return "__sem_subcat__";
+        return subcat.trim().toLowerCase();
     }
 }

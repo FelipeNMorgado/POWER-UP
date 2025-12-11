@@ -4,6 +4,7 @@ import Up.Power.aplicacao.avatar.AvatarServicoAplicacao;
 import Up.Power.aplicacao.avatar.AvatarResumo;
 import Up.Power.aplicacao.avatar.AdicionarXpCommand;
 import Up.Power.aplicacao.avatar.AvatarServicoAplicacao.AtributosCalculadosResumo;
+import Up.Power.aplicacao.avatar.EquiparAcessoriosCommand;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -48,6 +49,43 @@ public class AvatarController {
         try {
             AtributosCalculadosResumo atributos = avatarServicoAplicacao.obterAtributosCalculados(avatarId);
             return ResponseEntity.ok(atributos);
+        } catch (Exception e) {
+            e.printStackTrace();
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
+        }
+    }
+
+    @PutMapping("/{avatarId}/acessorios")
+    public ResponseEntity<AvatarResumo> equiparAcessorios(
+            @PathVariable("avatarId") Integer avatarId,
+            @RequestBody EquiparAcessoriosCommand command
+    ) {
+        try {
+            if (command.avatarId() != null && !command.avatarId().equals(avatarId)) {
+                return ResponseEntity.badRequest().build();
+            }
+            if (command.acessorioIds() == null) {
+                return ResponseEntity.badRequest().build();
+            }
+            var resumo = avatarServicoAplicacao.equiparAcessorios(avatarId, command.acessorioIds());
+            return ResponseEntity.ok(resumo);
+        } catch (Exception e) {
+            e.printStackTrace();
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
+        }
+    }
+
+    @PutMapping("/perfil/{perfilId}/acessorios")
+    public ResponseEntity<AvatarResumo> equiparAcessoriosPorPerfil(
+            @PathVariable("perfilId") Integer perfilId,
+            @RequestBody EquiparAcessoriosCommand command
+    ) {
+        try {
+            if (command.acessorioIds() == null) {
+                return ResponseEntity.badRequest().build();
+            }
+            var resumo = avatarServicoAplicacao.equiparAcessoriosPorPerfil(perfilId, command.acessorioIds());
+            return ResponseEntity.ok(resumo);
         } catch (Exception e) {
             e.printStackTrace();
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();

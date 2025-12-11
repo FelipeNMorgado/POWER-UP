@@ -67,8 +67,8 @@ public class LojaServicoAplicacao {
         // Deduzir o dinheiro
         avatar.setDinheiro(avatar.getDinheiro() - acessorio.getPreco());
 
-        // Adicionar o acessório ao inventário do avatar
-        avatar.getAcessorios().add(acessorio);
+        // Adicionar o acessório ao inventário do avatar, não equipado
+        avatar.adicionarAcessorio(acessorio, false);
 
         // Salvar o avatar atualizado
         avatarRepository.save(avatar);

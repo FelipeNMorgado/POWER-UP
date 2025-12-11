@@ -14,8 +14,14 @@ import java.util.stream.Collectors;
 public class AvatarMapper {
 
     public static AvatarJpa toEntity(Avatar avatar) {
-        List<Integer> acessorioIds = avatar.getAcessorios().stream()
-                .map(a -> a.getId().getId())
+        // Garante que itens no inventário tenham entrada na flag (default false)
+        avatar.getAcessorios().forEach(acc -> {
+            avatar.getAcessoriosEquipados().putIfAbsent(acc.getId().getId(), false);
+        });
+
+        // Mapear inventário com flag de equipado.
+        List<AvatarAcessorioEmbeddable> acessorios = avatar.getAcessoriosEquipados().entrySet().stream()
+                .map(e -> new AvatarAcessorioEmbeddable(e.getKey(), e.getValue()))
                 .collect(Collectors.toList());
 
         // Se o ID for null ou 0, trata como null para que o Hibernate gere um novo ID
@@ -27,7 +33,7 @@ public class AvatarMapper {
         return new AvatarJpa(
                 id,
                 avatar.getPerfil().getId(),
-                acessorioIds,
+                acessorios,
                 avatar.getNivel(),
                 avatar.getExperiencia(),
                 avatar.getDinheiro(),
@@ -46,32 +52,14 @@ public class AvatarMapper {
         avatar.setDinheiro(entity.getDinheiro() != null ? entity.getDinheiro() : 0);
         avatar.setForca(entity.getForca() != null ? entity.getForca() : 0);
         
-        // Carregar acessórios completos do banco de dados
-        if (entity.getAcessorioIds() != null && !entity.getAcessorioIds().isEmpty()) {
-            System.out.println("AvatarMapper - Carregando " + entity.getAcessorioIds().size() + " acessórios para o avatar ID: " + entity.getId());
-            List<Acessorio> acessorios = entity.getAcessorioIds().stream()
-                    .map(id -> {
-                        System.out.println("AvatarMapper - Buscando acessório ID: " + id);
-                        var acessorioOpt = acessorioRepository.findById(new AcessorioId(id));
-                        if (acessorioOpt.isPresent()) {
-                            Acessorio acessorio = acessorioOpt.get();
-                            System.out.println("AvatarMapper - Acessório encontrado - ID: " + acessorio.getId().getId() + 
-                                             ", Nome: " + acessorio.getNome() + 
-                                             ", Preço: " + acessorio.getPreco());
-                            return acessorioOpt;
-                        } else {
-                            System.out.println("AvatarMapper - Acessório ID " + id + " não encontrado no banco!");
-                            return java.util.Optional.<Acessorio>empty();
-                        }
-                    })
-                    .filter(java.util.Optional::isPresent)
-                    .map(java.util.Optional::get)
-                    .collect(Collectors.toList());
-            System.out.println("AvatarMapper - Total de acessórios carregados: " + acessorios.size());
-            avatar.getAcessorios().clear();
-            avatar.getAcessorios().addAll(acessorios);
-        } else {
-            System.out.println("AvatarMapper - Nenhum acessório encontrado para o avatar ID: " + entity.getId());
+        // Carregar inventário com flag de equipado
+        if (entity.getAcessorios() != null && !entity.getAcessorios().isEmpty()) {
+            entity.getAcessorios().forEach(emb -> {
+                var acessorioOpt = acessorioRepository.findById(new AcessorioId(emb.getAcessorioId()));
+                acessorioOpt.ifPresent(ac -> {
+                    avatar.adicionarAcessorio(ac, Boolean.TRUE.equals(emb.getEquipado()));
+                });
+            });
         }
 
         return avatar;

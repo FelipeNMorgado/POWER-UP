@@ -28,8 +28,7 @@ public class AvatarJpa {
             name = "avatar_acessorios",
             joinColumns = @JoinColumn(name = "avatar_id")
     )
-    @Column(name = "acessorio_id")
-    private List<Integer> acessorioIds;
+    private List<AvatarAcessorioEmbeddable> acessorios;
 
     @Column(nullable = false)
     private Integer nivel;
@@ -45,11 +44,11 @@ public class AvatarJpa {
 
     public AvatarJpa() {}
 
-    public AvatarJpa(Integer id, Integer perfilId, List<Integer> acessorioIds,
+    public AvatarJpa(Integer id, Integer perfilId, List<AvatarAcessorioEmbeddable> acessorios,
                      Integer nivel, Integer experiencia, Integer dinheiro, Integer forca) {
         this.id = id;
         this.perfilId = perfilId;
-        this.acessorioIds = acessorioIds;
+        this.acessorios = acessorios;
         this.nivel = nivel;
         this.experiencia = experiencia;
         this.dinheiro = dinheiro;
@@ -59,7 +58,7 @@ public class AvatarJpa {
     // Getters
     public Integer getId() { return id; }
     public Integer getPerfilId() { return perfilId; }
-    public List<Integer> getAcessorioIds() { return acessorioIds; }
+    public List<AvatarAcessorioEmbeddable> getAcessorios() { return acessorios; }
     public Integer getNivel() { return nivel; }
     public Integer getExperiencia() { return experiencia; }
     public Integer getDinheiro() { return dinheiro; }
@@ -68,7 +67,7 @@ public class AvatarJpa {
     // Setters
     public void setId(Integer id) { this.id = id; }
     public void setPerfilId(Integer perfilId) { this.perfilId = perfilId; }
-    public void setAcessorioIds(List<Integer> acessorioIds) { this.acessorioIds = acessorioIds; }
+    public void setAcessorios(List<AvatarAcessorioEmbeddable> acessorios) { this.acessorios = acessorios; }
     public void setNivel(Integer nivel) { this.nivel = nivel; }
     public void setExperiencia(Integer experiencia) { this.experiencia = experiencia; }
     public void setDinheiro(Integer dinheiro) { this.dinheiro = dinheiro; }

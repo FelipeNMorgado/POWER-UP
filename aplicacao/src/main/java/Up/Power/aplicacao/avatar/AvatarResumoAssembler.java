@@ -16,17 +16,18 @@ public final class AvatarResumoAssembler {
         
         List<AcessorioResumo> acessoriosResumo = avatar.getAcessorios().stream()
                 .map(acessorio -> {
-                    System.out.println("Mapeando acessório - ID: " + acessorio.getId().getId() + 
-                                     ", Nome: " + acessorio.getNome() + 
-                                     ", Preço: " + acessorio.getPreco() +
-                                     ", Ícone: " + (acessorio.getIcone() != null ? acessorio.getIcone() : "null") +
-                                     ", Imagem: " + (acessorio.getImagem() != null && !acessorio.getImagem().isEmpty() ? "presente" : "vazia"));
+                    boolean equipado = avatar.getAcessoriosEquipados()
+                            .getOrDefault(acessorio.getId().getId(), false);
                     return new AcessorioResumo(
                             acessorio.getId().getId(),
                             acessorio.getIcone() != null ? acessorio.getIcone() : "",
                             acessorio.getImagem() != null ? acessorio.getImagem() : "",
                             acessorio.getNome() != null ? acessorio.getNome() : "",
-                            acessorio.getPreco()
+                            acessorio.getPreco(),
+                            acessorio.getQualidade(),
+                            acessorio.getCategoria(),
+                            acessorio.getSubcategoria(),
+                            equipado
                     );
                 })
                 .collect(Collectors.toList());

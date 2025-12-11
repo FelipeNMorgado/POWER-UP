@@ -55,3 +55,21 @@ PREPARE s FROM @stmt;
 EXECUTE s;
 DEALLOCATE PREPARE s;
 
+-- coluna equipado na tabela de vínculo avatar_acessorios
+SET @stmt := (
+    SELECT IF(
+        EXISTS(
+            SELECT 1
+            FROM information_schema.columns
+            WHERE table_schema = DATABASE()
+              AND table_name = 'avatar_acessorios'
+              AND column_name = 'equipado'
+        ),
+        'SELECT 1',
+        'ALTER TABLE avatar_acessorios ADD COLUMN equipado TINYINT(1) NOT NULL DEFAULT 0'
+    )
+);
+PREPARE s FROM @stmt;
+EXECUTE s;
+DEALLOCATE PREPARE s;
+
