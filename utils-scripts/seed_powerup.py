@@ -119,31 +119,66 @@ def seed_usuarios_perfis_avatares(cur, n=30):
     usuarios, perfis, avatares = [], [], []
     base_date = datetime.date(1990, 1, 1)
     perfis_info = []
+
+    # === GERAR USUÁRIOS COM amizade_id ===
     for i in range(1, n + 1):
         email = f"user{i}@example.com"
         nome = f"User {i}"
         senha = "senha123"
         dnasc = base_date + datetime.timedelta(days=300 * i)
-        usuarios.append((email, nome, senha, dnasc))
-    exec_many(cur, "INSERT INTO usuario (email, nome, senha, data_nascimento) VALUES (%s,%s,%s,%s)", usuarios)
+        amizade_id = i  # <<< AQUI: amizade_id sequencial
 
+        usuarios.append((email, nome, senha, dnasc, amizade_id))
+
+    # Agora o insert inclui amizade_id
+    exec_many(
+        cur,
+        """
+        INSERT INTO usuario (email, nome, senha, data_nascimento, amizade_id)
+        VALUES (%s, %s, %s, %s, %s)
+        """,
+        usuarios
+    )
+
+    # === RECUPERAR IDS GERADOS ===
     cur.execute("SELECT id, email FROM usuario")
     rows = cur.fetchall()
+
+    # === GERAR PERFIL ===
     for uid, email in rows:
         username = email.split("@")[0]
         foto = None
         perfis.append((uid, email, username, True, datetime.datetime.now(), foto))
         perfis_info.append({"perfil_id": uid, "email": email})
-    exec_many(cur, "INSERT INTO perfil (id, usuario_email, username, estado, criacao, foto) VALUES (%s,%s,%s,%s,%s,%s)", perfis)
 
+    exec_many(
+        cur,
+        """
+        INSERT INTO perfil (id, usuario_email, username, estado, criacao, foto)
+        VALUES (%s,%s,%s,%s,%s,%s)
+        """,
+        perfis
+    )
+
+    # === GERAR AVATAR ===
     for pid, email in rows:
         nivel = random.randint(3, 18)
         experiencia = random.randint(0, 99)
         dinheiro = random.randint(500, 2000)
         forca = random.randint(5, 20)
         avatares.append((pid, nivel, experiencia, dinheiro, forca))
-    exec_many(cur, "INSERT INTO avatar (perfil_id, nivel, experiencia, dinheiro, forca) VALUES (%s,%s,%s,%s,%s)", avatares)
+
+    exec_many(
+        cur,
+        """
+        INSERT INTO avatar (perfil_id, nivel, experiencia, dinheiro, forca)
+        VALUES (%s,%s,%s,%s,%s)
+        """,
+        avatares
+    )
+
     return perfis_info
+
 
 
 def seed_amizades(cur, max_links=40):
