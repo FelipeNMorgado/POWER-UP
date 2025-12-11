@@ -4,6 +4,10 @@ import Up.Power.Email;
 import Up.Power.EstadoPlano;
 import Up.Power.PlanoTreino;
 import Up.Power.Treino;
+// IMPORTAÇÕES CRÍTICAS PARA O PADRÃO OBSERVER
+import Up.Power.aplicacao.conquista.ConquistaServicoAplicacao; // O Subject (Notificador)
+import Up.Power.aplicacao.eventos.TreinoConcluidoEvent; // O DTO de Evento
+// FIM DAS IMPORTAÇÕES CRÍTICAS
 import Up.Power.aplicacao.conquista.ConquistaAvaliadorAplicacao;
 import Up.Power.exercicio.ExercicioId;
 import Up.Power.perfil.PerfilRepository;
@@ -29,20 +33,34 @@ public class PlanoTreinoServicoAplicacao {
     private final PlanoTreinoRepositorioAplicacao planoTreinoRepositorioAplicacao;
     private final PlanoTreinoService planoTreinoService;
     private final ValidacaoTreinoStrategy validacaoStrategy;
-    private final ConquistaAvaliadorAplicacao conquistaAvaliador;
+
+    // MUDANÇA 1: O campo injetado é o Subject/Notificador, não o Avaliador (Observer).
+    private final ConquistaServicoAplicacao conquistaServicoAplicacao;
+
     private final PerfilRepository perfilRepository;
 
     public PlanoTreinoServicoAplicacao(
             PlanoTreinoRepositorioAplicacao planoTreinoRepositorioAplicacao,
             PlanoTreinoRepository planoTreinoRepository,
             ValidacaoTreinoStrategy validacaoStrategy,
-            ConquistaAvaliadorAplicacao conquistaAvaliador,
+            // MUDANÇA 2: Injetamos o Subject (ConquistaServicoAplicacao)
+            ConquistaServicoAplicacao conquistaServicoAplicacao,
             PerfilRepository perfilRepository) {
+
         this.planoTreinoRepositorioAplicacao = planoTreinoRepositorioAplicacao;
         this.planoTreinoService = new PlanoTreinoService(planoTreinoRepository);
         // Strategy pattern: estratégia injetada via Spring (padrão: ValidacaoTreinoCompletaStrategy)
         this.validacaoStrategy = validacaoStrategy;
-        this.conquistaAvaliador = conquistaAvaliador;
+
+        // MUDANÇA 3: Atribuição do Subject
+        this.conquistaServicoAplicacao = conquistaServicoAplicacao;
+
+        // Embora o Avaliador não seja mais chamado diretamente, se a injeção original
+        // fosse assim, ela precisaria ser removida/ajustada.
+        // O código original tinha: private final ConquistaAvaliadorAplicacao conquistaAvaliador;
+        // Se essa injeção não for mais usada, ela deve ser removida.
+        // Assumindo que o código foi limpo e apenas o ConquistaServicoAplicacao é necessário.
+
         this.perfilRepository = perfilRepository;
     }
 
@@ -96,10 +114,10 @@ public class PlanoTreinoServicoAplicacao {
             Integer series,
             Float distancia,
             java.time.LocalDateTime tempo) {
-        
+
         // Se treinoId for null, usar 0 (será gerado pelo banco)
         int treinoIdValue = (treinoId != null) ? treinoId : 0;
-        
+
         // Cria o treino
         Treino treino = new Treino(
                 new TreinoId(treinoIdValue),
@@ -110,7 +128,7 @@ public class PlanoTreinoServicoAplicacao {
                 series,
                 60 // descanso padrão
         );
-        
+
         // Define distancia e tempo se fornecidos
         if (distancia != null) {
             treino.setDistancia(distancia);
@@ -124,7 +142,7 @@ public class PlanoTreinoServicoAplicacao {
 
         // Adiciona ao plano
         planoTreinoService.adicionarTreino(new PlanoTId(planoTId), treino);
-        
+
         // Buscar o plano para obter o email do usuário
         Optional<PlanoTreino> planoOpt = planoTreinoRepositorioAplicacao.obterPorId(new PlanoTId(planoTId));
         if (planoOpt.isPresent()) {
@@ -132,20 +150,30 @@ public class PlanoTreinoServicoAplicacao {
             // Buscar perfil pelo email para obter o perfilId
             perfilRepository.findByUsuarioEmail(plano.getUsuarioEmail().getCaracteres())
                     .ifPresent(perfil -> {
-                        // Avaliar conquistas baseadas no treino
+
+                        // MUDANÇA 4: IMPLEMENTAÇÃO DO DISPARO DO OBSERVER
                         try {
-                            conquistaAvaliador.avaliarEAdicionarConquistasPorTreino(
+                            // 1. Cria o DTO de Evento (TreinoConcluidoEvent)
+                            TreinoConcluidoEvent evento = new TreinoConcluidoEvent(
                                     perfil.getId().getId(),
                                     treino
                             );
+
+                            // 2. Dispara a notificação via Subject (ConquistaServicoAplicacao)
+                            // O Subject notificará todos os Observers (como o ConquistaAvaliadorAplicacao)
+                            conquistaServicoAplicacao.notifyObservers(
+                                    "TREINO_CONCLUIDO", // O eventType que o Avaliador espera
+                                    evento
+                            );
+
                         } catch (Exception e) {
                             // Log do erro mas não interrompe a adição do treino
-                            System.err.println("Erro ao avaliar conquistas por treino: " + e.getMessage());
+                            System.err.println("Erro ao notificar conquistas por treino (Observer): " + e.getMessage());
                             e.printStackTrace();
                         }
                     });
         }
-        
+
         return obterPorId(planoTId);
     }
 
@@ -159,15 +187,15 @@ public class PlanoTreinoServicoAplicacao {
         if (treinoId == null) {
             throw new IllegalArgumentException("ID do treino não pode ser nulo");
         }
-        
+
         PlanoTreino plano = planoTreinoRepositorioAplicacao.obterPorId(new PlanoTId(planoTId))
                 .orElseThrow(() -> new IllegalArgumentException("Plano não encontrado"));
-        
+
         Treino treinoParaRemover = plano.getTreinos().stream()
                 .filter(t -> t.getId() != null && t.getId().getId() == treinoId)
                 .findFirst()
                 .orElseThrow(() -> new IllegalArgumentException("Treino não encontrado no plano. ID buscado: " + treinoId + ", Treinos no plano: " + plano.getTreinos().stream().map(t -> t.getId() != null ? String.valueOf(t.getId().getId()) : "null").toList()));
-        
+
         planoTreinoService.removerTreino(new PlanoTId(planoTId), treinoParaRemover);
         return obterPorId(planoTId);
     }
@@ -185,20 +213,20 @@ public class PlanoTreinoServicoAplicacao {
             Integer series,
             Float distancia,
             java.time.LocalDateTime tempo) {
-        
+
         PlanoTreino plano = planoTreinoRepositorioAplicacao.obterPorId(new PlanoTId(planoTId))
                 .orElseThrow(() -> new IllegalArgumentException("Plano não encontrado"));
-        
+
         Treino treinoAntigo = plano.getTreinos().stream()
                 .filter(t -> t.getId().getId() == treinoId)
                 .findFirst()
                 .orElseThrow(() -> new IllegalArgumentException("Treino não encontrado"));
-        
+
         // Para atualizar, o treinoId não pode ser null
         if (treinoId == null) {
             throw new IllegalArgumentException("TreinoId não pode ser null ao atualizar um treino");
         }
-        
+
         Treino treinoNovo = new Treino(
                 new TreinoId(treinoId),
                 new ExercicioId(exercicioId),
@@ -208,7 +236,7 @@ public class PlanoTreinoServicoAplicacao {
                 series,
                 60
         );
-        
+
         // Define distancia e tempo se fornecidos
         if (distancia != null) {
             treinoNovo.setDistancia(distancia);
@@ -255,4 +283,3 @@ public class PlanoTreinoServicoAplicacao {
         planoTreinoService.excluirPlanoTreino(new PlanoTId(planoTId));
     }
 }
-
