@@ -52,6 +52,17 @@ public class DueloController {
         return ResponseEntity.ok(resumo);
     }
 
+    @GetMapping("/perfil/{perfilId}")
+    public ResponseEntity<java.util.List<DueloResumo>> listarPorPerfil(@PathVariable("perfilId") Integer perfilId) {
+        try {
+            var lista = dueloServicoAplicacao.listarPorPerfil(perfilId);
+            return ResponseEntity.ok(lista);
+        } catch (Exception e) {
+            e.printStackTrace();
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
+        }
+    }
+
     @GetMapping("/ultimo")
     public ResponseEntity<DueloResumo> ultimoEntrePerfis(
             @RequestParam("perfil1") Integer perfilId1,

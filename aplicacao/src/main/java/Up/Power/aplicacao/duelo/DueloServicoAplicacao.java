@@ -40,6 +40,13 @@ public class DueloServicoAplicacao {
                 .orElse(null);
     }
 
+    public java.util.List<DueloResumo> listarPorPerfil(Integer perfilId) {
+        return dueloRepositorioAplicacao.listarPorPerfil(perfilId)
+                .stream()
+                .map(DueloResumoAssembler::toResumo)
+                .toList();
+    }
+
     public DueloResumo ultimoEntrePerfis(Integer perfilId1, Integer perfilId2) {
         return dueloRepositorioAplicacao.ultimoEntrePerfis(perfilId1, perfilId2)
                 .map(DueloResumoAssembler::toResumo)

@@ -71,6 +71,14 @@ public class DueloMock implements DueloRepository {
                 .toList();
     }
 
+    @Override
+    public List<Duelo> findByAvatar(AvatarId avatarId) {
+        return bancoEmMemoria.values().stream()
+                .filter(duelo -> duelo.getAvatar1().equals(avatarId) || duelo.getAvatar2().equals(avatarId))
+                .sorted(Comparator.comparing(Duelo::getDataDuelo).reversed())
+                .toList();
+    }
+
     public List<Duelo> findAll() {
         return new ArrayList<>(bancoEmMemoria.values());
     }

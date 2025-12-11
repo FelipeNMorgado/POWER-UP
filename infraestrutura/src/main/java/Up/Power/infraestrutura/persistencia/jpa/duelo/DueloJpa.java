@@ -77,6 +77,13 @@ interface JpaDueloRepository extends JpaRepository<DueloJpa, Integer> {
         ORDER BY d.dataDuelo DESC
     """)
     java.util.List<DueloJpa> findDuelsBetweenSince(@Param("a") Integer a, @Param("b") Integer b, @Param("dataInicio") java.time.LocalDateTime dataInicio);
+
+    @Query("""
+        SELECT d FROM DueloJpa d
+        WHERE d.avatar1Id = :avatarId OR d.avatar2Id = :avatarId
+        ORDER BY d.dataDuelo DESC
+    """)
+    java.util.List<DueloJpa> findByAvatar(@Param("avatarId") Integer avatarId);
 }
 
 
@@ -117,6 +124,14 @@ class DueloRepositoryImpl implements DueloRepository {
                 avatarId2.getId(),
                 dataInicio
         ).stream()
+                .map(DueloMapper::toDomain)
+                .collect(java.util.stream.Collectors.toList());
+    }
+
+    @Override
+    public List<Duelo> findByAvatar(AvatarId avatarId) {
+        return repo.findByAvatar(avatarId.getId())
+                .stream()
                 .map(DueloMapper::toDomain)
                 .collect(java.util.stream.Collectors.toList());
     }

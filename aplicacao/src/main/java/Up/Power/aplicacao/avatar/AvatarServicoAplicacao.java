@@ -140,6 +140,14 @@ public class AvatarServicoAplicacao {
         return equiparAcessorios(avatarOpt.get().getId().getId(), acessorioIds);
     }
 
+    public AvatarResumo obterPorId(Integer avatarId) {
+        var avatarOpt = avatarRepositorio.obterPorId(new AvatarId(avatarId));
+        if (avatarOpt.isEmpty()) {
+            throw new NoSuchElementException("Avatar não encontrado: " + avatarId);
+        }
+        return AvatarResumoAssembler.toResumo(avatarOpt.get());
+    }
+
     private String normalizarSubcat(String subcat) {
         if (subcat == null || subcat.isBlank()) return "__sem_subcat__";
         return subcat.trim().toLowerCase();

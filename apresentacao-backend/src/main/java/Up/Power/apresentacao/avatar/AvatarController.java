@@ -9,6 +9,8 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.NoSuchElementException;
+
 @RestController
 @RequestMapping("/api/avatars")
 public class AvatarController {
@@ -17,6 +19,19 @@ public class AvatarController {
 
     public AvatarController(AvatarServicoAplicacao avatarServicoAplicacao) {
         this.avatarServicoAplicacao = avatarServicoAplicacao;
+    }
+
+    @GetMapping("/{avatarId}")
+    public ResponseEntity<AvatarResumo> obterPorId(@PathVariable("avatarId") Integer avatarId) {
+        try {
+            AvatarResumo avatar = avatarServicoAplicacao.obterPorId(avatarId);
+            return ResponseEntity.ok(avatar);
+        } catch (NoSuchElementException e) {
+            return ResponseEntity.notFound().build();
+        } catch (Exception e) {
+            e.printStackTrace();
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
+        }
     }
 
     @GetMapping("/perfil/{perfilId}")

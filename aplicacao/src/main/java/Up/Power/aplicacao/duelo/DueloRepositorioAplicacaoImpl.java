@@ -45,4 +45,11 @@ public class DueloRepositorioAplicacaoImpl implements DueloRepositorioAplicacao 
     public List<Duelo> findDuelsBetweenSince(AvatarId avatarId1, AvatarId avatarId2, LocalDateTime dataInicio) {
         return dueloRepository.findDuelsBetweenSince(avatarId1, avatarId2, dataInicio);
     }
+
+    @Override
+    public List<Duelo> listarPorPerfil(Integer perfilId) {
+        var avatar = avatarRepository.findByPerfilId(new PerfilId(perfilId));
+        if (avatar.isEmpty()) return java.util.Collections.emptyList();
+        return dueloRepository.findByAvatar(avatar.get().getId());
+    }
 }

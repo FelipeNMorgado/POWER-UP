@@ -30,6 +30,7 @@ public class DueloService {
                 .orElseThrow(() -> new IllegalStateException("Avatar do desafiado não encontrado. O perfil precisa ter um avatar cadastrado."));
 
         validarCooldownDuelo(avatar1.getId(), avatar2.getId());
+        validarLimiteDiario(avatar1.getId());
 
         String resultado = calcularResultadoDuelo(avatar1, avatar2);
 
@@ -53,6 +54,17 @@ public class DueloService {
     private void validarAmizade(PerfilId desafianteId, PerfilId desafiadoId) {
         if (!perfilRepository.existsAmizade(desafianteId, desafiadoId)) {
             throw new IllegalStateException("Só é possível duelar com amigos.");
+        }
+    }
+
+    private void validarLimiteDiario(AvatarId desafianteAvatarId) {
+        var duelos = dueloRepository.findByAvatar(desafianteAvatarId);
+        long hoje = LocalDateTime.now().toLocalDate().toEpochDay();
+        long duelosHoje = duelos.stream()
+                .filter(d -> d.getDataDuelo() != null && d.getDataDuelo().toLocalDate().toEpochDay() == hoje)
+                .count();
+        if (duelosHoje >= 5) {
+            throw new IllegalStateException("Limite diário de 5 duelos atingido. Tente novamente amanhã.");
         }
     }
 

@@ -13,4 +13,5 @@ public interface DueloRepositorioAplicacao {
     Optional<Duelo> ultimoEntrePerfis(Integer perfilId1, Integer perfilId2);
     Duelo salvar(Duelo duelo);
     List<Duelo> findDuelsBetweenSince(AvatarId avatarId1, AvatarId avatarId2, LocalDateTime dataInicio);
+    List<Duelo> listarPorPerfil(Integer perfilId);
 }

@@ -12,4 +12,5 @@ public interface DueloRepository {
     Optional<Duelo> findById(DueloId id);
     Optional<Duelo> findLastDuelBetween(AvatarId avatarId1, AvatarId avatarId2);
     List<Duelo> findDuelsBetweenSince(AvatarId avatarId1, AvatarId avatarId2, LocalDateTime dataInicio);
+    List<Duelo> findByAvatar(AvatarId avatarId);
 }
