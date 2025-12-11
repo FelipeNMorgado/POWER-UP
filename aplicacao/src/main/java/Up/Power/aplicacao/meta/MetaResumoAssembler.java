@@ -7,7 +7,7 @@ public final class MetaResumoAssembler {
     private MetaResumoAssembler() {
     }
 
-    public static MetaResumo toResumo(Meta meta) {
+    public static MetaResumo toResumo(Meta meta, boolean concluida) {
         
         // Estruturando as variáveis locais para evitar problemas de inferência de tipo
         Integer exercicioId = meta.getExercicioId() != null ? meta.getExercicioId().getId() : null;
@@ -21,7 +21,9 @@ public final class MetaResumoAssembler {
                 // Usando getDataFim() ou getFim() (ambos existem na sua classe Meta)
                 meta.getDataFim(), 
                 // Usando getInicio() (confirmado na sua classe Meta)
-                meta.getInicio()
+                meta.getInicio(),
+                meta.getExigenciaMinima(),
+                concluida
         );
     }
 }

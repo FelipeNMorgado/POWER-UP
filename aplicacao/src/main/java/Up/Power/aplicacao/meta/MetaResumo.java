@@ -8,5 +8,7 @@ public record MetaResumo(
         Integer treinoId,
         String nome,
         Date dataFim,
-        Date dataInicio
+        Date dataInicio,
+        Double exigenciaMinima,
+        Boolean concluida
 ) {}

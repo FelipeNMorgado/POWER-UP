@@ -42,16 +42,20 @@ public class MetaJpa {
     @Temporal(TemporalType.TIMESTAMP)
     private Date fim;
 
+    @Column(name = "exigencia_minima")
+    private Double exigenciaMinima;
+
     public MetaJpa() {}
 
     public MetaJpa(Integer id, Integer exercicioId, Integer treinoId,
-                   String nome, Date inicio, Date fim) {
+                   String nome, Date inicio, Date fim, Double exigenciaMinima) {
         this.id = id;
         this.exercicioId = exercicioId;
         this.treinoId = treinoId;
         this.nome = nome;
         this.inicio = inicio;
         this.fim = fim;
+        this.exigenciaMinima = exigenciaMinima;
     }
 
     // Getters
@@ -61,6 +65,7 @@ public class MetaJpa {
     public String getNome() { return nome; }
     public Date getInicio() { return inicio; }
     public Date getFim() { return fim; }
+    public Double getExigenciaMinima() { return exigenciaMinima; }
 
     // Setters
     public void setId(Integer id) { this.id = id; }
@@ -69,6 +74,7 @@ public class MetaJpa {
     public void setNome(String nome) { this.nome = nome; }
     public void setInicio(Date inicio) { this.inicio = inicio; }
     public void setFim(Date fim) { this.fim = fim; }
+    public void setExigenciaMinima(Double exigenciaMinima) { this.exigenciaMinima = exigenciaMinima; }
 }
 
 // =====================================
@@ -113,6 +119,11 @@ class MetaRepositoryImpl implements MetaRepository {
         return repo.findAll().stream()
                 .map(mapper::toDomain)
                 .toList();
+    }
+
+    @Override
+    public void delete(MetaId id) {
+        repo.deleteById(id.getId());
     }
 
     @Override

@@ -10,14 +10,22 @@ import org.springframework.stereotype.Component;
 public class MetaMapper {
 
     public MetaJpa toEntity(Meta meta) {
-        return new MetaJpa(
-                meta.getId() != null ? meta.getId().getId() : null,
+        // Se o ID for 0 ou null, usar null para que o JPA gere o ID automaticamente (INSERT)
+        // Se o ID for > 0, usar o ID para UPDATE
+        Integer id = (meta.getId() == null || meta.getId().getId() == 0) 
+            ? null 
+            : meta.getId().getId();
+        
+        MetaJpa jpa = new MetaJpa(
+                id,
                 meta.getExercicio() != null ? meta.getExercicio().getId() : null,
                 meta.getTreino() != null ? meta.getTreino().getId() : null,
                 meta.getNome(),
                 meta.getInicio(),
-                meta.getFim()
+                meta.getFim(),
+                meta.getExigenciaMinima()
         );
+        return jpa;
     }
 
     public Meta toDomain(MetaJpa entity) {
@@ -27,7 +35,8 @@ public class MetaMapper {
                 entity.getTreinoId() != null ? new TreinoId(entity.getTreinoId()) : null,
                 entity.getNome(),
                 entity.getFim(),
-                entity.getInicio()
+                entity.getInicio(),
+                entity.getExigenciaMinima()
         );
     }
 }

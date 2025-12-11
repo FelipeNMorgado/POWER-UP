@@ -10,4 +10,5 @@ public interface MetaRepositorioAplicacao {
     Optional<Meta> obterPorId(MetaId id);
     List<Meta> obterPorUsuario(int userId);
     Meta salvar(Meta meta);
+    void deletar(MetaId id);
 }

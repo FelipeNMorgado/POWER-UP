@@ -31,4 +31,9 @@ public class MetaRepositorioAplicacaoImpl implements MetaRepositorioAplicacao {
     public Meta salvar(Meta meta) {
         return metaRepository.save(meta);
     }
+
+    @Override
+    public void deletar(MetaId id) {
+        metaRepository.delete(id);
+    }
 }

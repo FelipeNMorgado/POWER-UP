@@ -33,6 +33,11 @@ public class MetaMock implements MetaRepository {
     }
 
     @Override
+    public void delete(MetaId id) {
+
+    }
+
+    @Override
     public void deleteAll() {
         banco.clear();
         seq.set(0);

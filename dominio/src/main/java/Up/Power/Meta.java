@@ -14,6 +14,17 @@ public class Meta {
     private String nome;
     private Date fim;
     private Date inicio;
+    private Double exigenciaMinima;
+
+    public Meta(MetaId id, ExercicioId exercicio, TreinoId treino, String nome, Date fim, Date inicio, Double exigenciaMinima) {
+        this.id = id;
+        this.exercicio = exercicio;
+        this.treino = treino;
+        this.nome = nome;
+        this.fim = fim;
+        this.inicio = inicio;
+        this.exigenciaMinima = exigenciaMinima;
+    }
 
     public Meta(MetaId id, ExercicioId exercicio, TreinoId treino, String nome, Date fim, Date inicio) {
         this.id = id;
@@ -58,5 +69,13 @@ public class Meta {
 
     public Date getDataFim() {
         return fim;
+    }
+
+    public Double getExigenciaMinima() {
+        return exigenciaMinima;
+    }
+
+    public void setExigenciaMinima(Double exigenciaMinima) {
+        this.exigenciaMinima = exigenciaMinima;
     }
 }
