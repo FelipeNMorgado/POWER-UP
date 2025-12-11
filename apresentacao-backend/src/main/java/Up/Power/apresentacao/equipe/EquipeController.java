@@ -1,6 +1,8 @@
 package Up.Power.apresentacao.equipe;
 
 import Up.Power.aplicacao.equipe.EquipeServicoAplicacao;
+import Up.Power.aplicacao.ranking.RankingEntrada;
+import Up.Power.aplicacao.ranking.RankingServicoAplicacao;
 import Up.Power.aplicacao.equipe.EquipeResumo;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -16,9 +18,14 @@ import java.util.Map;
 public class EquipeController {
 
     private final EquipeServicoAplicacao equipeServicoAplicacao;
+    private final RankingServicoAplicacao rankingServicoAplicacao;
 
-    public EquipeController(EquipeServicoAplicacao equipeServicoAplicacao) {
+    public EquipeController(
+            EquipeServicoAplicacao equipeServicoAplicacao,
+            RankingServicoAplicacao rankingServicoAplicacao
+    ) {
         this.equipeServicoAplicacao = equipeServicoAplicacao;
+        this.rankingServicoAplicacao = rankingServicoAplicacao;
     }
 
     @PostMapping
@@ -199,9 +206,9 @@ public class EquipeController {
     }
 
     @GetMapping("/{equipeId}/ranking")
-    public ResponseEntity<List<EquipeServicoAplicacao.MembroRanking>> obterRanking(@PathVariable("equipeId") Integer equipeId) {
+    public ResponseEntity<List<RankingEntrada>> obterRanking(@PathVariable("equipeId") Integer equipeId) {
         try {
-            List<EquipeServicoAplicacao.MembroRanking> ranking = equipeServicoAplicacao.obterRanking(equipeId);
+            List<RankingEntrada> ranking = rankingServicoAplicacao.rankingEquipe(equipeId);
             return ResponseEntity.ok(ranking);
         } catch (Exception e) {
             e.printStackTrace();
