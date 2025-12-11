@@ -1,3 +1,9 @@
+-- Garante tabela 'exercicio' necessária para FK (primeira execução)
+CREATE TABLE IF NOT EXISTS exercicio (
+    id INT AUTO_INCREMENT PRIMARY KEY,
+    nome VARCHAR(255) NULL
+);
+
 -- Cria tabela de progresso de treino por perfil e exercício
 CREATE TABLE IF NOT EXISTS treino_progresso (
     id INT AUTO_INCREMENT PRIMARY KEY,
