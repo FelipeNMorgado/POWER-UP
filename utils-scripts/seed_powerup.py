@@ -83,6 +83,8 @@ def exec_many(cur, sql, rows):
 def truncate_all(cur):
     cur.execute("SET FOREIGN_KEY_CHECKS=0;")
     for tbl in [
+        "avatar_acessorios",
+        "acessorio",
         "avatar",
         "perfil_amigos",
         "equipe_membros",
@@ -474,12 +476,26 @@ def seed_plano_nutricional(cur, perfis_info, refeicao_ids, planos_por_user=1):
 
 def seed_acessorios(cur):
     data = [
-        ("icone1", 100, "Bandana", "img1"),
-        ("icone2", 200, "Luvas", "img2"),
-        ("icone3", 300, "Cinto", "img3"),
-        ("icone4", 150, "Munhequeira", "img4"),
+        ("🧢", 120, "Boné Básico", "img_bone_basico", "Basica", "Acessorios", "bones"),
+        ("🎽", 180, "Regata Esportiva", "img_regata_esportiva", "Esportiva", "Roupas", "regatas"),
+        ("👕", 220, "Camiseta Premium", "img_camiseta_premium", "Premium", "Roupas", "camisetas"),
+        ("🧤", 150, "Luvas de Treino", "img_luvas", "Esportiva", "Acessorios", "straps"),
+        ("🎒", 260, "Mochila Premium", "img_mochila", "Premium", "Acessorios", "colar"),
+        ("🧢", 90, "Boné Esportivo", "img_bone_esportivo", "Esportiva", "Acessorios", "bones"),
+        ("🩳", 140, "Shorts Dry Fit", "img_shorts", "Esportiva", "Roupas", "shorts"),
+        ("🧦", 60, "Meias de Compressão", "img_meias", "Basica", "Acessorios", "straps"),
+        ("🥾", 320, "Tênis Premium", "img_tenis", "Premium", "Roupas", "tenis"),
+        ("🧥", 280, "Moletom Casual", "img_moletom", "Basica", "Roupas", "moletons"),
+        ("🕶️", 180, "Óculos Outdoor", "img_oculos", "Esportiva", "Acessorios", "straps"),
+        ("⏱️", 210, "Relógio Fitness", "img_relogio", "Premium", "Acessorios", "straps"),
+        ("🧴", 70, "Garrafa Térmica", "img_garrafa", "Basica", "Acessorios", "straps"),
+        ("🧘", 130, "Tapete de Yoga", "img_tapete", "Basica", "Acessorios", "straps"),
     ]
-    exec_many(cur, "INSERT INTO acessorio (icone, preco, nome, imagem) VALUES (%s,%s,%s,%s)", data)
+    exec_many(
+        cur,
+        "INSERT INTO acessorio (icone, preco, nome, imagem, qualidade, categoria, subcategoria) VALUES (%s,%s,%s,%s,%s,%s,%s)",
+        data,
+    )
     cur.execute("SELECT id FROM acessorio")
     return [r[0] for r in cur.fetchall()]
 

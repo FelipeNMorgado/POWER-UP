@@ -13,7 +13,10 @@ public class AcessorioMapper {
                 acessorio.getIcone(),
                 acessorio.getPreco(),
                 acessorio.getNome(),
-                acessorio.getImagem()
+                acessorio.getImagem(),
+                acessorio.getQualidade(),
+                acessorio.getCategoria(),
+                acessorio.getSubcategoria()
         );
     }
 
@@ -23,7 +26,10 @@ public class AcessorioMapper {
                 entity.getIcone() != null ? entity.getIcone() : "",
                 entity.getPreco() != null ? entity.getPreco() : 0,
                 entity.getNome() != null ? entity.getNome() : "",
-                entity.getImagem() != null ? entity.getImagem() : ""
+                entity.getImagem() != null ? entity.getImagem() : "",
+                entity.getQualidade() != null ? entity.getQualidade() : "Basica",
+                entity.getCategoria() != null ? entity.getCategoria() : "Acessorio",
+                entity.getSubcategoria()
         );
     }
 }

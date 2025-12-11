@@ -34,14 +34,27 @@ public class AcessorioJpa {
     @Column(columnDefinition = "LONGTEXT")
     private String imagem;
 
+    @Column(nullable = false, length = 50)
+    private String qualidade; // basica, esportiva, premium
+
+    @Column(nullable = false, length = 50)
+    private String categoria; // roupas, acessorios
+
+    @Column(length = 50)
+    private String subcategoria; // regatas, camisetas, colar, straps etc.
+
     public AcessorioJpa() {}
 
-    public AcessorioJpa(Integer id, String icone, Integer preco, String nome, String imagem) {
+    public AcessorioJpa(Integer id, String icone, Integer preco, String nome, String imagem,
+                        String qualidade, String categoria, String subcategoria) {
         this.id = id;
         this.icone = icone;
         this.preco = preco;
         this.nome = nome;
         this.imagem = imagem;
+        this.qualidade = qualidade;
+        this.categoria = categoria;
+        this.subcategoria = subcategoria;
     }
 
     // Getters
@@ -50,6 +63,9 @@ public class AcessorioJpa {
     public Integer getPreco() { return preco; }
     public String getNome() { return nome; }
     public String getImagem() { return imagem; }
+    public String getQualidade() { return qualidade; }
+    public String getCategoria() { return categoria; }
+    public String getSubcategoria() { return subcategoria; }
 
     // Setters
     public void setId(Integer id) { this.id = id; }
@@ -57,6 +73,9 @@ public class AcessorioJpa {
     public void setPreco(Integer preco) { this.preco = preco; }
     public void setNome(String nome) { this.nome = nome; }
     public void setImagem(String imagem) { this.imagem = imagem; }
+    public void setQualidade(String qualidade) { this.qualidade = qualidade; }
+    public void setCategoria(String categoria) { this.categoria = categoria; }
+    public void setSubcategoria(String subcategoria) { this.subcategoria = subcategoria; }
 }
 
 // =====================================

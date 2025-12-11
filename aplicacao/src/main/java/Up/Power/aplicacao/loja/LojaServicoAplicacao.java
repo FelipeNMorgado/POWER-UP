@@ -87,6 +87,9 @@ public class LojaServicoAplicacao {
                 acessorio.getImagem() != null ? acessorio.getImagem() : "",
                 acessorio.getNome() != null ? acessorio.getNome() : "",
                 acessorio.getPreco(),
+                acessorio.getQualidade(),
+                acessorio.getCategoria(),
+                acessorio.getSubcategoria(),
                 List.of() // Lista vazia, pois não há mais acessórios aninhados
         );
     }

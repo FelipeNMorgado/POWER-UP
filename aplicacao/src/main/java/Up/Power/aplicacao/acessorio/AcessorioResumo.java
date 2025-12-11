@@ -5,6 +5,9 @@ public record AcessorioResumo(
         String icone,
         String imagem,
         String nome,
-        Integer preco
+        Integer preco,
+        String qualidade,
+        String categoria,
+        String subcategoria
 ) {}
 
