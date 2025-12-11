@@ -13,6 +13,8 @@ public final class RivalidadeResumoAssembler {
                 r.getId() != null ? r.getId().getId() : null,
                 r.getPerfil1() != null ? r.getPerfil1().getId() : null,
                 r.getPerfil2() != null ? r.getPerfil2().getId() : null,
+                null, // nomePerfil1 - será enriquecido depois
+                null, // nomePerfil2 - será enriquecido depois
                 r.getDataConvite(),
                 r.getInicio(),
                 r.getFim(),
@@ -26,6 +28,8 @@ public final class RivalidadeResumoAssembler {
                 e.getId(),
                 e.getPerfil1Id(),
                 e.getPerfil2Id(),
+                null, // nomePerfil1 - será enriquecido depois
+                null, // nomePerfil2 - será enriquecido depois
                 e.getDataConvite(),
                 e.getInicio(),
                 e.getFim(),

@@ -66,6 +66,14 @@ public class Rivalidade {
         }
     }
 
+    public void cancelar() {
+        if (this.status == StatusRivalidade.PENDENTE) {
+            this.status = StatusRivalidade.CANCELADA;
+        } else {
+            throw new IllegalStateException("Só é possível cancelar um convite com status PENDENTE.");
+        }
+    }
+
     public RivalidadeId getId() { return id; }
     public PerfilId getPerfil1() { return perfil1; }
     public PerfilId getPerfil2() { return perfil2; }

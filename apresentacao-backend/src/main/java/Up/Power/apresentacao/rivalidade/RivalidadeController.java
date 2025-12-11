@@ -38,10 +38,15 @@ public class RivalidadeController {
     }
 
     @PostMapping("/aceitar")
-    public ResponseEntity<RivalidadeResumo> aceitar(@RequestBody AceitarRivalidadeCommand command) {
+    public ResponseEntity<?> aceitar(@RequestBody AceitarRivalidadeCommand command) {
         try {
             RivalidadeResumo rivalidade = rivalidadeServicoAplicacao.aceitar(command);
             return ResponseEntity.ok(rivalidade);
+        } catch (IllegalStateException e) {
+            e.printStackTrace();
+            Map<String, String> errorResponse = new HashMap<>();
+            errorResponse.put("mensagem", e.getMessage());
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(errorResponse);
         } catch (Exception e) {
             e.printStackTrace();
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
@@ -53,6 +58,22 @@ public class RivalidadeController {
         try {
             RivalidadeResumo rivalidade = rivalidadeServicoAplicacao.recusar(command);
             return ResponseEntity.ok(rivalidade);
+        } catch (Exception e) {
+            e.printStackTrace();
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
+        }
+    }
+
+    @PostMapping("/cancelar")
+    public ResponseEntity<?> cancelar(@RequestBody CancelarRivalidadeCommand command) {
+        try {
+            RivalidadeResumo rivalidade = rivalidadeServicoAplicacao.cancelar(command);
+            return ResponseEntity.ok(rivalidade);
+        } catch (IllegalStateException | SecurityException e) {
+            e.printStackTrace();
+            Map<String, String> errorResponse = new HashMap<>();
+            errorResponse.put("mensagem", e.getMessage());
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(errorResponse);
         } catch (Exception e) {
             e.printStackTrace();
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();

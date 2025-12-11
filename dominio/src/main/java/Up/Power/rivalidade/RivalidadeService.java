@@ -34,6 +34,14 @@ public class RivalidadeService {
             throw new SecurityException("Usuário não autorizado a aceitar este convite.");
         }
 
+        // Verificar se o usuário que está aceitando já está em uma rivalidade ativa
+        if (rivalidadeRepository.existsActiveRivalryForPerfil(idUsuarioQueAceitou)) {
+            // Recusar automaticamente o convite
+            rivalidade.recusar();
+            rivalidadeRepository.save(rivalidade);
+            throw new IllegalStateException("Você já está participando de uma rivalidade. O convite foi cancelado.");
+        }
+
         rivalidade.aceitar();
 
         return rivalidadeRepository.save(rivalidade);
@@ -64,6 +72,19 @@ public class RivalidadeService {
 
         rivalidade.finalizar();
 
+        return rivalidadeRepository.save(rivalidade);
+    }
+
+    public Rivalidade cancelarConvite(RivalidadeId rivalidadeId, PerfilId idUsuarioQueCancelou) {
+        Rivalidade rivalidade = rivalidadeRepository.findById(rivalidadeId)
+                .orElseThrow(() -> new IllegalArgumentException("Rivalidade não encontrada."));
+
+        // Apenas o perfil1 (quem enviou o convite) pode cancelar
+        if (!rivalidade.getPerfil1().equals(idUsuarioQueCancelou)) {
+            throw new SecurityException("Usuário não autorizado a cancelar este convite. Apenas quem enviou o convite pode cancelá-lo.");
+        }
+
+        rivalidade.cancelar();
         return rivalidadeRepository.save(rivalidade);
     }
 

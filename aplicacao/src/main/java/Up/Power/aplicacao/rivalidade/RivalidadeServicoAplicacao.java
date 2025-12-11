@@ -27,6 +27,7 @@ public class RivalidadeServicoAplicacao {
     private final AceitarRivalidadeOperacao aceitar;
     private final RecusarRivalidadeOperacao recusar;
     private final FinalizarRivalidadeOperacao finalizar;
+    private final CancelarRivalidadeOperacao cancelar;
     private final RivalidadeRepositorioAplicacao rivalidadeRepositorioAplicacao;
     private final FrequenciaServicoAplicacao frequenciaServicoAplicacao;
     private final FrequenciaRepository frequenciaRepository;
@@ -39,6 +40,7 @@ public class RivalidadeServicoAplicacao {
             AceitarRivalidadeOperacao aceitar,
             RecusarRivalidadeOperacao recusar,
             FinalizarRivalidadeOperacao finalizar,
+            CancelarRivalidadeOperacao cancelar,
             RivalidadeRepositorioAplicacao rivalidadeRepositorioAplicacao,
             FrequenciaServicoAplicacao frequenciaServicoAplicacao,
             FrequenciaRepository frequenciaRepository,
@@ -50,6 +52,7 @@ public class RivalidadeServicoAplicacao {
         this.aceitar = aceitar;
         this.recusar = recusar;
         this.finalizar = finalizar;
+        this.cancelar = cancelar;
         this.rivalidadeRepositorioAplicacao = rivalidadeRepositorioAplicacao;
         this.frequenciaServicoAplicacao = frequenciaServicoAplicacao;
         this.frequenciaRepository = frequenciaRepository;
@@ -59,28 +62,77 @@ public class RivalidadeServicoAplicacao {
     }
 
     public RivalidadeResumo enviar(EnviarConviteCommand c) {
-        return enviarConvite.executar(c);
+        return enriquecerComNomes(enviarConvite.executar(c));
     }
 
     public RivalidadeResumo aceitar(AceitarRivalidadeCommand c) {
-        return aceitar.executar(c);
+        return enriquecerComNomes(aceitar.executar(c));
     }
 
     public RivalidadeResumo recusar(RecusarRivalidadeCommand c) {
-        return recusar.executar(c);
+        return enriquecerComNomes(recusar.executar(c));
     }
 
     public RivalidadeResumo finalizar(FinalizarRivalidadeCommand c) {
-        return finalizar.executar(c);
+        return enriquecerComNomes(finalizar.executar(c));
+    }
+
+    public RivalidadeResumo cancelar(CancelarRivalidadeCommand c) {
+        return enriquecerComNomes(cancelar.executar(c));
     }
 
     public List<RivalidadeResumo> listarPorPerfil(Integer perfilId) {
-        return rivalidadeRepositorioAplicacao.listarPorPerfil(perfilId);
+        List<RivalidadeResumo> rivalidades = rivalidadeRepositorioAplicacao.listarPorPerfil(perfilId);
+        // Enriquecer com nomes dos perfis
+        return rivalidades.stream()
+                .map(r -> enriquecerComNomes(r))
+                .toList();
+    }
+
+    private RivalidadeResumo enriquecerComNomes(RivalidadeResumo r) {
+        String nomePerfil1 = null;
+        String nomePerfil2 = null;
+        
+        if (r.perfil1() != null) {
+            try {
+                Perfil perfil1 = perfilRepository.findById(new PerfilId(r.perfil1())).orElse(null);
+                if (perfil1 != null) {
+                    nomePerfil1 = perfil1.getUsername();
+                }
+            } catch (Exception e) {
+                System.err.println("Erro ao buscar nome do perfil1: " + e.getMessage());
+            }
+        }
+        
+        if (r.perfil2() != null) {
+            try {
+                Perfil perfil2 = perfilRepository.findById(new PerfilId(r.perfil2())).orElse(null);
+                if (perfil2 != null) {
+                    nomePerfil2 = perfil2.getUsername();
+                }
+            } catch (Exception e) {
+                System.err.println("Erro ao buscar nome do perfil2: " + e.getMessage());
+            }
+        }
+        
+        return new RivalidadeResumo(
+                r.id(),
+                r.perfil1(),
+                r.perfil2(),
+                nomePerfil1,
+                nomePerfil2,
+                r.dataConvite(),
+                r.inicio(),
+                r.fim(),
+                r.status()
+        );
     }
 
     public ComparacaoRivalidade obterComparacao(Integer rivalidadeId, Integer perfilId) {
-        RivalidadeResumo rivalidade = rivalidadeRepositorioAplicacao.obterPorId(rivalidadeId)
-                .orElseThrow(() -> new IllegalArgumentException("Rivalidade não encontrada"));
+        RivalidadeResumo rivalidade = enriquecerComNomes(
+                rivalidadeRepositorioAplicacao.obterPorId(rivalidadeId)
+                        .orElseThrow(() -> new IllegalArgumentException("Rivalidade não encontrada"))
+        );
 
         if (rivalidade.inicio() == null) {
             throw new IllegalStateException("A rivalidade ainda não foi aceita");
