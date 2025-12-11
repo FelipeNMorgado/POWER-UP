@@ -20,10 +20,10 @@ public class AcessorioMapper {
     public Acessorio toDomain(AcessorioJpa entity) {
         return new Acessorio(
                 new AcessorioId(entity.getId()),
-                entity.getIcone(),
-                entity.getPreco(),
-                entity.getNome(),
-                entity.getImagem()
+                entity.getIcone() != null ? entity.getIcone() : "",
+                entity.getPreco() != null ? entity.getPreco() : 0,
+                entity.getNome() != null ? entity.getNome() : "",
+                entity.getImagem() != null ? entity.getImagem() : ""
         );
     }
 }

@@ -83,9 +83,13 @@ interface JpaAvatarRepository extends JpaRepository<AvatarJpa, Integer> {
 class AvatarRepositoryImpl implements AvatarRepository {
 
     private final JpaAvatarRepository repo;
+    private final Up.Power.acessorio.AcessorioRepository acessorioRepository;
 
-    public AvatarRepositoryImpl(JpaAvatarRepository repo) {
+    public AvatarRepositoryImpl(
+            JpaAvatarRepository repo,
+            Up.Power.acessorio.AcessorioRepository acessorioRepository) {
         this.repo = repo;
+        this.acessorioRepository = acessorioRepository;
     }
 
     @Override
@@ -97,13 +101,13 @@ class AvatarRepositoryImpl implements AvatarRepository {
     @Override
     public Optional<Avatar> findById(AvatarId id) {
         return repo.findById(id.getId())
-                .map(AvatarMapper::toDomain);
+                .map(entity -> AvatarMapper.toDomain(entity, acessorioRepository));
     }
 
     @Override
     public Optional<Avatar> findByPerfilId(PerfilId perfilId) {
         return repo.findByPerfilId(perfilId.getId())
-                .map(AvatarMapper::toDomain);
+                .map(entity -> AvatarMapper.toDomain(entity, acessorioRepository));
     }
 }
 

@@ -3,6 +3,7 @@ package Up.Power.infraestrutura.persistencia.jpa.avatar;
 import Up.Power.Acessorio;
 import Up.Power.Avatar;
 import Up.Power.acessorio.AcessorioId;
+import Up.Power.acessorio.AcessorioRepository;
 import Up.Power.avatar.AvatarId;
 import Up.Power.perfil.PerfilId;
 
@@ -34,24 +35,43 @@ public class AvatarMapper {
         );
     }
 
-    public static Avatar toDomain(AvatarJpa entity) {
+    public static Avatar toDomain(AvatarJpa entity, AcessorioRepository acessorioRepository) {
         Avatar avatar = new Avatar(
                 new AvatarId(entity.getId()),
                 new PerfilId(entity.getPerfilId())
         );
         
-        avatar.setNivel(entity.getNivel());
-        avatar.setExperiencia(entity.getExperiencia());
-        avatar.setDinheiro(entity.getDinheiro());
-        avatar.setForca(entity.getForca());
+        avatar.setNivel(entity.getNivel() != null ? entity.getNivel() : 1);
+        avatar.setExperiencia(entity.getExperiencia() != null ? entity.getExperiencia() : 0);
+        avatar.setDinheiro(entity.getDinheiro() != null ? entity.getDinheiro() : 0);
+        avatar.setForca(entity.getForca() != null ? entity.getForca() : 0);
         
-        // Adicionar acessórios ao avatar através da lista retornada pelo getter
+        // Carregar acessórios completos do banco de dados
         if (entity.getAcessorioIds() != null && !entity.getAcessorioIds().isEmpty()) {
+            System.out.println("AvatarMapper - Carregando " + entity.getAcessorioIds().size() + " acessórios para o avatar ID: " + entity.getId());
             List<Acessorio> acessorios = entity.getAcessorioIds().stream()
-                    .map(id -> new Acessorio(new AcessorioId(id), "", 0, "", ""))
+                    .map(id -> {
+                        System.out.println("AvatarMapper - Buscando acessório ID: " + id);
+                        var acessorioOpt = acessorioRepository.findById(new AcessorioId(id));
+                        if (acessorioOpt.isPresent()) {
+                            Acessorio acessorio = acessorioOpt.get();
+                            System.out.println("AvatarMapper - Acessório encontrado - ID: " + acessorio.getId().getId() + 
+                                             ", Nome: " + acessorio.getNome() + 
+                                             ", Preço: " + acessorio.getPreco());
+                            return acessorioOpt;
+                        } else {
+                            System.out.println("AvatarMapper - Acessório ID " + id + " não encontrado no banco!");
+                            return java.util.Optional.<Acessorio>empty();
+                        }
+                    })
+                    .filter(java.util.Optional::isPresent)
+                    .map(java.util.Optional::get)
                     .collect(Collectors.toList());
+            System.out.println("AvatarMapper - Total de acessórios carregados: " + acessorios.size());
             avatar.getAcessorios().clear();
             avatar.getAcessorios().addAll(acessorios);
+        } else {
+            System.out.println("AvatarMapper - Nenhum acessório encontrado para o avatar ID: " + entity.getId());
         }
 
         return avatar;

@@ -20,6 +20,9 @@ public class Avatar {
         this.perfil = perfil;
         this.acessorios = new ArrayList<>();
         this.nivel = 1; // Valor padrão inicial
+        this.experiencia = 0;
+        this.dinheiro = 0; // Valor padrão inicial (pode ser ajustado no banco ou na criação)
+        this.forca = 0;
     }
 
     // Getters existentes

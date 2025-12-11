@@ -100,9 +100,12 @@ public class RegistroController {
                     // Valores padrão já são definidos no construtor:
                     // - nivel = 1
                     // - experiencia = 0
-                    // - dinheiro = 0
+                    // - dinheiro = 0 (será inicializado no banco ou pode ser ajustado aqui)
                     // - forca = 0
                     // - acessorios = lista vazia
+                    
+                    // Inicializar dinheiro com valor padrão (pode ser ajustado conforme necessário)
+                    novoAvatar.setDinheiro(1000); // Valor inicial padrão
 
                     // Salvar avatar
                     avatarRepository.save(novoAvatar);

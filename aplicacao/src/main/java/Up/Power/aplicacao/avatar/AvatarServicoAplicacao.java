@@ -33,7 +33,12 @@ public class AvatarServicoAplicacao {
 
     public AvatarResumo obterPorPerfilId(Integer perfilId) {
         return avatarRepositorio.obterPorPerfilId(perfilId)
-                .map(AvatarResumoAssembler::toResumo)
+                .map(avatar -> {
+                    System.out.println("Avatar carregado - ID: " + avatar.getId().getId() + 
+                                     ", Dinheiro: " + avatar.getDinheiro() + 
+                                     ", PerfilId: " + avatar.getPerfil().getId());
+                    return AvatarResumoAssembler.toResumo(avatar);
+                })
                 .orElse(null);
     }
 

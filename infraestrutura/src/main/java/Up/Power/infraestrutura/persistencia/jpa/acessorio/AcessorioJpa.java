@@ -7,6 +7,7 @@ import jakarta.persistence.*;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
 
+import java.util.List;
 import java.util.Optional;
 
 // ===========================
@@ -21,7 +22,7 @@ public class AcessorioJpa {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Integer id;
 
-    @Column
+    @Column(columnDefinition = "LONGTEXT")
     private String icone;
 
     @Column(nullable = false)
@@ -30,7 +31,7 @@ public class AcessorioJpa {
     @Column(nullable = false)
     private String nome;
 
-    @Column
+    @Column(columnDefinition = "LONGTEXT")
     private String imagem;
 
     public AcessorioJpa() {}
@@ -94,6 +95,22 @@ class AcessorioRepositoryImpl implements AcessorioRepository {
         }
         return repo.findById(acessorio.getId().getId())
                 .map(mapper::toDomain);
+    }
+
+    @Override
+    public Optional<Acessorio> findById(AcessorioId id) {
+        if (id == null) {
+            return Optional.empty();
+        }
+        return repo.findById(id.getId())
+                .map(mapper::toDomain);
+    }
+
+    @Override
+    public List<Acessorio> findAll() {
+        return repo.findAll().stream()
+                .map(mapper::toDomain)
+                .toList();
     }
 }
 
