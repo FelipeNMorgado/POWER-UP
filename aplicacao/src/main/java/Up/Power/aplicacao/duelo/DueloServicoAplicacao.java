@@ -7,6 +7,7 @@ import Up.Power.duelo.DueloService;
 import Up.Power.perfil.PerfilId;
 import Up.Power.perfil.PerfilRepository;
 import Up.Power.avatar.AvatarService;
+import Up.Power.avatar.ExperienceService;
 import org.springframework.stereotype.Service;
 
 @Service
@@ -19,11 +20,12 @@ public class DueloServicoAplicacao {
             DueloRepositorioAplicacao dueloRepositorioAplicacao,
             DueloRepository dueloRepository,
             PerfilRepository perfilRepository,
-            Up.Power.avatar.AvatarRepository avatarRepository
+            Up.Power.avatar.AvatarRepository avatarRepository,
+            ExperienceService experienceService
     ) {
         this.dueloRepositorioAplicacao = dueloRepositorioAplicacao;
         AvatarService avatarService = new AvatarService(avatarRepository);
-        this.dominioService = new DueloService(dueloRepository, avatarService, perfilRepository, avatarRepository);
+        this.dominioService = new DueloService(dueloRepository, avatarService, perfilRepository, avatarRepository, experienceService);
     }
 
     public DueloResumo realizarDuelo(RealizarDueloCommand command) {

@@ -12,12 +12,14 @@ public class DueloService {
     private final AvatarService avatarService;
     private final PerfilRepository perfilRepository;
     private final AvatarRepository avatarRepository;
+    private final ExperienceService experienceService;
 
-    public DueloService(DueloRepository dueloRepository, AvatarService avatarService, PerfilRepository perfilRepository, AvatarRepository avatarRepository) {
+    public DueloService(DueloRepository dueloRepository, AvatarService avatarService, PerfilRepository perfilRepository, AvatarRepository avatarRepository, ExperienceService experienceService) {
         this.dueloRepository = dueloRepository;
         this.avatarService = avatarService;
         this.perfilRepository = perfilRepository;
         this.avatarRepository = avatarRepository;
+        this.experienceService = experienceService;
     }
 
     public Duelo realizarDuelo(PerfilId desafianteId, PerfilId desafiadoId) {
@@ -37,6 +39,21 @@ public class DueloService {
         Duelo novoDuelo = new Duelo(avatar1.getId(), avatar2.getId());
         novoDuelo.setResultado(resultado);
         novoDuelo.setDataDuelo(LocalDateTime.now());
+
+        // Recompensas para o vencedor
+        Avatar vencedor = null;
+        if (resultado.contains("DESAFIANTE")) {
+            vencedor = avatar1;
+        } else if (resultado.contains("DESAFIADO")) {
+            vencedor = avatar2;
+        }
+
+        if (vencedor != null) {
+            vencedor.setDinheiro(vencedor.getDinheiro() + 25);
+            experienceService.adicionarXp(vencedor, 5);
+            avatarRepository.save(vencedor);
+        }
+
         return dueloRepository.save(novoDuelo);
     }
 
