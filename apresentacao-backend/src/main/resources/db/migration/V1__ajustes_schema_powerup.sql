@@ -59,6 +59,15 @@ CREATE TABLE IF NOT EXISTS conquista (
     nome VARCHAR(255) NOT NULL
 );
 
+-- META
+CREATE TABLE IF NOT EXISTS meta (
+    id INT AUTO_INCREMENT PRIMARY KEY,
+    perfil_id INT NOT NULL,
+    nome VARCHAR(255) NOT NULL,
+    descricao TEXT,
+    exigencia_minima DECIMAL(10,2) NULL
+);
+
 -- FREQUENCIA
 CREATE TABLE IF NOT EXISTS frequencia (
     id INT AUTO_INCREMENT PRIMARY KEY,
