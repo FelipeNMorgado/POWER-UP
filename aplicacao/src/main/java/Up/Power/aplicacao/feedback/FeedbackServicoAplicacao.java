@@ -4,7 +4,6 @@ import Up.Power.Email;
 import Up.Power.Feedback;
 import Up.Power.feedback.Classificacao;
 import Up.Power.feedback.FeedbackId;
-import Up.Power.feedback.FeedbackService;
 import Up.Power.frequencia.FrequenciaId;
 import Up.Power.frequencia.FrequenciaRepository;
 import Up.Power.planoTreino.PlanoTId;
@@ -19,17 +18,14 @@ import java.util.Optional;
 public class FeedbackServicoAplicacao {
 
     private final FeedbackRepositorioAplicacao repo;
-    private final FeedbackService feedbackService;
     private final FrequenciaRepository frequenciaRepository;
     private final PlanoTreinoRepositorioAplicacao planoTreinoRepositorioAplicacao;
 
     public FeedbackServicoAplicacao(
             FeedbackRepositorioAplicacao repo, 
-            FeedbackService feedbackService,
             FrequenciaRepository frequenciaRepository,
             PlanoTreinoRepositorioAplicacao planoTreinoRepositorioAplicacao) {
         this.repo = repo;
-        this.feedbackService = feedbackService;
         this.frequenciaRepository = frequenciaRepository;
         this.planoTreinoRepositorioAplicacao = planoTreinoRepositorioAplicacao;
     }
@@ -122,16 +118,24 @@ public class FeedbackServicoAplicacao {
     }
 
     public FeedbackResumo modificar(Integer id, Classificacao classificacao, String descricao) {
-        Feedback feedback = feedbackService.editarFeedback(
-                new FeedbackId(id),
-                descricao,
-                classificacao
-        );
-        return toResumo(feedback);
+        // Buscar o feedback existente através do Proxy
+        Feedback feedback = repo.obter(id);
+        if (feedback == null) {
+            throw new IllegalArgumentException("Feedback não encontrado para edição: " + id);
+        }
+        
+        // Modificar os campos
+        feedback.setFeedback(descricao);
+        feedback.setClassificacao(classificacao);
+        
+        // Salvar através do Proxy
+        Feedback feedbackModificado = repo.modificar(feedback);
+        return toResumo(feedbackModificado);
     }
 
     public void excluir(Integer id) {
-        feedbackService.excluirFeedback(new FeedbackId(id));
+        // Excluir através do Proxy
+        repo.excluir(id);
     }
 
     private FeedbackResumo toResumo(Feedback f) {

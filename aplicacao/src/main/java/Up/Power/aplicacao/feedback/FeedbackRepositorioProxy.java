@@ -58,7 +58,10 @@ public class FeedbackRepositorioProxy implements FeedbackRepositorioAplicacao {
 
     @Override
     public Feedback modificar(Feedback feedback) {
-        System.out.println("[Proxy] Modificando feedback id: " + feedback.getId().getId());
+        String idStr = (feedback != null && feedback.getId() != null) 
+            ? String.valueOf(feedback.getId().getId()) 
+            : "null";
+        System.out.println("[Proxy] Modificando feedback id: " + idStr);
         long inicio = System.currentTimeMillis();
 
         var resultado = real.modificar(feedback);
