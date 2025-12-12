@@ -7,5 +7,10 @@ public record ConquistaResumo(
         String nome,
         String descricao,
         boolean concluida,
-        String badgeAtual
+        String badgeAtual,
+        Float pesoMinimo,
+        Integer atributoMinimo,
+        String tipoAtributo,
+        Integer repeticoesMinimas,
+        Integer seriesMinimas
 ) {}

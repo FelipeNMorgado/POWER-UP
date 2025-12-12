@@ -15,7 +15,12 @@ public class ConquistaResumoAssembler {
                 conquista.getNome(),
                 conquista.getDescricao(),
                 concluida,
-                badgeAtual
+                badgeAtual,
+                conquista.getPesoMinimo(),
+                conquista.getAtributoMinimo(),
+                conquista.getTipoAtributo(),
+                conquista.getRepeticoesMinimas(),
+                conquista.getSeriesMinimas()
         );
     }
 }

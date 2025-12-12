@@ -112,4 +112,38 @@ public class ConquistaServicoAplicacao {
                 .map(c -> assembler.toResumo(c, true, null))
                 .collect(Collectors.toList());
     }
+
+    /**
+     * Lista todas as conquistas do sistema com o status de cada uma para o perfil especificado.
+     * @param perfilId ID do perfil do usuário
+     * @return Lista de todas as conquistas com status de conclusão
+     */
+    public List<ConquistaResumo> listarTodasComStatus(Integer perfilId) {
+        // Buscar todas as conquistas do sistema
+        List<Conquista> todasConquistas = repository.listarAtivas();
+        
+        // Buscar conquistas do perfil
+        List<ConquistaId> conquistasDoPerfil = List.of();
+        Optional<Perfil> perfilOpt = perfilRepository.findById(new PerfilId(perfilId));
+        if (perfilOpt.isPresent()) {
+            Perfil perfil = perfilOpt.get();
+            conquistasDoPerfil = perfil.getConquistas().stream()
+                    .map(Conquista::getId)
+                    .collect(Collectors.toList());
+        }
+        
+        // Criar lista final com status de cada conquista
+        final List<ConquistaId> finalConquistasDoPerfil = conquistasDoPerfil;
+        List<ConquistaResumo> conquistasComStatus = todasConquistas.stream()
+                .map(c -> {
+                    boolean concluida = finalConquistasDoPerfil.contains(c.getId());
+                    return assembler.toResumo(c, concluida, null);
+                })
+                .collect(Collectors.toList());
+        
+        // Ordenar: conquistas conquistadas primeiro (true vem antes de false)
+        conquistasComStatus.sort((c1, c2) -> Boolean.compare(c2.concluida(), c1.concluida()));
+        
+        return conquistasComStatus;
+    }
 }

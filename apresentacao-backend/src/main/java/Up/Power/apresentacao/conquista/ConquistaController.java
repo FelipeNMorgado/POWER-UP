@@ -81,8 +81,28 @@ public class ConquistaController {
         }
     }
 
+    @GetMapping("/perfil/{perfilId}/todas-com-status")
+    public ResponseEntity<ConquistasComStatusResponse> listarTodasComStatus(@PathVariable("perfilId") Integer perfilId) {
+        try {
+            List<ConquistaResumo> conquistas = conquistaServicoAplicacao.listarTodasComStatus(perfilId);
+            long totalConquistadas = conquistas.stream().filter(ConquistaResumo::concluida).count();
+            int totalGeral = conquistas.size();
+            return ResponseEntity.ok(new ConquistasComStatusResponse(conquistas, (int) totalConquistadas, totalGeral));
+        } catch (Exception e) {
+            e.printStackTrace();
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
+        }
+    }
+
     // DTOs de Request
     public record CriarConquistaRequest(Integer exercicioId, Integer treinoId, String nome, String descricao) {}
     public record EscolherBadgeRequest(String badge) {}
+    
+    // DTO de Response
+    public record ConquistasComStatusResponse(
+            List<ConquistaResumo> conquistas,
+            int totalConquistadas,
+            int totalGeral
+    ) {}
 }
 
