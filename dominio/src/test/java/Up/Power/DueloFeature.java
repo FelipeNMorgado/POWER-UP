@@ -3,6 +3,8 @@ package Up.Power;
 import Up.Power.avatar.AvatarId;
 import Up.Power.avatar.AvatarRepository;
 import Up.Power.avatar.AvatarService;
+import Up.Power.avatar.ExperienceService;
+import Up.Power.avatar.ExperienceServiceImpl;
 import Up.Power.duelo.DueloId;
 import Up.Power.duelo.DueloRepository;
 import Up.Power.duelo.DueloService;
@@ -39,7 +41,8 @@ public class DueloFeature {
         dueloRepositoryMock = new DueloMock();
 
         AvatarService avatarService = new AvatarService(avatarRepositoryMock);
-        dueloService = new DueloService(dueloRepositoryMock, avatarService ,perfilRepositoryMock, avatarRepositoryMock);
+        ExperienceService experienceService = new ExperienceServiceImpl();
+        dueloService = new DueloService(dueloRepositoryMock, avatarService ,perfilRepositoryMock, avatarRepositoryMock, experienceService);
 
         Perfil desafiante = new Perfil(new PerfilId(1), new Email("desafiante@teste.com"), nomeDesafiante);
         Perfil desafiado = new Perfil(new PerfilId(2), new Email("desafiado@teste.com"), nomeDesafiado);
@@ -105,7 +108,8 @@ public class DueloFeature {
         dueloRepositoryMock = new DueloMock();
 
         AvatarService avatarService = new AvatarService(avatarRepositoryMock);
-        dueloService = new DueloService(dueloRepositoryMock, avatarService ,perfilRepositoryMock, avatarRepositoryMock);
+        ExperienceService experienceService = new ExperienceServiceImpl();
+        dueloService = new DueloService(dueloRepositoryMock, avatarService ,perfilRepositoryMock, avatarRepositoryMock, experienceService);
 
         Perfil desafiante = new Perfil(new PerfilId(8), new Email("desafiante@teste.com"), nomeDesafiante);
         Perfil desafiado = new Perfil(new PerfilId(9), new Email("desafiado@teste.com"), nomeDesafiado);
