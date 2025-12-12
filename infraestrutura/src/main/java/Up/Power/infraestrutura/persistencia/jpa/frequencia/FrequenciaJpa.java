@@ -35,10 +35,10 @@ public class FrequenciaJpa {
     @Column(name = "data_presenca", nullable = false)
     private LocalDateTime dataDePresenca;
 
-    @Column(name = "plano_treino_id", nullable = false)
+    @Column(name = "plano_treino_id", nullable = true)
     private Integer planoTreinoId;
 
-    @Column(name = "foto")
+    @Column(name = "foto", columnDefinition = "LONGTEXT")
     private String foto;
 
     public Integer getId() { return id; }
