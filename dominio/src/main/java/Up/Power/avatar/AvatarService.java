@@ -23,18 +23,18 @@ public class AvatarService {
     }
 
     public int getAgilidade(AvatarId avatarId) {
-        return Math.toIntExact(min(100, round(
-                (getAvatar(avatarId).getNivel() / 25.0) * 60.0         // componente do nível (0..60)
-                        + (getAvatar(avatarId).getExperiencia() / 1000.0) * 20.0 // componente da experiência (0..20 se exp=1000)
-                        + (getAvatar(avatarId).getForca() * 0.2)                 // componente da força (0..20)
+        return Math.toIntExact(min(1000, round(
+                (getAvatar(avatarId).getNivel() / 25.0) * 600.0         // componente do nível (0..600)
+                        + (getAvatar(avatarId).getExperiencia() / 1000.0) * 200.0 // componente da experiência (0..200 se exp=1000)
+                        + (getAvatar(avatarId).getForca() * 0.2)                 // componente da força (0..200 se forca=1000)
         ))); // Exemplo de cálculo
     }
 
     public int getResistencia(AvatarId avatarId) {
-        return Math.toIntExact(min(100, round(
-                (getAvatar(avatarId).getForca() * 0.5)                 // componente da força (0..50)
-                        + (getAvatar(avatarId).getNivel() / 25.0) * 40.0         // componente do nível (0..40)
-                        + (getAvatar(avatarId).getExperiencia() / 1000.0) * 10.0 // componente da experiência (0..10 se exp=1000)
+        return Math.toIntExact(min(1000, round(
+                (getAvatar(avatarId).getForca() * 0.5)                 // componente da força (0..500 se forca=1000)
+                        + (getAvatar(avatarId).getNivel() / 25.0) * 400.0         // componente do nível (0..400)
+                        + (getAvatar(avatarId).getExperiencia() / 1000.0) * 100.0 // componente da experiência (0..100 se exp=1000)
         )))
                 ;
     }

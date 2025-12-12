@@ -1,6 +1,7 @@
 package Up.Power.aplicacao.frequencia;
 
 import Up.Power.Frequencia;
+import Up.Power.Treino;
 import Up.Power.aplicacao.avatar.AdicionarXpCommand;
 import Up.Power.aplicacao.avatar.AvatarServicoAplicacao;
 import Up.Power.aplicacao.planoTreino.PlanoTreinoRepositorioAplicacao;
@@ -10,6 +11,7 @@ import Up.Power.frequencia.FrequenciaService;
 import Up.Power.perfil.PerfilId;
 import Up.Power.planoTreino.Dias;
 import Up.Power.planoTreino.PlanoTId;
+import Up.Power.treino.TipoTreino;
 import Up.Power.treino.TreinoId;
 import org.springframework.stereotype.Service;
 
@@ -61,6 +63,9 @@ public class FrequenciaServicoAplicacao {
         
         // Adicionar XP ao avatar após registrar frequência
         adicionarXpAoAvatar(perfilId);
+        
+        // Se o treino for do tipo Peso, aumentar força em 1
+        verificarEAumentarForca(perfilId, treinoId, planoTreinoId);
     }
 
     public void registrarPresencaComFoto(Integer perfilId, Integer treinoId, Integer planoTreinoId, String fotoBase64) {
@@ -73,6 +78,9 @@ public class FrequenciaServicoAplicacao {
         
         // Adicionar XP ao avatar após registrar frequência
         adicionarXpAoAvatar(perfilId);
+        
+        // Se o treino for do tipo Peso, aumentar força em 1
+        verificarEAumentarForca(perfilId, treinoId, planoTreinoId);
     }
 
     /**
@@ -117,6 +125,9 @@ public class FrequenciaServicoAplicacao {
         
         // Adicionar XP ao avatar após registrar frequência
         adicionarXpAoAvatar(perfilId);
+        
+        // Se o treino for do tipo Peso, aumentar força em 1
+        verificarEAumentarForca(perfilId, treinoId, planoTId.getId());
     }
 
     /**
@@ -161,6 +172,45 @@ public class FrequenciaServicoAplicacao {
         
         // Adicionar XP ao avatar após registrar frequência
         adicionarXpAoAvatar(perfilId);
+        
+        // Se o treino for do tipo Peso, aumentar força em 1
+        verificarEAumentarForca(perfilId, treinoId, planoTId.getId());
+    }
+
+    /**
+     * Verifica se o treino é do tipo Peso e, se for, aumenta a força do avatar em 1.
+     */
+    private void verificarEAumentarForca(Integer perfilId, Integer treinoId, Integer planoTreinoId) {
+        try {
+            // Obter o plano de treino
+            var planoOpt = planoTreinoRepositorioAplicacao.obterPorId(new PlanoTId(planoTreinoId));
+            if (planoOpt.isEmpty()) {
+                System.err.println("Plano de treino não encontrado para verificar tipo: " + planoTreinoId);
+                return;
+            }
+
+            Up.Power.PlanoTreino plano = planoOpt.get();
+            
+            // Buscar o treino na lista de treinos do plano
+            Treino treino = plano.getTreinos().stream()
+                    .filter(t -> t.getId() != null && t.getId().getId() == treinoId)
+                    .findFirst()
+                    .orElse(null);
+
+            if (treino == null) {
+                System.err.println("Treino não encontrado no plano: " + treinoId);
+                return;
+            }
+
+            // Se o treino for do tipo Peso, aumentar força em 5
+            if (treino.getTipo() == TipoTreino.Peso) {
+                avatarServicoAplicacao.adicionarForca(perfilId, 5);
+            }
+        } catch (Exception e) {
+            // Log do erro mas não interrompe o registro de frequência
+            System.err.println("Erro ao verificar tipo de treino e aumentar força: " + e.getMessage());
+            e.printStackTrace();
+        }
     }
 
     private Dias converterDayOfWeekParaDias(DayOfWeek dayOfWeek) {

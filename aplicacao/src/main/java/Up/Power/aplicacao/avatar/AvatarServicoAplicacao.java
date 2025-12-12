@@ -148,6 +148,31 @@ public class AvatarServicoAplicacao {
         return AvatarResumoAssembler.toResumo(avatarOpt.get());
     }
 
+    public void adicionarForca(Integer perfilId, int bonusDeForca) {
+        Optional<Avatar> avatarOpt = avatarRepositorio.obterPorPerfilId(perfilId);
+
+        if (avatarOpt.isEmpty()) {
+            throw new NoSuchElementException("Avatar para o Perfil " + perfilId + " não encontrado.");
+        }
+
+        Avatar avatar = avatarOpt.get();
+        
+        // Chama o serviço de domínio para adicionar força
+        experienceService.adicionarForca(avatar, bonusDeForca);
+        
+        // Persiste a entidade de domínio atualizada
+        avatarRepositorio.salvar(avatar);
+        
+        // Avaliar conquistas baseadas nos atributos atualizados do avatar
+        try {
+            conquistaAvaliador.avaliarEAdicionarConquistasPorAtributos(perfilId, avatar);
+        } catch (Exception e) {
+            // Log do erro mas não interrompe a adição de força
+            System.err.println("Erro ao avaliar conquistas por atributos: " + e.getMessage());
+            e.printStackTrace();
+        }
+    }
+
     private String normalizarSubcat(String subcat) {
         if (subcat == null || subcat.isBlank()) return "__sem_subcat__";
         return subcat.trim().toLowerCase();

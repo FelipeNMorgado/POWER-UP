@@ -53,7 +53,8 @@ public class Avatar {
     }
 
     public void setForca(int forca) { // Setter adicionado
-        this.forca = forca;
+        // Limitar força ao máximo de 1000
+        this.forca = Math.min(1000, Math.max(0, forca));
     }
 
     public void setDinheiro(int dinheiro) {
