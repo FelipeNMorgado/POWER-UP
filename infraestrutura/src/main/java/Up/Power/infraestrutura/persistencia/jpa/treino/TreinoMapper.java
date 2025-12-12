@@ -3,8 +3,12 @@ package Up.Power.infraestrutura.persistencia.jpa.treino;
 import Up.Power.Treino;
 import Up.Power.exercicio.ExercicioId;
 import Up.Power.treino.TreinoId;
+import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
 
 public class TreinoMapper {
+
+    private static final DateTimeFormatter TIME_FORMATTER = DateTimeFormatter.ofPattern("HH:mm:ss");
 
     // DOMAIN → ENTITY
     public static TreinoJpa toEntity(Treino domain) {
@@ -17,7 +21,15 @@ public class TreinoMapper {
         entity.setId(id); // null para novos treinos
         entity.setExercicioId(domain.getExercicio().getId());
         entity.setTipo(domain.getTipo());
-        entity.setTempo(domain.getTempo());
+        
+        // Converter LocalDateTime para String (HH:mm:ss)
+        if (domain.getTempo() != null) {
+            String tempoStr = domain.getTempo().format(TIME_FORMATTER);
+            entity.setTempo(tempoStr);
+        } else {
+            entity.setTempo(null);
+        }
+        
         entity.setDistancia(domain.getDistancia());
         entity.setRepeticoes(domain.getRepeticoes());
         entity.setPeso(domain.getPeso());
@@ -37,7 +49,24 @@ public class TreinoMapper {
                 entity.getTipo()
         );
 
-        domain.setTempo(entity.getTempo());
+        // Converter String (HH:mm:ss) para LocalDateTime usando data base 1970-01-01
+        if (entity.getTempo() != null && !entity.getTempo().isEmpty()) {
+            try {
+                // Parse do formato HH:mm:ss
+                String[] partes = entity.getTempo().split(":");
+                int horas = Integer.parseInt(partes[0]);
+                int minutos = Integer.parseInt(partes[1]);
+                int segundos = partes.length > 2 ? Integer.parseInt(partes[2]) : 0;
+                LocalDateTime tempo = LocalDateTime.of(1970, 1, 1, horas, minutos, segundos);
+                domain.setTempo(tempo);
+            } catch (Exception e) {
+                // Se falhar o parse, deixar null
+                domain.setTempo(null);
+            }
+        } else {
+            domain.setTempo(null);
+        }
+        
         domain.setDistancia(entity.getDistancia());
         domain.setRepeticoes(entity.getRepeticoes());
         domain.setPeso(entity.getPeso());

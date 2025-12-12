@@ -9,6 +9,8 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
 import java.util.List;
 
 @RestController
@@ -67,6 +69,9 @@ public class PlanoTreinoController {
             @PathVariable("planoTId") Integer planoTId,
             @RequestBody AdicionarTreinoRequest request) {
         try {
+            // Converter String de tempo para LocalDateTime sem conversão de fuso horário
+            LocalDateTime tempo = parseTempo(request.tempo());
+            
             PlanoTreinoResumo plano = planoTreinoServicoAplicacao.adicionarTreino(
                     planoTId,
                     request.treinoId(),
@@ -76,7 +81,7 @@ public class PlanoTreinoController {
                     request.peso(),
                     request.series(),
                     request.distancia(),
-                    request.tempo()
+                    tempo
             );
             return ResponseEntity.ok(plano);
         } catch (Exception e) {
@@ -104,6 +109,9 @@ public class PlanoTreinoController {
             @PathVariable("treinoId") Integer treinoId,
             @RequestBody AtualizarTreinoRequest request) {
         try {
+            // Converter String de tempo para LocalDateTime sem conversão de fuso horário
+            LocalDateTime tempo = parseTempo(request.tempo());
+            
             PlanoTreinoResumo plano = planoTreinoServicoAplicacao.atualizarTreino(
                     planoTId,
                     treinoId,
@@ -113,7 +121,7 @@ public class PlanoTreinoController {
                     request.peso(),
                     request.series(),
                     request.distancia(),
-                    request.tempo()
+                    tempo
             );
             return ResponseEntity.ok(plano);
         } catch (Exception e) {
@@ -172,14 +180,37 @@ public class PlanoTreinoController {
         }
     }
 
+    /**
+     * Converte String de tempo para LocalDateTime sem aplicar conversão de fuso horário.
+     * O formato esperado é "1970-01-01THH:MM:SS" ou "1970-01-01THH:MM" (apenas duração).
+     */
+    private LocalDateTime parseTempo(String tempoStr) {
+        if (tempoStr == null || tempoStr.isEmpty()) {
+            return null;
+        }
+        try {
+            // Formato: "1970-01-01THH:MM:SS" ou "1970-01-01THH:MM"
+            DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd'T'HH:mm[:ss]");
+            return LocalDateTime.parse(tempoStr, formatter);
+        } catch (Exception e) {
+            // Tentar formato alternativo sem segundos
+            try {
+                DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd'T'HH:mm");
+                return LocalDateTime.parse(tempoStr, formatter);
+            } catch (Exception e2) {
+                throw new IllegalArgumentException("Formato de tempo inválido: " + tempoStr, e2);
+            }
+        }
+    }
+
     // DTOs de Request
     public record CriarPlanoTreinoRequest(Integer id, String usuarioEmail, String nome) {}
     public record AdicionarTreinoRequest(Integer treinoId, Integer exercicioId, TipoTreino tipo, 
                                          Integer repeticoes, Float peso, Integer series,
-                                         Float distancia, java.time.LocalDateTime tempo) {}
+                                         Float distancia, String tempo) {}
     public record AtualizarTreinoRequest(Integer exercicioId, TipoTreino tipo, 
                                          Integer repeticoes, Float peso, Integer series,
-                                         Float distancia, java.time.LocalDateTime tempo) {}
+                                         Float distancia, String tempo) {}
     public record AdicionarDiaRequest(Dias dia) {}
     public record AtualizarDiasRequest(List<Dias> dias) {}
     public record AlterarEstadoRequest(EstadoPlano estado) {}

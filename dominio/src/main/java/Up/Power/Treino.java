@@ -97,4 +97,30 @@ public class Treino {
     public void setPeso(float peso) { this.peso = peso; }
     public void setSeries(int series) { this.series = series; }
     public void setRecordeCarga(float recordeCarga) { this.recordeCarga = recordeCarga; }
+
+    /**
+     * Extrai a duração em minutos de um LocalDateTime, ignorando a data.
+     * Útil para comparar durações de treinos cardio armazenados com data base "1970-01-01".
+     * 
+     * @param tempo LocalDateTime contendo a duração (a data é ignorada)
+     * @return Duração em minutos (horas * 60 + minutos + segundos/60)
+     */
+    public static long getDuracaoEmMinutos(LocalDateTime tempo) {
+        if (tempo == null) return 0;
+        // Extrai apenas a parte de tempo, ignorando a data
+        return tempo.getHour() * 60L + tempo.getMinute() + tempo.getSecond() / 60L;
+    }
+
+    /**
+     * Extrai a duração em segundos de um LocalDateTime, ignorando a data.
+     * Útil para comparações precisas de duração de treinos cardio.
+     * 
+     * @param tempo LocalDateTime contendo a duração (a data é ignorada)
+     * @return Duração em segundos (horas * 3600 + minutos * 60 + segundos)
+     */
+    public static long getDuracaoEmSegundos(LocalDateTime tempo) {
+        if (tempo == null) return 0;
+        // Extrai apenas a parte de tempo, ignorando a data
+        return tempo.getHour() * 3600L + tempo.getMinute() * 60L + tempo.getSecond();
+    }
 }

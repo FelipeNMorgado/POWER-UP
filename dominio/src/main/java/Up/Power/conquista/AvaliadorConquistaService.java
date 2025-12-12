@@ -113,6 +113,16 @@ public class AvaliadorConquistaService {
             }
         }
         
+        // Exemplo futuro: Verificar tempo mínimo para treinos cardio
+        // Se adicionar tempoMinimo na classe Conquista:
+        // if (conquista.getTempoMinimo() != null && treino.getTempo() != null) {
+        //     long duracaoTreino = Treino.getDuracaoEmMinutos(treino.getTempo());
+        //     long tempoMinimo = Treino.getDuracaoEmMinutos(conquista.getTempoMinimo());
+        //     if (duracaoTreino < tempoMinimo) {
+        //         return false;
+        //     }
+        // }
+        
         return true;
     }
 

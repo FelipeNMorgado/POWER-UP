@@ -118,16 +118,41 @@ public class PlanoTreinoServicoAplicacao {
         // Se treinoId for null, usar 0 (será gerado pelo banco)
         int treinoIdValue = (treinoId != null) ? treinoId : 0;
 
-        // Cria o treino
-        Treino treino = new Treino(
-                new TreinoId(treinoIdValue),
-                new ExercicioId(exercicioId),
-                tipo,
-                repeticoes,
-                peso,
-                series,
-                60 // descanso padrão
-        );
+        // Cria o treino baseado no tipo
+        Treino treino;
+        if (tipo == TipoTreino.Cardio) {
+            // Para Cardio, usar construtor simples e definir valores opcionais depois
+            treino = new Treino(
+                    new TreinoId(treinoIdValue),
+                    new ExercicioId(exercicioId),
+                    tipo
+            );
+            // Para Cardio, repeticoes, peso e series podem ser null/0
+            if (repeticoes != null) {
+                treino.setRepeticoes(repeticoes);
+            }
+            if (peso != null) {
+                treino.setPeso(peso);
+            }
+            if (series != null) {
+                treino.setSeries(series);
+            }
+        } else {
+            // Para Peso, usar construtor completo com valores obrigatórios
+            int repeticoesValue = (repeticoes != null) ? repeticoes : 0;
+            float pesoValue = (peso != null) ? peso : 0f;
+            int seriesValue = (series != null) ? series : 0;
+            
+            treino = new Treino(
+                    new TreinoId(treinoIdValue),
+                    new ExercicioId(exercicioId),
+                    tipo,
+                    repeticoesValue,
+                    pesoValue,
+                    seriesValue,
+                    60 // descanso padrão
+            );
+        }
 
         // Define distancia e tempo se fornecidos
         if (distancia != null) {
@@ -227,15 +252,41 @@ public class PlanoTreinoServicoAplicacao {
             throw new IllegalArgumentException("TreinoId não pode ser null ao atualizar um treino");
         }
 
-        Treino treinoNovo = new Treino(
-                new TreinoId(treinoId),
-                new ExercicioId(exercicioId),
-                tipo,
-                repeticoes,
-                peso,
-                series,
-                60
-        );
+        // Cria o treino baseado no tipo
+        Treino treinoNovo;
+        if (tipo == TipoTreino.Cardio) {
+            // Para Cardio, usar construtor simples e definir valores opcionais depois
+            treinoNovo = new Treino(
+                    new TreinoId(treinoId),
+                    new ExercicioId(exercicioId),
+                    tipo
+            );
+            // Para Cardio, repeticoes, peso e series podem ser null/0
+            if (repeticoes != null) {
+                treinoNovo.setRepeticoes(repeticoes);
+            }
+            if (peso != null) {
+                treinoNovo.setPeso(peso);
+            }
+            if (series != null) {
+                treinoNovo.setSeries(series);
+            }
+        } else {
+            // Para Peso, usar construtor completo com valores obrigatórios
+            int repeticoesValue = (repeticoes != null) ? repeticoes : 0;
+            float pesoValue = (peso != null) ? peso : 0f;
+            int seriesValue = (series != null) ? series : 0;
+            
+            treinoNovo = new Treino(
+                    new TreinoId(treinoId),
+                    new ExercicioId(exercicioId),
+                    tipo,
+                    repeticoesValue,
+                    pesoValue,
+                    seriesValue,
+                    60
+            );
+        }
 
         // Define distancia e tempo se fornecidos
         if (distancia != null) {

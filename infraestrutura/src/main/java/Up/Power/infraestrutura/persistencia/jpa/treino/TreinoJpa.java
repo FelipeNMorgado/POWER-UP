@@ -10,7 +10,6 @@ import jakarta.persistence.*;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
 
-import java.time.LocalDateTime;
 import java.util.List;
 
 // ======================================
@@ -32,7 +31,8 @@ public class TreinoJpa {
     @Column(nullable = false)
     private TipoTreino tipo;
 
-    private LocalDateTime tempo;
+    @Column(name = "tempo", columnDefinition = "VARCHAR(8)")
+    private String tempo;
 
     private float distancia;
 
@@ -48,7 +48,7 @@ public class TreinoJpa {
     public TreinoJpa() {}
 
     public TreinoJpa(Integer id, Integer exercicioId, TipoTreino tipo,
-                     LocalDateTime tempo, float distancia, int repeticoes,
+                     String tempo, float distancia, int repeticoes,
                      float peso, int series, float recordeCarga) {
         this.id = id;
         this.exercicioId = exercicioId;
@@ -64,7 +64,7 @@ public class TreinoJpa {
     public Integer getId() { return id; }
     public Integer getExercicioId() { return exercicioId; }
     public TipoTreino getTipo() { return tipo; }
-    public LocalDateTime getTempo() { return tempo; }
+    public String getTempo() { return tempo; }
     public float getDistancia() { return distancia; }
     public int getRepeticoes() { return repeticoes; }
     public float getPeso() { return peso; }
@@ -74,7 +74,7 @@ public class TreinoJpa {
     public void setId(Integer id) { this.id = id; }
     public void setExercicioId(Integer exercicioId) { this.exercicioId = exercicioId; }
     public void setTipo(TipoTreino tipo) { this.tipo = tipo; }
-    public void setTempo(LocalDateTime tempo) { this.tempo = tempo; }
+    public void setTempo(String tempo) { this.tempo = tempo; }
     public void setDistancia(float distancia) { this.distancia = distancia; }
     public void setRepeticoes(int repeticoes) { this.repeticoes = repeticoes; }
     public void setPeso(float peso) { this.peso = peso; }
