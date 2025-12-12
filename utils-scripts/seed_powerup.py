@@ -419,7 +419,7 @@ def seed_treinos(cur, exercicios_ids, count=20):
     for _ in range(count):
         ex_id = random.choice(exercicios_ids)
         tipo = random.choice(tipos)
-        tempo = datetime.datetime.now() - datetime.timedelta(minutes=random.randint(10, 50))
+        tempo = 10 
         distancia = random.uniform(1.0, 10.0)
         repeticoes = random.randint(8, 15)
         peso = random.uniform(10.0, 60.0)
