@@ -82,7 +82,7 @@ public class AvatarServicoAplicacao {
     public AtributosCalculadosResumo obterAtributosCalculados(Integer avatarId) {
         AvatarId id = new AvatarId(avatarId); 
         
-        // O AvatarService do domínio calcula os atributos com base no Nível
+
         int forca = avatarDominioService.getForca(id);
         int resistencia = avatarDominioService.getResistencia(id);
         int agilidade = avatarDominioService.getAgilidade(id);
