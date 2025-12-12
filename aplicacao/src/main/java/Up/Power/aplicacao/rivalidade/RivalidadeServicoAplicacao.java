@@ -1,24 +1,28 @@
 package Up.Power.aplicacao.rivalidade;
 
-import Up.Power.aplicacao.rivalidade.commands.*;
-import Up.Power.aplicacao.rivalidade.operacoes.*;
-import Up.Power.aplicacao.frequencia.FrequenciaServicoAplicacao;
-import Up.Power.aplicacao.duelo.DueloRepositorioAplicacao;
-import Up.Power.frequencia.FrequenciaRepository;
-import Up.Power.avatar.AvatarRepository;
-import Up.Power.perfil.PerfilId;
-import Up.Power.perfil.PerfilRepository;
-import Up.Power.Perfil;
-import Up.Power.Duelo;
-import Up.Power.avatar.AvatarId;
-import Up.Power.Frequencia;
-import org.springframework.stereotype.Service;
-
+import java.time.DayOfWeek;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
-import java.time.DayOfWeek;
 import java.util.List;
 import java.util.Optional;
+
+import org.springframework.stereotype.Service;
+
+import Up.Power.Duelo;
+import Up.Power.Frequencia;
+import Up.Power.Perfil;
+import Up.Power.aplicacao.duelo.DueloRepositorioAplicacao;
+import Up.Power.aplicacao.frequencia.FrequenciaServicoAplicacao;
+import Up.Power.aplicacao.rivalidade.operacoes.AceitarRivalidadeOperacao;
+import Up.Power.aplicacao.rivalidade.operacoes.CancelarRivalidadeOperacao;
+import Up.Power.aplicacao.rivalidade.operacoes.EnviarConviteOperacao;
+import Up.Power.aplicacao.rivalidade.operacoes.FinalizarRivalidadeOperacao;
+import Up.Power.aplicacao.rivalidade.operacoes.RecusarRivalidadeOperacao;
+import Up.Power.avatar.AvatarId;
+import Up.Power.avatar.AvatarRepository;
+import Up.Power.frequencia.FrequenciaRepository;
+import Up.Power.perfil.PerfilId;
+import Up.Power.perfil.PerfilRepository;
 
 @Service
 public class RivalidadeServicoAplicacao {
@@ -61,24 +65,24 @@ public class RivalidadeServicoAplicacao {
         this.perfilRepository = perfilRepository;
     }
 
-    public RivalidadeResumo enviar(EnviarConviteCommand c) {
-        return enriquecerComNomes(enviarConvite.executar(c));
+    public RivalidadeResumo enviar(int perfil1Id, int perfil2Id, int exercicioId) {
+        return enriquecerComNomes(enviarConvite.executarEnviarConvite(perfil1Id, perfil2Id, exercicioId));
     }
 
-    public RivalidadeResumo aceitar(AceitarRivalidadeCommand c) {
-        return enriquecerComNomes(aceitar.executar(c));
+    public RivalidadeResumo aceitar(int rivalidadeId, int usuarioId) {
+        return enriquecerComNomes(aceitar.executarAceitar(rivalidadeId, usuarioId));
     }
 
-    public RivalidadeResumo recusar(RecusarRivalidadeCommand c) {
-        return enriquecerComNomes(recusar.executar(c));
+    public RivalidadeResumo recusar(int rivalidadeId, int usuarioId) {
+        return enriquecerComNomes(recusar.executarRecusar(rivalidadeId, usuarioId));
     }
 
-    public RivalidadeResumo finalizar(FinalizarRivalidadeCommand c) {
-        return enriquecerComNomes(finalizar.executar(c));
+    public RivalidadeResumo finalizar(int rivalidadeId, int usuarioId) {
+        return enriquecerComNomes(finalizar.executarFinalizar(rivalidadeId, usuarioId));
     }
 
-    public RivalidadeResumo cancelar(CancelarRivalidadeCommand c) {
-        return enriquecerComNomes(cancelar.executar(c));
+    public RivalidadeResumo cancelar(int rivalidadeId, int usuarioId) {
+        return enriquecerComNomes(cancelar.executarCancelar(rivalidadeId, usuarioId));
     }
 
     public List<RivalidadeResumo> listarPorPerfil(Integer perfilId) {

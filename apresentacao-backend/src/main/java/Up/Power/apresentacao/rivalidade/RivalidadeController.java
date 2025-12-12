@@ -1,15 +1,21 @@
 package Up.Power.apresentacao.rivalidade;
 
-import Up.Power.aplicacao.rivalidade.RivalidadeServicoAplicacao;
-import Up.Power.aplicacao.rivalidade.RivalidadeResumo;
-import Up.Power.aplicacao.rivalidade.commands.*;
-import org.springframework.http.HttpStatus;
-import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.*;
-
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.RestController;
+
+import Up.Power.aplicacao.rivalidade.RivalidadeResumo;
+import Up.Power.aplicacao.rivalidade.RivalidadeServicoAplicacao;
 
 @RestController
 @RequestMapping("/api/rivalidades")
@@ -21,10 +27,16 @@ public class RivalidadeController {
         this.rivalidadeServicoAplicacao = rivalidadeServicoAplicacao;
     }
 
+    // DTOs simples para desserialização
+    public record EnviarConviteRequest(int perfil1Id, int perfil2Id, int exercicioId) {}
+    public record RivalidadeRequest(int rivalidadeId, int usuarioId) {}
+
     @PostMapping("/enviar-convite")
-    public ResponseEntity<?> enviarConvite(@RequestBody EnviarConviteCommand command) {
+    public ResponseEntity<?> enviarConvite(@RequestBody EnviarConviteRequest request) {
         try {
-            RivalidadeResumo rivalidade = rivalidadeServicoAplicacao.enviar(command);
+            RivalidadeResumo rivalidade = rivalidadeServicoAplicacao.enviar(
+                request.perfil1Id, request.perfil2Id, request.exercicioId
+            );
             return ResponseEntity.ok(rivalidade);
         } catch (IllegalStateException e) {
             e.printStackTrace();
@@ -38,9 +50,11 @@ public class RivalidadeController {
     }
 
     @PostMapping("/aceitar")
-    public ResponseEntity<?> aceitar(@RequestBody AceitarRivalidadeCommand command) {
+    public ResponseEntity<?> aceitar(@RequestBody RivalidadeRequest request) {
         try {
-            RivalidadeResumo rivalidade = rivalidadeServicoAplicacao.aceitar(command);
+            RivalidadeResumo rivalidade = rivalidadeServicoAplicacao.aceitar(
+                request.rivalidadeId, request.usuarioId
+            );
             return ResponseEntity.ok(rivalidade);
         } catch (IllegalStateException e) {
             e.printStackTrace();
@@ -54,9 +68,11 @@ public class RivalidadeController {
     }
 
     @PostMapping("/recusar")
-    public ResponseEntity<RivalidadeResumo> recusar(@RequestBody RecusarRivalidadeCommand command) {
+    public ResponseEntity<RivalidadeResumo> recusar(@RequestBody RivalidadeRequest request) {
         try {
-            RivalidadeResumo rivalidade = rivalidadeServicoAplicacao.recusar(command);
+            RivalidadeResumo rivalidade = rivalidadeServicoAplicacao.recusar(
+                request.rivalidadeId, request.usuarioId
+            );
             return ResponseEntity.ok(rivalidade);
         } catch (Exception e) {
             e.printStackTrace();
@@ -65,9 +81,11 @@ public class RivalidadeController {
     }
 
     @PostMapping("/cancelar")
-    public ResponseEntity<?> cancelar(@RequestBody CancelarRivalidadeCommand command) {
+    public ResponseEntity<?> cancelar(@RequestBody RivalidadeRequest request) {
         try {
-            RivalidadeResumo rivalidade = rivalidadeServicoAplicacao.cancelar(command);
+            RivalidadeResumo rivalidade = rivalidadeServicoAplicacao.cancelar(
+                request.rivalidadeId, request.usuarioId
+            );
             return ResponseEntity.ok(rivalidade);
         } catch (IllegalStateException | SecurityException e) {
             e.printStackTrace();
@@ -81,9 +99,11 @@ public class RivalidadeController {
     }
 
     @PostMapping("/finalizar")
-    public ResponseEntity<RivalidadeResumo> finalizar(@RequestBody FinalizarRivalidadeCommand command) {
+    public ResponseEntity<RivalidadeResumo> finalizar(@RequestBody RivalidadeRequest request) {
         try {
-            RivalidadeResumo rivalidade = rivalidadeServicoAplicacao.finalizar(command);
+            RivalidadeResumo rivalidade = rivalidadeServicoAplicacao.finalizar(
+                request.rivalidadeId, request.usuarioId
+            );
             return ResponseEntity.ok(rivalidade);
         } catch (Exception e) {
             e.printStackTrace();

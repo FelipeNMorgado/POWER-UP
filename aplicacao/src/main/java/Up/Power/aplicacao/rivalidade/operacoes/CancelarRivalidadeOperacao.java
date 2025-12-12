@@ -1,25 +1,25 @@
 package Up.Power.aplicacao.rivalidade.operacoes;
 
+import org.springframework.stereotype.Component;
+
 import Up.Power.Rivalidade;
-import Up.Power.aplicacao.rivalidade.commands.CancelarRivalidadeCommand;
 import Up.Power.aplicacao.rivalidade.template.OperacaoRivalidadeTemplate;
 import Up.Power.perfil.PerfilId;
 import Up.Power.rivalidade.RivalidadeId;
 import Up.Power.rivalidade.RivalidadeService;
-import org.springframework.stereotype.Component;
 
 @Component
-public class CancelarRivalidadeOperacao extends OperacaoRivalidadeTemplate<CancelarRivalidadeCommand> {
+public class CancelarRivalidadeOperacao extends OperacaoRivalidadeTemplate {
 
     public CancelarRivalidadeOperacao(RivalidadeService dominioService) {
         super(dominioService);
     }
 
     @Override
-    protected Rivalidade executarOperacao(CancelarRivalidadeCommand cmd) {
+    protected Rivalidade executarOperacaoCancelar(int rivalidadeId, int usuarioId) {
         return dominioService.cancelarConvite(
-                new RivalidadeId(cmd.rivalidadeId()),
-                new PerfilId(cmd.usuarioId())
+                new RivalidadeId(rivalidadeId),
+                new PerfilId(usuarioId)
         );
     }
 }
