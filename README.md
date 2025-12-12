@@ -47,3 +47,10 @@ Os artefatos abaixo estão localizados no repositório do projeto:
 - especificações de teste;
 - automação dos testes;
 - código necessário para que os testes sejam bem sucedidos;
+
+# Padrões de Projeto Adotados
+
+| Padrão de Projeto | Descrição | Classes Envolvidas |
+| :--- | :--- | :--- |
+| **Proxy** | Um padrão estrutural que fornece um substituto ou placeholder para outro objeto controlar o acesso a ele. No projeto, ele é usado para adicionar funcionalidades transversais (logging e medição de tempo) às operações do repositório de feedback, sem modificar a implementação real | **FeedbackRepositorioAplicacao:** Define o contrato comum para FeedbackRepositorioProxy (Proxy) e FeedbackRepositorioReal (RealSubject)</br>`aplicacao/src/main/java/Up/Power/aplicacao/feedback/FeedbackRepositorioAplicacao.java` </br></br>**FeedbackRepositorioReal:** Implementação concreta que executa as operações reais `aplicacao/src/main/java/Up/Power/aplicacao/feedback/FeedbackRepositorioReal.java`</br></br>**FeedbackRepositorioProxy:** Proxy que intercepta chamadas e adiciona funcionalidades`aplicacao/src/main/java/Up/Power/aplicacao/feedback/FeedbackRepositorioProxy.java`</br></br>**FeedbackServicoAplicacao:** Usa a interface FeedbackRepositorioAplicacao sem saber se está usando Proxy ou RealSubject `aplicacao/src/main/java/Up/Power/aplicacao/feedback/FeedbackServicoAplicacao.java`|
+| **Template** | | |
