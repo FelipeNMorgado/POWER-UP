@@ -9,5 +9,6 @@ public record FeedbackResumo(
         Classificacao classificacao,
         String feedback,
         String email,
-        Date data
+        Date data,
+        String nomePlanoTreino
 ) {}

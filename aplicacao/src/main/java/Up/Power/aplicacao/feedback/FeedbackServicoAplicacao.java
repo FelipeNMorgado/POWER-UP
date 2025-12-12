@@ -6,20 +6,32 @@ import Up.Power.feedback.Classificacao;
 import Up.Power.feedback.FeedbackId;
 import Up.Power.feedback.FeedbackService;
 import Up.Power.frequencia.FrequenciaId;
+import Up.Power.frequencia.FrequenciaRepository;
+import Up.Power.planoTreino.PlanoTId;
+import Up.Power.aplicacao.planoTreino.PlanoTreinoRepositorioAplicacao;
 import org.springframework.stereotype.Service;
 
 import java.util.Date;
 import java.util.List;
+import java.util.Optional;
 
 @Service
 public class FeedbackServicoAplicacao {
 
     private final FeedbackRepositorioAplicacao repo;
     private final FeedbackService feedbackService;
+    private final FrequenciaRepository frequenciaRepository;
+    private final PlanoTreinoRepositorioAplicacao planoTreinoRepositorioAplicacao;
 
-    public FeedbackServicoAplicacao(FeedbackRepositorioAplicacao repo, FeedbackService feedbackService) {
+    public FeedbackServicoAplicacao(
+            FeedbackRepositorioAplicacao repo, 
+            FeedbackService feedbackService,
+            FrequenciaRepository frequenciaRepository,
+            PlanoTreinoRepositorioAplicacao planoTreinoRepositorioAplicacao) {
         this.repo = repo;
         this.feedbackService = feedbackService;
+        this.frequenciaRepository = frequenciaRepository;
+        this.planoTreinoRepositorioAplicacao = planoTreinoRepositorioAplicacao;
     }
 
     public FeedbackResumo obter(Integer id) {
@@ -30,7 +42,33 @@ public class FeedbackServicoAplicacao {
     public List<FeedbackResumo> listarPorUsuario(String email) {
         System.out.println("[FEEDBACK_SERVICE] Listando feedbacks para usuário: " + email);
         try {
-            List<FeedbackResumo> feedbacks = repo.listarPorUsuario(email);
+            // Buscar feedbacks do repositório (que retorna FeedbackResumo sem nome do plano)
+            List<FeedbackResumo> feedbacksSemNome = repo.listarPorUsuario(email);
+            
+            // Enriquecer cada feedback com o nome do plano de treino
+            List<FeedbackResumo> feedbacks = feedbacksSemNome.stream()
+                .map(f -> {
+                    try {
+                        // Buscar o feedback do domínio para obter a frequência
+                        Feedback feedbackDominio = repo.obter(f.id());
+                        if (feedbackDominio != null) {
+                            return toResumo(feedbackDominio);
+                        }
+                        // Se não conseguir buscar, retornar com nome null
+                        return new FeedbackResumo(
+                            f.id(), f.frequencia(), f.classificacao(), f.feedback(), 
+                            f.email(), f.data(), null
+                        );
+                    } catch (Exception e) {
+                        System.err.println("Erro ao enriquecer feedback " + f.id() + ": " + e.getMessage());
+                        return new FeedbackResumo(
+                            f.id(), f.frequencia(), f.classificacao(), f.feedback(), 
+                            f.email(), f.data(), null
+                        );
+                    }
+                })
+                .collect(java.util.stream.Collectors.toList());
+            
             System.out.println("[FEEDBACK_SERVICE] Feedbacks encontrados: " + feedbacks.size());
             return feedbacks;
         } catch (Exception e) {
@@ -97,13 +135,31 @@ public class FeedbackServicoAplicacao {
     }
 
     private FeedbackResumo toResumo(Feedback f) {
+        // Buscar nome do plano de treino através da frequência
+        String nomePlanoTreino = null;
+        try {
+            var frequencia = frequenciaRepository.obterFrequencia(f.getFrequencia(), null);
+            if (frequencia != null && frequencia.getPlanoTId() != null) {
+                Optional<Up.Power.PlanoTreino> planoOpt = planoTreinoRepositorioAplicacao.obterPorId(frequencia.getPlanoTId());
+                if (planoOpt.isPresent()) {
+                    nomePlanoTreino = planoOpt.get().getNome();
+                } else {
+                    nomePlanoTreino = "Plano deletado";
+                }
+            }
+        } catch (Exception e) {
+            System.err.println("Erro ao buscar nome do plano de treino para feedback: " + e.getMessage());
+            nomePlanoTreino = "Plano não encontrado";
+        }
+        
         return new FeedbackResumo(
                 f.getId().getId(),
                 f.getFrequencia().getId(),
                 f.getClassificacao(),
                 f.getFeedback(),
                 f.getEmail().getCaracteres(),
-                f.getData()
+                f.getData(),
+                nomePlanoTreino
         );
     }
 }

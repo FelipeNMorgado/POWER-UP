@@ -34,7 +34,8 @@ public class FeedbackRepositorioReal implements FeedbackRepositorioAplicacao {
                                     f.getClassificacao(),
                                     f.getFeedback() != null ? f.getFeedback() : "",
                                     f.getEmail().getCaracteres(),
-                                    f.getData()
+                                    f.getData(),
+                                    null // Nome do plano será enriquecido no FeedbackServicoAplicacao
                             );
                         } catch (Exception e) {
                             System.err.println("[FEEDBACK_REPO_REAL] ERRO ao criar resumo: " + e.getMessage());
