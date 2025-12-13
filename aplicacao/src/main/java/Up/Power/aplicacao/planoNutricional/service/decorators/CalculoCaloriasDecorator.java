@@ -7,7 +7,7 @@ import Up.Power.aplicacao.planoNutricional.commands.ModificarPlanoNutricionalCom
 import Up.Power.aplicacao.planoNutricional.service.PlanoNutricionalApplicationService;
 import Up.Power.refeicao.RefeicaoId;
 import Up.Power.refeicao.RefeicaoRepository;
-// Removido @Component - será criado manualmente na configuração
+
 public class CalculoCaloriasDecorator extends PlanoNutricionalDecorator {
 
     private final RefeicaoRepository refeicaoRepository;
@@ -40,7 +40,7 @@ public class CalculoCaloriasDecorator extends PlanoNutricionalDecorator {
     private void aplicarCalculo(PlanoNutricional plano) {
         System.out.println("[CALCULO_CALORIAS] Aplicando cálculo de calorias totais...");
         try {
-            // Se não há refeições, calorias totais é 0
+
             if (plano.getRefeicoes() == null || plano.getRefeicoes().isEmpty()) {
                 System.out.println("[CALCULO_CALORIAS] Nenhuma refeição encontrada. Definindo calorias totais como 0");
                 plano.definirCaloriasTotais(0);
@@ -64,7 +64,7 @@ public class CalculoCaloriasDecorator extends PlanoNutricionalDecorator {
             System.out.println("[CALCULO_CALORIAS] Total de calorias calculado: " + total);
             plano.definirCaloriasTotais(total);
         } catch (Exception e) {
-            // Em caso de erro, definir como 0
+
             System.err.println("[CALCULO_CALORIAS] ERRO ao calcular calorias:");
             System.err.println("[CALCULO_CALORIAS] Tipo: " + e.getClass().getName());
             System.err.println("[CALCULO_CALORIAS] Mensagem: " + (e.getMessage() != null ? e.getMessage() : "null"));

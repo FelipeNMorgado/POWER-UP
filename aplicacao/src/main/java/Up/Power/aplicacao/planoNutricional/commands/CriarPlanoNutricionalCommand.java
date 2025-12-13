@@ -7,5 +7,5 @@ public record CriarPlanoNutricionalCommand(
         Objetivo objetivo,
         List<Integer> refeicoesIds,
         String usuarioEmail,
-        Integer caloriasObjetivo // Meta de calorias opcional fornecida pelo usuário
+        Integer caloriasObjetivo
 ) {}

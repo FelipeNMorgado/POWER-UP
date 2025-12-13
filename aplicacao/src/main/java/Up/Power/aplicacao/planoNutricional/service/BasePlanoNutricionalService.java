@@ -37,29 +37,28 @@ public class BasePlanoNutricionalService implements PlanoNutricionalApplicationS
             System.out.println("[BASE_SERVICE] PlanoNutricional criado. ID inicial: " + 
                     (plano.getId() != null ? plano.getId().getId() : "null"));
 
-            // IMPORTANTE: Ao criar um novo plano, NUNCA adicionar refeições existentes
-            // Um novo plano deve sempre começar vazio
+
             if (command.refeicoesIds() != null && !command.refeicoesIds().isEmpty()) {
                 System.err.println("[BASE_SERVICE] AVISO: Tentativa de criar plano com refeições! Isso não deve acontecer.");
                 System.err.println("[BASE_SERVICE] Refeições recebidas: " + command.refeicoesIds());
                 System.err.println("[BASE_SERVICE] IGNORANDO refeições e criando plano vazio.");
-                // NÃO adicionar refeições - plano novo deve estar vazio
+
             } else {
                 System.out.println("[BASE_SERVICE] Nenhuma refeição para adicionar (lista vazia ou null) - CORRETO para novo plano");
             }
             
-            // Garantir que o plano está completamente vazio
+
             plano.limparRefeicoes();
             System.out.println("[BASE_SERVICE] Plano limpo. Refeições após limpeza: " + 
                     (plano.getRefeicoes() != null ? plano.getRefeicoes().size() : "null"));
             
-            // Verificação final: garantir que o plano está realmente vazio
+
             if (plano.getRefeicoes() != null && !plano.getRefeicoes().isEmpty()) {
                 System.err.println("[BASE_SERVICE] ERRO CRÍTICO: Plano ainda tem refeições após limpeza! Forçando limpeza...");
                 plano.getRefeicoes().clear();
             }
 
-            // Se o usuário forneceu uma meta de calorias, usar ela
+
             if (command.caloriasObjetivo() != null && command.caloriasObjetivo() > 0) {
                 System.out.println("[BASE_SERVICE] Definindo meta de calorias: " + command.caloriasObjetivo());
                 plano.definirCaloriasObjetivo(command.caloriasObjetivo());
@@ -95,7 +94,7 @@ public class BasePlanoNutricionalService implements PlanoNutricionalApplicationS
             throw new IllegalArgumentException("Plano não encontrado");
         }
 
-        // Criar novo plano com os dados atualizados, mantendo o email existente
+
         Email emailUsuario = plano.getUsuarioEmail() != null 
             ? plano.getUsuarioEmail() 
             : (command.usuarioEmail() != null ? new Email(command.usuarioEmail()) : null);
@@ -110,15 +109,12 @@ public class BasePlanoNutricionalService implements PlanoNutricionalApplicationS
                 emailUsuario
         );
 
-        // IMPORTANTE: Manter as refeições existentes do plano original
-        // O comando pode conter todas as refeições (existentes + novas) ou apenas as novas
-        // Vamos usar as refeições do comando se fornecidas, caso contrário manter as existentes
+
         if (command.refeicoesIds() != null && !command.refeicoesIds().isEmpty()) {
             System.out.println("[BASE_SERVICE] Modificando plano. Refeições fornecidas no comando: " + command.refeicoesIds().size());
             System.out.println("[BASE_SERVICE] Refeições existentes no plano: " + (plano.getRefeicoes() != null ? plano.getRefeicoes().size() : 0));
             
-            // Substituir todas as refeições pelas fornecidas no comando
-            // (o frontend envia todas as refeições: existentes + novas)
+
             planoAtualizado.adicionarRefeicaoList(
                     command.refeicoesIds()
                             .stream()
@@ -127,16 +123,16 @@ public class BasePlanoNutricionalService implements PlanoNutricionalApplicationS
             );
             System.out.println("[BASE_SERVICE] Refeições atualizadas no plano: " + planoAtualizado.getRefeicoes().size());
         } else {
-            // Se não foram fornecidas refeições no comando, manter as existentes
+
             System.out.println("[BASE_SERVICE] Nenhuma refeição fornecida no comando. Mantendo refeições existentes.");
             if (plano.getRefeicoes() != null && !plano.getRefeicoes().isEmpty()) {
                 planoAtualizado.adicionarRefeicaoList(plano.getRefeicoes());
             }
         }
 
-        // Manter calorias do plano original se já existirem
+
         planoAtualizado.definirCaloriasTotais(plano.getCaloriasTotais());
-        // Manter caloriasObjetivo do plano original (o comando não inclui esse campo)
+
         planoAtualizado.definirCaloriasObjetivo(plano.getCaloriasObjetivo());
 
         repository.salvar(planoAtualizado);

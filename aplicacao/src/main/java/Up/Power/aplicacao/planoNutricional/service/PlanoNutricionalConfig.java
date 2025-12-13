@@ -15,8 +15,7 @@ public class PlanoNutricionalConfig {
             BasePlanoNutricionalService baseService,
             RefeicaoRepository refeicaoRepository
     ) {
-        // Construir a cadeia de decorators na ordem correta:
-        // Base -> CalculoCalorias -> CicloObjetivo -> RegistroInfo
+
         CalculoCaloriasDecorator calculoDecorator = new CalculoCaloriasDecorator(baseService, refeicaoRepository);
         CicloObjetivoDecorator cicloDecorator = new CicloObjetivoDecorator(calculoDecorator);
         RegistroInfoDecorator registroDecorator = new RegistroInfoDecorator(cicloDecorator);
