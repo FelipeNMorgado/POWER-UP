@@ -4,7 +4,7 @@
 
 1. **Navegar para a pasta do backend:**
 ```powershell
-cd C:\Users\guirtoon\Desktop\POWER-UP\POWER-UP-BACKEND\apresentacao-backend
+cd apresentacao-backend
 ```
 
 2. **Rodar o projeto:**
@@ -18,7 +18,7 @@ O backend estará disponível em: `http://localhost:8080`
 
 1. **Abrir um novo terminal e navegar para a pasta do frontend:**
 ```powershell
-cd C:\Users\guirtoon\Desktop\POWER-UP\POWER-UP-FRONTEND
+cd POWER-UP-FRONTEND
 ```
 
 2. **Rodar o projeto:**
@@ -33,7 +33,7 @@ O frontend estará disponível em: `http://localhost:5173` ou `http://localhost:
 Se o MySQL não estiver rodando:
 
 ```powershell
-cd C:\Users\guirtoon\Desktop\POWER-UP
+cd POWER-UP
 docker-compose up -d
 ```
 
