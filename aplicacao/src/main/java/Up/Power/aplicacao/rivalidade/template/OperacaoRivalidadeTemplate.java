@@ -15,7 +15,6 @@ public abstract class OperacaoRivalidadeTemplate {
         this.dominioService = dominioService;
     }
 
-    // Template Method — fluxo fixo para Enviar Convite
     @Transactional
     public final RivalidadeResumo executarEnviarConvite(int perfil1Id, int perfil2Id, int exercicioId) {
         validarEnviarConvite(perfil1Id, perfil2Id, exercicioId);
@@ -23,7 +22,6 @@ public abstract class OperacaoRivalidadeTemplate {
         return RivalidadeResumoAssembler.toResumo(rivalidade);
     }
 
-    // Template Method — fluxo fixo para Aceitar Rivalidade
     @Transactional
     public final RivalidadeResumo executarAceitar(int rivalidadeId, int usuarioId) {
         validarAceitar(rivalidadeId, usuarioId);
@@ -31,7 +29,6 @@ public abstract class OperacaoRivalidadeTemplate {
         return RivalidadeResumoAssembler.toResumo(rivalidade);
     }
 
-    // Template Method — fluxo fixo para Recusar Rivalidade
     @Transactional
     public final RivalidadeResumo executarRecusar(int rivalidadeId, int usuarioId) {
         validarRecusar(rivalidadeId, usuarioId);
@@ -39,7 +36,6 @@ public abstract class OperacaoRivalidadeTemplate {
         return RivalidadeResumoAssembler.toResumo(rivalidade);
     }
 
-    // Template Method — fluxo fixo para Finalizar Rivalidade
     @Transactional
     public final RivalidadeResumo executarFinalizar(int rivalidadeId, int usuarioId) {
         validarFinalizar(rivalidadeId, usuarioId);
@@ -47,7 +43,6 @@ public abstract class OperacaoRivalidadeTemplate {
         return RivalidadeResumoAssembler.toResumo(rivalidade);
     }
 
-    // Template Method — fluxo fixo para Cancelar Rivalidade
     @Transactional
     public final RivalidadeResumo executarCancelar(int rivalidadeId, int usuarioId) {
         validarCancelar(rivalidadeId, usuarioId);
@@ -55,14 +50,12 @@ public abstract class OperacaoRivalidadeTemplate {
         return RivalidadeResumoAssembler.toResumo(rivalidade);
     }
 
-    // Ganchos (steps customizáveis) - podem ser sobrescritos pelas subclasses se necessário
     protected void validarEnviarConvite(int perfil1Id, int perfil2Id, int exercicioId) {}
     protected void validarAceitar(int rivalidadeId, int usuarioId) {}
     protected void validarRecusar(int rivalidadeId, int usuarioId) {}
     protected void validarFinalizar(int rivalidadeId, int usuarioId) {}
     protected void validarCancelar(int rivalidadeId, int usuarioId) {}
 
-    // Métodos abstratos - implementados pelas subclasses conforme necessidade
     protected Rivalidade executarOperacaoEnviarConvite(int perfil1Id, int perfil2Id, int exercicioId) {
         throw new UnsupportedOperationException("Operação não suportada");
     }

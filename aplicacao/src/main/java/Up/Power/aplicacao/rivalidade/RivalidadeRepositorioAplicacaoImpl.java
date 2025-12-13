@@ -27,7 +27,6 @@ public class RivalidadeRepositorioAplicacaoImpl implements RivalidadeRepositorio
 
     @Override
     public List<RivalidadeResumo> listarPorPerfil(Integer perfilId) {
-        // Nota: exige que JpaRivalidadeRepository tenha findByPerfilParticipante(perfilId)
         List<RivalidadeJpa> list = jpa.findByPerfilParticipante(perfilId);
         return list.stream()
                 .map(RivalidadeResumoAssembler::toResumoFromEntity)

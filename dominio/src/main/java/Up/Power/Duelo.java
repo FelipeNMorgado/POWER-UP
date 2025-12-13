@@ -22,7 +22,7 @@ public class Duelo {
     }
 
     public Duelo(AvatarId avatar1, AvatarId avatar2) {
-        this.id = null; // Gerado pelo banco/mock
+        this.id = null;
         this.avatar1 = avatar1;
         this.avatar2 = avatar2;
         this.dataDuelo = LocalDateTime.now(); // <-- Data é registrada na criação

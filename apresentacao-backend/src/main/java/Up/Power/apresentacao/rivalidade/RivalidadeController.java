@@ -27,7 +27,6 @@ public class RivalidadeController {
         this.rivalidadeServicoAplicacao = rivalidadeServicoAplicacao;
     }
 
-    // DTOs simples para desserialização
     public record EnviarConviteRequest(int perfil1Id, int perfil2Id, int exercicioId) {}
     public record RivalidadeRequest(int rivalidadeId, int usuarioId) {}
 

@@ -27,8 +27,6 @@ public class RivalidadeMapper {
     }
 
     public Rivalidade toDomain(RivalidadeJpa entity) {
-        // Usar o construtor completo que aceita todos os campos, incluindo status
-        // Isso evita chamar métodos de transição de estado que têm validações
         Rivalidade domain = new Rivalidade(
                 new RivalidadeId(entity.getId()),
                 new PerfilId(entity.getPerfil1Id()),

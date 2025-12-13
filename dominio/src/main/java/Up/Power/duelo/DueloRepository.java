@@ -8,7 +8,7 @@ import java.util.List;
 import java.util.Optional;
 
 public interface DueloRepository {
-    Duelo save(Duelo duelo); // Mudado para retornar o Duelo salvo
+    Duelo save(Duelo duelo);
     Optional<Duelo> findById(DueloId id);
     Optional<Duelo> findLastDuelBetween(AvatarId avatarId1, AvatarId avatarId2);
     List<Duelo> findDuelsBetweenSince(AvatarId avatarId1, AvatarId avatarId2, LocalDateTime dataInicio);

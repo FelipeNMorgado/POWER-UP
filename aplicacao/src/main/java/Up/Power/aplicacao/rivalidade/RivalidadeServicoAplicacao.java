@@ -87,7 +87,6 @@ public class RivalidadeServicoAplicacao {
 
     public List<RivalidadeResumo> listarPorPerfil(Integer perfilId) {
         List<RivalidadeResumo> rivalidades = rivalidadeRepositorioAplicacao.listarPorPerfil(perfilId);
-        // Enriquecer com nomes dos perfis
         return rivalidades.stream()
                 .map(r -> enriquecerComNomes(r))
                 .toList();
@@ -142,27 +141,22 @@ public class RivalidadeServicoAplicacao {
             throw new IllegalStateException("A rivalidade ainda não foi aceita");
         }
 
-        // Determinar qual perfil é o usuário e qual é o rival
         Integer perfilUsuario = perfilId;
         Integer perfilRival = rivalidade.perfil1().equals(perfilId) ? rivalidade.perfil2() : rivalidade.perfil1();
 
         LocalDate dataInicio = rivalidade.inicio().toLocalDate();
 
-        // Calcular streak desde o início da rivalidade
         int streakUsuario = frequenciaServicoAplicacao.calcularSequenciaDiasDesdeData(perfilUsuario, dataInicio);
         int streakRival = frequenciaServicoAplicacao.calcularSequenciaDiasDesdeData(perfilRival, dataInicio);
 
-        // Calcular treinos na semana atual
         LocalDate hoje = LocalDate.now();
         LocalDate inicioSemana = hoje.with(DayOfWeek.MONDAY);
         int treinosSemanaUsuario = calcularTreinosNaSemana(perfilUsuario, inicioSemana);
         int treinosSemanaRival = calcularTreinosNaSemana(perfilRival, inicioSemana);
 
-        // Calcular duelos ganhos durante a rivalidade
         int duelosGanhosUsuario = calcularDuelosGanhos(perfilUsuario, perfilRival, rivalidade.inicio());
         int duelosGanhosRival = calcularDuelosGanhos(perfilRival, perfilUsuario, rivalidade.inicio());
 
-        // Buscar informações dos perfis (nome e foto)
         Perfil perfilUsuarioObj = perfilRepository.findById(new PerfilId(perfilUsuario))
                 .orElseThrow(() -> new IllegalArgumentException("Perfil do usuário não encontrado"));
         Perfil perfilRivalObj = perfilRepository.findById(new PerfilId(perfilRival))
@@ -216,7 +210,6 @@ public class RivalidadeServicoAplicacao {
 
         int vitorias = 0;
         for (Duelo duelo : duelos) {
-            // Verificar se o perfil vencedor ganhou este duelo
             boolean vencedorEAvatar1 = duelo.getAvatar1().equals(avatarVencedorOpt.get());
             boolean vencedorEAvatar2 = duelo.getAvatar2().equals(avatarVencedorOpt.get());
             

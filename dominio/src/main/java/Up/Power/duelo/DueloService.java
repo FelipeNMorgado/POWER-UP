@@ -40,7 +40,6 @@ public class DueloService {
         novoDuelo.setResultado(resultado);
         novoDuelo.setDataDuelo(LocalDateTime.now());
 
-        // Recompensas para o vencedor
         Avatar vencedor = null;
         if (resultado.contains("DESAFIANTE")) {
             vencedor = avatar1;
