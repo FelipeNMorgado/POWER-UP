@@ -25,9 +25,7 @@ public class EnviarConviteOperacao extends OperacaoRivalidadeTemplate<EnviarConv
         );
     }
 
-    /**
-     * Método de conveniência para manter compatibilidade com o código existente.
-     */
+
     public RivalidadeResumo executarEnviarConvite(int perfil1Id, int perfil2Id, int exercicioId) {
         return executar(new EnviarConviteParametros(perfil1Id, perfil2Id, exercicioId));
     }

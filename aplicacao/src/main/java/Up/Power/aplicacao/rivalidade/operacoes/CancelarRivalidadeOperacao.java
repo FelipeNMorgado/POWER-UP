@@ -24,9 +24,7 @@ public class CancelarRivalidadeOperacao extends OperacaoRivalidadeTemplate<Cance
         );
     }
 
-    /**
-     * Método de conveniência para manter compatibilidade com o código existente.
-     */
+
     public RivalidadeResumo executarCancelar(int rivalidadeId, int usuarioId) {
         return executar(new CancelarRivalidadeParametros(rivalidadeId, usuarioId));
     }

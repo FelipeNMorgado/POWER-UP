@@ -24,9 +24,7 @@ public class FinalizarRivalidadeOperacao extends OperacaoRivalidadeTemplate<Fina
         );
     }
 
-    /**
-     * Método de conveniência para manter compatibilidade com o código existente.
-     */
+
     public RivalidadeResumo executarFinalizar(int rivalidadeId, int usuarioId) {
         return executar(new FinalizarRivalidadeParametros(rivalidadeId, usuarioId));
     }

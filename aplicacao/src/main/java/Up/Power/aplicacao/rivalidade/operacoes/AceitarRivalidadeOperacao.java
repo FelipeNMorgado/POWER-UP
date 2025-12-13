@@ -24,9 +24,7 @@ public class AceitarRivalidadeOperacao extends OperacaoRivalidadeTemplate<Aceita
         );
     }
 
-    /**
-     * Método de conveniência para manter compatibilidade com o código existente.
-     */
+
     public RivalidadeResumo executarAceitar(int rivalidadeId, int usuarioId) {
         return executar(new AceitarRivalidadeParametros(rivalidadeId, usuarioId));
     }
