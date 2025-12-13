@@ -206,9 +206,9 @@ public class EquipeController {
     }
 
     @GetMapping("/{equipeId}/ranking")
-    public ResponseEntity<List<RankingEntrada>> obterRanking(@PathVariable("equipeId") Integer equipeId) {
+    public ResponseEntity<List<EquipeServicoAplicacao.MembroRanking>> obterRanking(@PathVariable("equipeId") Integer equipeId) {
         try {
-            List<RankingEntrada> ranking = rankingServicoAplicacao.rankingEquipe(equipeId);
+            List<EquipeServicoAplicacao.MembroRanking> ranking = equipeServicoAplicacao.obterRanking(equipeId);
             return ResponseEntity.ok(ranking);
         } catch (Exception e) {
             e.printStackTrace();
